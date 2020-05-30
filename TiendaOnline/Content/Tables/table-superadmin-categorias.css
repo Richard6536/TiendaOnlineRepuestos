@@ -1,0 +1,15 @@
+﻿@media (max-width: 30em) {
+    table.responsive-table td:nth-child(1):before {
+        content: 'Nombre Categoria';
+    }
+
+    table.responsive-table td:nth-child(1){
+        padding-left: 40%;
+    }
+
+        table.responsive-table td:nth-child(1):before{
+            position: absolute;
+            left: .5em;
+            font-weight: bold;
+        }
+}

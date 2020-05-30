@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @{
+        var nombreTienda = "";
+        var urlTienda = "";
+
+        if (Session["TiendaNombre"] != null)
+        {
+            nombreTienda = (string)Session["TiendaNombre"];
+            urlTienda = "/TiendaUser/Index/"+(int)Session["TiendaId"];
+        }
+        else
+        {
+
+            nombreTienda = "Crear Tienda";
+            urlTienda = "/Home/CrearTienda";
+        }
+    }
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="~/">Giko</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Categorias <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Casas</a></li>
+                            <li><a href="#">Departamentos</a></li>
+                            <li><a href="#">Oficinas</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Buscar Productos">
+                    </div>
+                    <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+                </form>
+
+                <div class="navbar-form">
+                    @if (Session["Rol"] != null)
+                    {
+                        <a class="btn btn-default navbar-right" href="/Login/CerrarSesion" style="color:transparent; color:gray"><span class="glyphicon glyphicon-lock"></span> Cerrar Sesión</a>
+                        <a class="btn btn-default navbar-right" href="@urlTienda" style="color:white; background-color:black; margin-right:5px"><span class="glyphicon glyphicon-home"></span> @nombreTienda</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-default navbar-right" href="/Login/IniciarSesion" style="color:transparent; color:gray"><span class="glyphicon glyphicon-lock"></span> Iniciar Sesión</a>
+                    }
+
+                </div>
+
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+            <div class="item active">
+                <img width="1900" style="height:400px" src="https://i.imgur.com/Lnmp5z3.jpg" alt="Chania">
+                <div class="carousel-caption">
+                    <h3>Condominio Parque Campanario - Etapa 3 C</h3>
+                    <p>Desde UF 8.924,00</p>
+                </div>
+            </div>
+
+            <div class="item">
+                <img width="1900" style="height:400px" src="https://i.imgur.com/ByqRxFD.jpg" alt="Chicago">
+                <div class="carousel-caption">
+                    <h3>Los Nogales</h3>
+                    <p>Desde UF 46.500,00</p>
+                </div>
+            </div>
+
+            <div class="item">
+                <img width="1900" style="height:400px" src="https://i.imgur.com/OQjbrmn.jpg" alt="New York">
+                <div class="carousel-caption">
+                    <h3>Alto Los Bravos</h3>
+                    <p>Desde UF 15.600,00</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

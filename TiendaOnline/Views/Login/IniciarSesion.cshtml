@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = "IniciarSesion";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="form-signin" style="background-color:transparent; border: solid 0.5px #eeeeee">
+    <div class="text-center mb-4">
+        <h1 class="h3 mb-3 font-weight-normal">Iniciar Sesión</h1>
+        <hr />
+    </div>
+    @using (Html.BeginForm("IniciarSesion", "Login", FormMethod.Post))
+    {
+        <div style="margin-bottom:10px">
+            <input type="text" name="nombreUsuario" class="form-control" placeholder="Nombre de Usuario" required autofocus>
+        </div>
+        <div>
+            <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Contraseña" required>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Iniciar</button>
+        <div style="width:100%; text-align:center; margin-top:20px">
+            ¿No tienes una cuenta?
+            <a style="color:#9ca5d9" href="~/Login/Registrate">Registrate</a>
+        </div>
+    }
+
+</div>

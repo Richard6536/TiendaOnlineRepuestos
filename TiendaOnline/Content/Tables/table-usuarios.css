@@ -1,0 +1,27 @@
+﻿@media (max-width: 30em) {
+    table.responsive-table td:nth-child(1):before {
+        content: 'Nombre Usuario';
+    }
+
+    table.responsive-table td:nth-child(2):before {
+        content: 'Email';
+    }
+
+    table.responsive-table td:nth-child(3):before {
+        content: 'Rol';
+    }
+
+    table.responsive-table td:nth-child(1),
+    table.responsive-table td:nth-child(2),
+    table.responsive-table td:nth-child(3){
+        padding-left: 40%;
+    }
+
+        table.responsive-table td:nth-child(1):before,
+        table.responsive-table td:nth-child(2):before,
+        table.responsive-table td:nth-child(3):before {
+            position: absolute;
+            left: .5em;
+            font-weight: bold;
+        }
+}

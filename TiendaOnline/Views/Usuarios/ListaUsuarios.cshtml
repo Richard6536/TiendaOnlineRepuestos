@@ -1,0 +1,109 @@
+﻿@model IEnumerable<TiendaOnline.Models.UsuarioTienda>
+
+@{
+    ViewBag.Title = "ListaUsuarios";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+}
+
+
+<!-- --------------- -->
+<br />
+<a class="btn btn-primary" href="~/Usuarios/CrearUsuario" style="color:white">Crear Usuario</a>
+
+<table id="tablalista" class="layout display responsive-table">
+    <thead>
+        <tr>
+            <th>Nombre Usuario</th>
+            <th>@Html.DisplayNameFor(model => model.Usuario.Email)</th>
+            <th>Rol</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="organisationnumber">@Html.DisplayFor(modelItem => item.Usuario.NombreUsuario)</td>
+                <td class="organisationname">@Html.DisplayFor(modelItem => item.Usuario.Email)</td>
+                <td class="organisationname">@Html.DisplayFor(modelItem => item.RolTienda)</td>
+                <td class="actions">
+                    <a href="@Url.Action("EditarUsuario", "Usuarios", new { id=item.Usuario.Id })" class="material-icons" title="Edit">edit</a>
+                    <a href="#" class="material-icons" style="color:red" title="Eliminar" data-toggle="modal" data-target="#borrarModal" data-id="@item.Id" data-name="@item.Usuario.NombreUsuario">delete_outline</a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+<!-- Delete Modal-->
+<div class="modal fade" style="display:none;" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> TITULO </h5>
+            </div>
+            <div class="modal-body">No habrá forma de recuperar la información después de presionar en "Aceptar".</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                <a style="color:white" class="btn btn-danger btn-ok">Aceptar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <!-- Diseño de Tablas -->
+    <link href="~/Content/Tables/table-usuarios.css" rel="stylesheet">
+    <script type="text/javascript" src="~/Scripts/tables/table-usuarios.js"></script>
+
+    <script>
+
+        //e  es el elemnto que hace aparecer el modal
+        //la informacion se le agrega en data-id y hay oportunidad de agregar mas como data-name, etc
+        //esa informacion se le asigna al btn ok del modal
+        $('#borrarModal').on('show.bs.modal', function (e) {
+
+            var data = $(e.relatedTarget).data();
+            $('.modal-title', this).text("¿Está seguro de eliminar el usuario '" + data.name + "'?");
+            $('.btn-ok', this).data('recordId', data.id);
+        });
+
+
+        //El boton modal cuando es clickeado lee la informacion que se le fue asignada anteriormente
+        //luego forma la url correcta y envia en modo post
+        $('#borrarModal').on('click', '.btn-ok', function (e) {
+            var $id = $(this).data('recordId');
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Usuario/EliminarUsuario",
+                data: {
+                    __RequestVerificationToken: token,
+                    id: $id
+                },
+                success: function (result) {
+                    if (result.exito == false) {
+                        alert(result.mensaje);
+                    }
+                    else {
+                        location.reload(true);
+                    }
+                },
+                error: function (response) {
+                    //debugger;
+                    //alert('eror');
+                }
+            });
+        });
+
+
+    </script>
+}

@@ -1,0 +1,77 @@
+﻿@model TiendaOnline.Models.Usuario
+
+@{
+    ViewBag.Title = "CrearUsuario";
+    Layout = "~/Views/Shared/_LayoutSuperAdmin.cshtml";
+
+}
+
+        <!-- Search Widget -->
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="card my-4">
+        <h5 class="card-header">Crear Usuario</h5>
+        <div class="card-body">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="container">
+                <div class="row">
+                    <div class="form-group col-xs-6" style="margin-right:15px">
+                        @Html.Label("Rol Usuario", htmlAttributes: new { @class = "control-label" })
+                        @Html.EnumDropDownListFor(model => model.RolUsuario, htmlAttributes: new { @class = "form-control", style = "width:200px!important" })
+                        @Html.ValidationMessageFor(model => model.RolUsuario, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group col-xs-6" style="margin-right:15px">
+                        @Html.Label("Nombre Usuario", htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.NombreUsuario, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.NombreUsuario, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group col-xs-6" style="margin-right:15px">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group col-xs-6" style="margin-right:15px">
+                        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", type = "password" } })
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group col-xs-6" style="margin-right:15px">
+                        @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group col-xs-6" style="margin-right:15px">
+                        @Html.LabelFor(model => model.Apellido, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Apellido, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Apellido, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group col-xs-6" style="margin-right:15px">
+                        @Html.Label("Tienda", htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownList("TiendaId", null, htmlAttributes: new { @class = "form-control", style = "width:200px!important" })
+                    </div>
+
+                    <div class="form-group col-xs-6" style="margin-right:15px">
+                        @Html.Label("Rol En Tienda", htmlAttributes: new { @class = "control-label" })
+                        @Html.EnumDropDownListFor(model => model.RolEnTienda, null, htmlAttributes: new { @class = "form-control", style = "width:200px!important" })
+                    </div>
+                </div>
+                <hr />
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Crear" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+

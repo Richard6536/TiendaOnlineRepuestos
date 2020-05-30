@@ -1,0 +1,28 @@
+﻿@model IEnumerable<TiendaOnline.Models.Producto>
+
+@{
+    ViewBag.Title = "Home Page";
+}
+<br />
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <a href="@Url.Action("VerProducto", "Productos", new { id = item.Id })">
+            <div class="col-sm-5 col-md-3">
+                <div class="thumbnail">
+                    @if (item.Imagenes.Count > 0)
+                    {
+                        <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(item.Imagenes.First().DireccionImagen))" alt="...">
+                    }
+                    <hr />
+                    <div class="caption">
+                        <p style="color:#44b61d"><strong>$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</strong></p>
+                        <p><strong>@item.Nombre</strong></p>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+    }        	
+</div>        
