@@ -9,7 +9,7 @@ namespace TiendaOnline.Models
     public class TiendaOnlineContext : DbContext
     {
         //Local
-        public TiendaOnlineContext() : base("name=TiendaOnlineDB")
+        public TiendaOnlineContext() : base("name=TiendaRepuestosOnlineDB")
         //REAL
         //public TiendaOnlineContext() : base("data source=173.248.151.67,1533;initial catalog=inmobiliariadb;user id=oscarch;password=121212.;MultipleActiveResultSets=True;App=EntityFramework")
         { }

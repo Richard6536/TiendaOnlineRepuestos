@@ -344,6 +344,7 @@
     <Content Include="Views\Login\Registrate.cshtml" />
     <Content Include="Views\Productos\VerProducto.cshtml" />
     <Content Include="Views\Home\Tienda.cshtml" />
+    <Content Include="Views\Shared\_LayoutTiendaInicio.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

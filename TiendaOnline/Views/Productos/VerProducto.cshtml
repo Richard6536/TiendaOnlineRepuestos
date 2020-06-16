@@ -6,10 +6,6 @@
 
 <link href="~/Content/VerProducto/product-view.css" rel="stylesheet">
 
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
 <div class="card">
     <div class="container-fliud">
         <div class="wrapper row">
@@ -75,14 +71,14 @@
                     </div>
                     <span class="review-no">Tienda: <a href="@Url.Action("Tienda","Home", new { id = Model.Tienda.Id})">@Model.Tienda.Nombre</a></span>
                 </div>
-                <p class="product-description">@Model.Descripcion.</p>
-                <h4 class="price">Precio: <span>$@Decimal.Parse(Model.Precio.ToString(), System.Globalization.NumberStyles.Float)</span></h4>
+                <p class="card-text">@Model.Descripcion.</p>
+                <h5 class="card-text">Precio: <span>$@Decimal.Parse(Model.Precio.ToString(), System.Globalization.NumberStyles.Float)</span></h5>
                 <div class="action">
                     <button class="add-to-cart btn btn-default" type="button">Agregar al Carro</button>
                 </div>
-                <h5 class="sizes">
+                <p class="card-text">
                     Comentarios:
-                </h5>
+                </p>
             </div>
         </div>
     </div>

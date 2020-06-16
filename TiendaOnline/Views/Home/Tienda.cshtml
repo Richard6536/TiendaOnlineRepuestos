@@ -2,47 +2,59 @@
 
 @{
     ViewBag.Title = "Tienda";
+    Layout = "~/Views/Shared/_LayoutTiendaInicio.cshtml";
 }
-<div class="carousel slide" data-ride="carousel">
-    <!-- Wrapper for slides -->
-    <div class="carousel-inner">
-        <div class="item active">
-            <img src="http://www.bates.edu/wordpress/files/2016/07/color-gray1.jpg" alt="Chania">
-            <div class="carousel-caption">
-                <div class="col-xs-6 col-md-3 col-md-offset-4">
-                    <a href="#" class="thumbnail">
-                        <img src="http://cdn.onlinewebfonts.com/svg/img_440180.png" alt="...">
-                    </a>
-                    <h3>@Model.Nombre</h3>
-                </div>
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-            </div>
+<div class="jumbotron" style="background-color: #ffeb74; text-align:center; width:100%; border-radius:0px">
+    <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 140x140"><title>Placeholder</title><rect width="100%" height="100%" fill="#777" /><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+    <h1 class="display-4">@Model.Nombre</h1>
+    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+    <hr class="my-4">
+    <div class="rating">
+        <div class="stars">
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star"></span>
         </div>
     </div>
+
+    <a class="btn btn-primary btn-xs" href="#" role="button">Leer comentarios</a>
 </div>
-<br />
-<div class="row">
-    @foreach (var item in Model.Productos)
-    {
-        <a href="@Url.Action("VerProducto", "Productos", new { id = item.Id })">
-            <div class="col-sm-5 col-md-3">
-                <div class="thumbnail">
-                    @if (item.Imagenes.Count > 0)
+
+<div class="container">
+ 
+    <div class="card-group">
+        @foreach (var item in Model.Productos)
+        {
+            <div class="card" onclick="location.href='@Url.Action("VerProducto", "Productos", new { id = item.Id })';" style="cursor: pointer;">
+                @if (item.Imagenes.Count > 0)
                 {
-                        <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(item.Imagenes.First().DireccionImagen))" alt="...">
-                    }
-                    <hr />
-                    <div class="caption">
-                        <p style="color:#44b61d"><strong>$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</strong></p>
-                        <p><strong>@item.Nombre</strong></p>
-                    </div>
+                    <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(item.Imagenes.First().DireccionImagen))" alt="...">
+                }
+                <div class="card-body">
+                    <h6 class="card-title">@item.Nombre</h6>
+                </div>
+                <div class="card-footer" style="background-color: #fff; border-top:0px; padding-top:0px; text-align:right">
+                    <small class="text-muted" style="font-size:20px">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</small>
                 </div>
             </div>
-        </a>
-    }
-</div>   
+        }
 
-<script>
-    //Esconder Carousel en esta vista
-    document.getElementById("myCarousel").style.display = "none";
-</script>
+    </div>
+</div>
+
+<style>
+    .checked {
+  color: orange;
+}
+    .fa-star{
+        font-size:25px;
+    }
+    .rating{
+        margin-bottom:10px;
+    }
+</style>

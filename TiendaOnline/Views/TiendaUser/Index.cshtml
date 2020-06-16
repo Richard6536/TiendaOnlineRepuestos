@@ -4,6 +4,10 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutTienda.cshtml";
 }
-
-<h2>Tienda @Model.Nombre</h2>
+<br />
+    <div class="jumbotron">
+        <h1 class="display-4">Administración de Tienda @Model.Nombre</h1>
+        <hr class="my-4">
+        <a class="btn btn-primary btn-lg" href="@Url.Action("Tienda","Home", new { id = Model.Id})" role="button">Ir a la tienda</a>
+    </div>
 

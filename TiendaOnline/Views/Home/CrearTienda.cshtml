@@ -5,26 +5,42 @@
 }
 <br />
 <br />
-<div class="panel panel-default">
-    <div class="panel-heading">Crear tu Tienda!</div>
-    <div class="panel-body">
-        @using (Html.BeginForm())
-        {
+<div class="card text-center" style="max-width: 30rem">
+    @using (Html.BeginForm())
+    {
+        <div class="card-header">
+            Crear tu Tienda!
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Nombre</h5>
+
+
+
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="input-group">
-                <span class="input-group-addon" id="basic-addon1">Nombre</span>
+                <span class="input-group-addon" id="basic-addon1"></span>
                 @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
             </div>
             @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
-            <hr />
-            <button class="btn btn-primary" type="submit">Crear</button>
-        }
+        </div>
+        <div class="card-footer text-muted">
 
-    </div>
+            <button class="btn btn-primary">Crear Tienda</button>
+        </div>
+    }
+
 </div>
 
 <script>
     //Esconder Carousel en esta vista
     document.getElementById("myCarousel").style.display = "none";
 </script>
+
+<style>
+    .card {
+        margin: 0 auto; /* Added */
+        float: none; /* Added */
+        margin-top: 40px; /* Added */
+    }
+</style>

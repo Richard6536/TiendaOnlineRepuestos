@@ -3,26 +3,37 @@
 @{
     ViewBag.Title = "Home Page I";
 }
-<br />
 
 <div class="row">
     @foreach (var item in Model)
     {
-        <a href="@Url.Action("VerProducto", "Productos", new { id = item.Id })">
-            <div class="col-sm-5 col-md-3">
-                <div class="thumbnail">
-                    @if (item.Imagenes.Count > 0)
-                    {
-                        <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(item.Imagenes.First().DireccionImagen))" alt="...">
-                    }
-                    <hr />
-                    <div class="caption">
-                        <p style="color:#44b61d"><strong>$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</strong></p>
-                        <p><strong>@item.Nombre</strong></p>
-                    </div>
+        <div class="col-sm-3">
+            <div class="card" onclick="location.href='@Url.Action("VerProducto", "Productos", new { id = item.Id })';" style="cursor: pointer">
+                @if (item.Imagenes.Count > 0)
+                {
+                    <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(item.Imagenes.First().DireccionImagen))" alt="...">
+                }
+            <div class="card-body">
+                <h6 class="card-title">
+                    <span class="d-inline-block text-truncate" style="max-width: 230px;">
+                        @item.Nombre
+                    </span>
+                </h6>
+            </div>
+                <div class="card-footer" style="background-color: #fff; border-top: 0px; padding-top: 0px; text-align: right">
+                    <small class="text-muted" style="font-size:20px">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</small>
                 </div>
             </div>
-        </a>
+        </div>
+    }
+</div>  
 
-    }        	
-</div>        
+<style>
+    .col-sm-3{
+        padding-right: 0px!important;
+        padding-left: 0px!important;
+    }
+    .card{
+        border-radius:0px;
+    }
+</style>
