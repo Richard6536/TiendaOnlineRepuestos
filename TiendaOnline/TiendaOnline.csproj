@@ -211,6 +211,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ProductosController.cs" />
     <Compile Include="Controllers\SuperAdminController.cs" />
+    <Compile Include="Controllers\TiendaController.cs" />
     <Compile Include="Controllers\TiendaUserController.cs" />
     <Compile Include="Controllers\TransactionController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
@@ -251,7 +252,9 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Index\carousel.css" />
     <Content Include="Content\simple-sidebar.css" />
+    <Content Include="Content\Tienda\tienda-inicio.css" />
     <Content Include="Content\VerProducto\product-view.css" />
+    <Content Include="Scripts\Scripts Personalizados\tienda.js" />
     <Content Include="vendor\bootstrap\css\bootstrap.css" />
     <Content Include="vendor\bootstrap\css\bootstrap.min.css" />
     <Content Include="vendor\bootstrap\js\bootstrap.bundle.js" />
@@ -287,6 +290,9 @@
     <Content Include="vendor\bootstrap\js\bootstrap.min.js.map" />
     <Content Include="vendor\jquery\jquery.min.map" />
     <Content Include="vendor\jquery\jquery.slim.min.map" />
+    <Content Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -348,6 +354,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Tienda\" />
     <Folder Include="Views\Transaction\" />
   </ItemGroup>
   <ItemGroup>

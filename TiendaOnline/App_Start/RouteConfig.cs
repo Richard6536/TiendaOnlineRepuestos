@@ -20,13 +20,6 @@ namespace TiendaOnline
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
-
-            routes.MapRoute(
-                 name: "Tienda",
-                 url: "Nintendo/{action}",
-                 defaults: new { controller = "TiendaUser", action = "Index"}
-            );
-
         }
     }
 }

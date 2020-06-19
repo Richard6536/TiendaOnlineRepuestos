@@ -15,9 +15,28 @@ namespace TiendaOnline.Controllers
         //aqui se muestran todas las casas independiente de quien las subio
 
 
-        public ActionResult Index()
+        public ActionResult Index(int page = 1, int categoriaId = -1)
         {
             List<Producto> productos = db.Productos.ToList();
+
+            int productsPerPage = 12;
+            int start = (page - 1) * productsPerPage;
+
+            //Categorias
+            IEnumerable<Categoria> categorias = db.Categorias.ToList();
+            ViewBag.Categorias = categorias;
+            if(categoriaId != -1)
+            {
+                productos = productos.Where(p => p.CategoriaId == categoriaId).ToList();
+            }
+
+            //---------
+
+            //Productos
+            ViewBag.PageCount = Math.Ceiling(productos.Count() / (double)productsPerPage);
+            IEnumerable<Producto> prods = productos.OrderBy(p => p.Id).Skip(start).Take(productsPerPage);
+            ViewBag.PaginatedProducts = prods;
+
             return View(productos);
         }
 
@@ -82,12 +101,32 @@ namespace TiendaOnline.Controllers
             return RedirectToAction("Index", "TiendaUser", new { id = tienda.Id});
         }
 
-        public ActionResult Tienda(int? id)
+
+        public ActionResult Tienda(int? id, int page = 1, int categoriaId = -1)
         {
             Tienda tienda = db.Tienda.Find(id);
 
             if (tienda == null)
                 return RedirectToAction("Index", "Home");
+
+            IEnumerable<Producto> productosTienda = tienda.Productos;
+            int productsPerPage = 12;
+            int start = (page - 1) * productsPerPage;
+
+            //Categorias
+            ViewBag.Categorias = Categoria.buscarCategoriasPorTienda(db, productosTienda);
+            if (categoriaId != -1) {
+                productosTienda = productosTienda.Where(p => p.CategoriaId == categoriaId).ToList();
+                ViewBag.CategoriaFiltrada = db.Categorias.Find(categoriaId).NombreCategoria;
+            }
+            else
+            {
+                ViewBag.CategoriaFiltrada = "Todos los Productos";
+            }
+
+            ViewBag.PageCount = Math.Ceiling(productosTienda.Count() / (double)productsPerPage);
+            productosTienda = productosTienda.OrderBy(p => p.Id).Skip(start).Take(productsPerPage);
+            ViewBag.PaginatedProducts = productosTienda;
 
             return View(tienda);
         }

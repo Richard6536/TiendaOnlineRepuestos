@@ -6,6 +6,7 @@
 }
 <!-- Add icon library -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="~/Content/Tienda/tienda-inicio.css" />
 
 <div class="jumbotron" style="background-color: #ffeb74; text-align:center; width:100%; border-radius:0px">
     <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 140x140"><title>Placeholder</title><rect width="100%" height="100%" fill="#777" /><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
@@ -25,36 +26,128 @@
     <a class="btn btn-primary btn-xs" href="#" role="button">Leer comentarios</a>
 </div>
 
-<div class="container">
- 
-    <div class="card-group">
-        @foreach (var item in Model.Productos)
-        {
-            <div class="card" onclick="location.href='@Url.Action("VerProducto", "Productos", new { id = item.Id })';" style="cursor: pointer;">
-                @if (item.Imagenes.Count > 0)
-                {
-                    <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(item.Imagenes.First().DireccionImagen))" alt="...">
-                }
-                <div class="card-body">
-                    <h6 class="card-title">@item.Nombre</h6>
-                </div>
-                <div class="card-footer" style="background-color: #fff; border-top:0px; padding-top:0px; text-align:right">
-                    <small class="text-muted" style="font-size:20px">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</small>
+<div class="row" style="margin-left:10px; margin-right:10px">
+    <div class="col mb-4 container-tienda-right">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-style">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Tienda","Home", new { id = Model.Id})">@Model.Nombre</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    @ViewBag.CategoriaFiltrada
+                </li>
+            </ol>
+        </nav>
+        <div class="card" style="cursor: pointer; border-radius:0px; border-bottom: 0px">
+            <div class="card-body">
+                <div class="input-group mb-3" style="margin-bottom: 0px!important">
+                    <input type="text" class="form-control" placeholder="Buscar en @Model.Nombre" aria-label="Buscar en @Model.Nombre" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fas fa-search"></i></button>
+                    </div>
                 </div>
             </div>
-        }
+        </div>
 
+        <div class="card" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" style="cursor: pointer; border-radius:0px; border-top: 0px">
+            <div class="card-body">
+                <h6 class="card-title">Categorías @Model.Nombre</h6>
+            </div>
+        </div>
+
+        <div class="list-group collapse" id="collapseExample" style="border-radius:0px">
+            @foreach (var categoria in ViewBag.Categorias)
+            {
+                <a href="@Url.Action("Tienda","Home", new { categoriaId = @categoria.Id })" class="list-group-item list-group-item-action">@categoria.NombreCategoria</a>
+            }
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-9 container-tienda-left">
+
+        <div class="card" style="cursor: pointer; border-radius:0px; border-bottom: 0px">
+            <div class="card-body card-pagination">
+                <div class="align-items-end d-flex justify-content-end">
+                    <ul class="pagination" style="margin-bottom: 0px!important">
+                        @for (int i = 1; i <= ViewBag.PageCount; i++)
+                        {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("Tienda","Home", new { page = i })">@i</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @{
+
+                foreach (var item in ViewBag.PaginatedProducts)
+                {
+                    <div class="col-sm-3">
+                        <div class="card" onclick="location.href='@Url.Action("VerProducto", "Productos", new { id = item.Id })';" style="cursor: pointer; border-radius:0px">
+                            @{
+                                if (item.Imagenes.Count > 0)
+                                {
+                                    <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(item.Imagenes[0].DireccionImagen))" alt="...">
+                                }
+                            }
+
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <span class="d-inline-block text-truncate" style="max-width: 200px;">
+                                        @item.Nombre
+                                    </span>
+                                </h6>
+                            </div>
+                            <div class="card-footer" style="background-color: #fff; border-top:0px; padding-top:0px; text-align:right">
+                                <small class="text-muted" style="font-size:20px">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+
+        </div>
     </div>
 </div>
 
 <style>
     .checked {
-  color: orange;
-}
-    .fa-star{
-        font-size:25px;
+        color: orange;
     }
-    .rating{
-        margin-bottom:10px;
+
+    .fa-star {
+        font-size: 25px;
+    }
+
+    .rating {
+        margin-bottom: 10px;
+    }
+
+    .row {
+        margin-right: 0px !important;
+        margin-left: 0px !important
+    }
+    .col-sm-3 {
+        padding-right: 0px !important;
+        padding-left: 0px !important;
+    }
+
+    .jumbotron {
+        margin-bottom: 1.1rem;
+    }
+
+    .card-body{
+        padding: 1rem;
+    }
+    .card-pagination{
+             padding: 5px!important;
+    }
+
+    .breadcrumb-style{
+        margin-bottom:0px!important;
+        border-radius: 0px; background-color:#fff;
+        border-right: 1px solid rgba(0,0,0,.125);
+        border-left: 1px solid rgba(0,0,0,.125);
+        border-top: 1px solid rgba(0,0,0,.125);
     }
 </style>

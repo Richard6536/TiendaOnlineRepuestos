@@ -93,6 +93,7 @@ namespace TiendaOnline.Models
             }
             catch (Exception e)
             {
+                String message = e.StackTrace;
                 return null;
             }
 

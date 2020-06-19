@@ -3,37 +3,97 @@
 @{
     ViewBag.Title = "Home Page I";
 }
-
-<div class="row">
-    @foreach (var item in Model)
-    {
-        <div class="col-sm-3">
-            <div class="card" onclick="location.href='@Url.Action("VerProducto", "Productos", new { id = item.Id })';" style="cursor: pointer">
-                @if (item.Imagenes.Count > 0)
-                {
-                    <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(item.Imagenes.First().DireccionImagen))" alt="...">
-                }
-            <div class="card-body">
-                <h6 class="card-title">
-                    <span class="d-inline-block text-truncate" style="max-width: 230px;">
-                        @item.Nombre
-                    </span>
-                </h6>
-            </div>
-                <div class="card-footer" style="background-color: #fff; border-top: 0px; padding-top: 0px; text-align: right">
-                    <small class="text-muted" style="font-size:20px">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</small>
+    <link rel="stylesheet" href="~/Content/Tienda/tienda-inicio.css" />
+    <div class="row" style="margin-left:10px; margin-right:10px">
+        <div class="col mb-4 container-tienda-right">
+            <div class="card" style="cursor: pointer; border-radius:0px; border-bottom: 0px">
+                <div class="card-body">
+                    <div class="input-group mb-3" style="margin-bottom: 0px!important">
+                        <input type="text" class="form-control" placeholder="Buscar en" aria-label="Buscar en" aria-describedby="button-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <div class="card" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" style="cursor: pointer; border-radius:0px; border-top: 0px">
+                <div class="card-body">
+                    <h6 class="card-title">Categorías</h6>
+                </div>
+            </div>
+
+            <div class="list-group" id="collapseExample" style="border-radius:0px">
+                @foreach (var categoria in ViewBag.Categorias)
+                {
+                    <a href="@Url.Action("Index","Home", new { categoriaId = @categoria.Id })" class="list-group-item list-group-item-action">@categoria.NombreCategoria</a>
+                }
+            </div>
         </div>
-    }
-</div>  
+
+        <div class="col-xs-12 col-sm-9 container-tienda-left">
+            <div class="card" style="cursor: pointer; border-radius:0px; border-bottom: 0px">
+                <div class="card-body align-items-end d-flex justify-content-end">
+
+                    <ul class="pagination" style="margin-bottom: 0px!important">
+                        @for (int i = 1; i <= ViewBag.PageCount; i++)
+                        {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("Index","Home", new { page = i })">@i</a></li>
+                        }
+                    </ul>
+
+                </div>
+            </div>
+            <div class="row">
+                @foreach (var item in Model)
+                {
+                    <div class="col-sm-3">
+                        <div class="card card-product" onclick="location.href='@Url.Action("VerProducto", "Productos", new { id = item.Id })';" style="cursor: pointer">
+                            @if (item.Imagenes.Count > 0)
+                            {
+                                <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(item.Imagenes.First().DireccionImagen))" alt="...">
+                            }
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <span class="d-inline-block text-truncate" style="max-width: 200px;">
+                                        @item.Nombre
+                                    </span>
+                                </h6>
+                            </div>
+                            <div class="card-footer" style="background-color: #fff; border-top: 0px; padding-top: 0px; text-align: right">
+                                <small class="text-muted" style="font-size:20px">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 
 <style>
     .col-sm-3{
         padding-right: 0px!important;
         padding-left: 0px!important;
     }
+    .card-product:hover{
+        background-color:#efefef;
+        opacity: 0.6;
+        -webkit-transition-duration: 0.5s;
+        -moz-transition-duration: 0.5s;
+        -o-transition-duration: 0.5s;
+        transition-duration: 0.5s;
+    }
+
     .card{
         border-radius:0px;
+    }
+
+    .row{
+        margin-right: 0px!important;
+        margin-left: 0px!important
+    }
+
+    .card-body{
+        padding: 1rem;
     }
 </style>

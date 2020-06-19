@@ -137,5 +137,21 @@ namespace TiendaOnline.Models
             return Tuple.Create(productosFiltrados, agregadoExacto);
 
         }
+
+
+        public static List<Categoria> buscarCategoriasPorTienda(TiendaOnlineContext _db, IEnumerable<Producto> productosTienda)
+        {
+            List<Categoria> categorias = new List<Categoria>();
+            foreach (Categoria cat in _db.Categorias.ToList()){
+                foreach (Producto prod in productosTienda){
+                    if (prod.CategoriaId == cat.Id)
+                        if (categorias.Contains(cat) == false)
+                            categorias.Add(cat);
+                }
+
+            }
+
+            return categorias;
+        }
     }
 }

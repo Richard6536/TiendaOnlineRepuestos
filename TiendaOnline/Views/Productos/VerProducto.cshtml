@@ -5,8 +5,20 @@
 }
 
 <link href="~/Content/VerProducto/product-view.css" rel="stylesheet">
-
-<div class="card">
+<br />
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-style" style="margin-left:15px; margin-right:15px;">
+        <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+        <li class="breadcrumb-item"><a href="#">@Model.Tienda.Nombre</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Nombre</li>
+    </ol>
+</nav>
+<div class="card" style="        margin-left: 15px;
+        margin-right: 15px;
+        background-color: #fff;
+        border-radius: 0px !important;
+        margin-top: 0px !important
+">
     <div class="container-fliud">
         <div class="wrapper row">
             <div class="preview col-md-6">
@@ -83,6 +95,16 @@
         </div>
     </div>
 </div>
+
+<style>
+    .breadcrumb-style{
+        margin-bottom:0px!important;
+        border-radius: 0px; background-color:#fff;
+        border-right: 1px solid rgba(0,0,0,.125);
+        border-left: 1px solid rgba(0,0,0,.125);
+        border-top: 1px solid rgba(0,0,0,.125);
+    }
+</style>
 <script>
     //Esconder Carousel en esta vista
     document.getElementById("myCarousel").style.display = "none";

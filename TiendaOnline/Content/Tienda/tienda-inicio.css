@@ -1,0 +1,21 @@
+﻿@media (min-width: 577px)
+{
+    .container-tienda-right {
+        padding-right: 0px !important;
+    }
+
+    .container-tienda-left {
+        padding-left: 0px !important;
+    }
+}
+
+@media (max-width: 576px)
+{
+    .container-tienda-right {
+        padding-right: 15px;
+    }
+
+    .container-tienda-left {
+        padding-left: 15px;
+    }
+}
