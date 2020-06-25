@@ -250,6 +250,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Comentarios\comment-list.css" />
     <Content Include="Content\Index\carousel.css" />
     <Content Include="Content\simple-sidebar.css" />
     <Content Include="Content\Tienda\tienda-inicio.css" />

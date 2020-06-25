@@ -28,6 +28,7 @@ namespace TiendaOnline.Controllers
             if(categoriaId != -1)
             {
                 productos = productos.Where(p => p.CategoriaId == categoriaId).ToList();
+                ViewBag.CategoriaFiltrada = db.Categorias.Find(categoriaId).NombreCategoria;
             }
 
             //---------
@@ -38,6 +39,13 @@ namespace TiendaOnline.Controllers
             ViewBag.PaginatedProducts = prods;
 
             return View(productos);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(String value, int categoriaId)
+        {
+            return RedirectToAction("Index", "Home", new { id = categoriaId });
         }
 
         public ActionResult About()
@@ -116,12 +124,9 @@ namespace TiendaOnline.Controllers
             //Categorias
             ViewBag.Categorias = Categoria.buscarCategoriasPorTienda(db, productosTienda);
             if (categoriaId != -1) {
+                
                 productosTienda = productosTienda.Where(p => p.CategoriaId == categoriaId).ToList();
                 ViewBag.CategoriaFiltrada = db.Categorias.Find(categoriaId).NombreCategoria;
-            }
-            else
-            {
-                ViewBag.CategoriaFiltrada = "Todos los Productos";
             }
 
             ViewBag.PageCount = Math.Ceiling(productosTienda.Count() / (double)productsPerPage);

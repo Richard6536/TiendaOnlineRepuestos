@@ -83,7 +83,13 @@ namespace TiendaOnline.Models
             Producto productoExacto = null;
 
             List<Producto> productosFiltrados = new List<Producto>();
-            List<Producto> productos = _db.Categorias.Find(id).Productos;
+
+            List<Producto> productos = _db.Productos.ToList();
+            if (id != -1)
+            {
+                productos = _db.Categorias.Find(id).Productos;
+            }
+
             if (busqueda == null || busqueda.Equals(""))
             {
                 return Tuple.Create(productos, false);
