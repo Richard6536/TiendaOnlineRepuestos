@@ -95,7 +95,43 @@
             </div>
         </div>
     </div>
+
 </div>
+
+<div class="card" style="margin-left: 15px;
+        margin-right: 15px;
+        background-color: #fff;
+        border-radius: 0px !important;
+        border-top:0px;
+        margin-top: 0px !important">
+    <div class="body-content">
+        <div class="row">
+            <div class="col-12">
+
+                <input value="@Model.Id" name="idProducto" hidden />
+                <textarea class="form-control" rows="4" id="textAreaComment" name="comentario" aria-label="With textarea"></textarea>
+                <button type="button" onclick="enviarComentario(@Model.Id)" class="btn btn-success">Comentar</button>
+
+                @foreach (var item in Model.Comentarios)
+                {
+                    <div class="card" style="background-color:white!important; padding: 0px!important; margin-top:10px">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Usuario.Nombre</h5>
+                            <p class="card-text">@item.Mensaje</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            @item.Fecha.ToString()
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
 
 <style>
     .breadcrumb-style {
@@ -106,8 +142,69 @@
         border-left: 1px solid rgba(0,0,0,.125);
         border-top: 1px solid rgba(0,0,0,.125);
     }
+
+    .comment-wrapper .panel-body {
+        max-height: 650px;
+        overflow: auto;
+    }
+
+    .comment-wrapper .media-list .media img {
+        width: 64px;
+        height: 64px;
+        border: 2px solid #e5e7e8;
+    }
+
+    .comment-wrapper .media-list .media {
+        border-bottom: 1px dashed #efefef;
+        margin-bottom: 25px;
+    }
 </style>
-<script>
-    //Esconder Carousel en esta vista
-    document.getElementById("myCarousel").style.display = "none";
-</script>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+@section scripts{
+    <script>
+        //Esconder Carousel en esta vista
+        document.getElementById("myCarousel").style.display = "none";
+    </script>
+
+    <script>
+        function enviarComentario(id) {
+            var $textAreaComment = document.getElementById("textAreaComment");
+
+            if ($textAreaComment.value == "") {
+                return;
+            }
+
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Productos/Comentar",
+                data: {
+                    __RequestVerificationToken: token,
+                    idProducto: id,
+                    comentario: $textAreaComment.value
+                },
+                success: function (result) {
+                    if (result.exito == false) {
+                        alert(result.respuesta);
+                    }
+                    else if (result.exito == true) {
+                        alert(result.respuesta);
+
+                    }
+                },
+                error: function (response) {
+                    alert("error");
+                }
+            });
+        }
+
+    </script>
+
+}

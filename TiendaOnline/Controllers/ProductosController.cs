@@ -253,5 +253,25 @@ namespace TiendaOnline.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Comentar(int idProducto, string comentario)
+        {
+            if (Session["Rol"] == null)
+            {
+                return Json(new
+                {
+                    exito = false,
+                    respuesta = "La sesión ha terminado."
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            int idUsuario = (int)Session["Id"];
+
+            Producto.EnviarComentario(idProducto, idUsuario, comentario, db);
+
+            return Json(new { exito = true, respuesta = "ok" });
+        }
+
     }
 }

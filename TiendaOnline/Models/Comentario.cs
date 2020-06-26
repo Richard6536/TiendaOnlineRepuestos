@@ -19,7 +19,7 @@ namespace TiendaOnline.Models
 
         public string Mensaje { get; set; }
         public DateTime Fecha { get; set; }
-
+        
 
         public int? UsuarioId { get; set; }
         [ForeignKey("UsuarioId")]
@@ -28,5 +28,6 @@ namespace TiendaOnline.Models
         public int? ProductoId { get; set; }
         [ForeignKey("ProductoId")]
         public virtual Producto Producto { get; set; }
+
     }
 }

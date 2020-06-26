@@ -1,84 +1,133 @@
-﻿/*font Awesome http://fontawesome.io*/
-@import url(//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css);
-/*Comment List styles*/
-.comment-list .row {
-    margin-bottom: 0px;
+﻿.comments-details button.btn.dropdown-toggle,
+.comments-details .total-comments {
+    font-size: 18px;
+    font-weight: 500;
+    color: #5e5e5e;
 }
 
-.comment-list .panel .panel-heading {
-    padding: 4px 15px;
-    position: absolute;
+.comments-details {
+    padding: 15px 15px;
+}
+
+.comments .comments .dropdown,
+.comments .dropup {
+    position: relative;
+}
+
+.comments .comment-box {
+    width: 100%;
+    float: left;
+    height: 100%;
+    background-color: #FAFAFA;
+    padding: 10px 10px 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.comments .add-comment {
+    background-color: transparent;
     border: none;
-    /*Panel-heading border radius*/
-    border-top-right-radius: 0px;
-    top: 1px;
+    position: relative;
+    margin-bottom: 50px;
 }
 
-    .comment-list .panel .panel-heading.right {
-        border-right-width: 0px;
-        /*Panel-heading border radius*/
-        border-top-left-radius: 0px;
-        right: 16px;
-    }
-
-    .comment-list .panel .panel-heading .panel-body {
-        padding-top: 6px;
-    }
-
-.comment-list figcaption {
-    /*For wrapping text in thumbnail*/
-    word-wrap: break-word;
-}
-/* Portrait tablets and medium desktops */
-@media (min-width: 768px) {
-    .comment-list .arrow:after, .comment-list .arrow:before {
-        content: "";
-        position: absolute;
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-color: transparent;
-    }
-
-    .comment-list .panel.arrow.left:after, .comment-list .panel.arrow.left:before {
-        border-left: 0;
-    }
-    /*****Left Arrow*****/
-    /*Outline effect style*/
-    .comment-list .panel.arrow.left:before {
-        left: 0px;
-        top: 30px;
-        /*Use boarder color of panel*/
-        border-right-color: inherit;
-        border-width: 16px;
-    }
-    /*Background color effect*/
-    .comment-list .panel.arrow.left:after {
-        left: 1px;
-        top: 31px;
-        /*Change for different outline color*/
-        border-right-color: #FFFFFF;
-        border-width: 15px;
-    }
-    /*****Right Arrow*****/
-    /*Outline effect style*/
-    .comment-list .panel.arrow.right:before {
-        right: -16px;
-        top: 30px;
-        /*Use boarder color of panel*/
-        border-left-color: inherit;
-        border-width: 16px;
-    }
-    /*Background color effect*/
-    .comment-list .panel.arrow.right:after {
-        right: -14px;
-        top: 31px;
-        /*Change for different outline color*/
-        border-left-color: #FFFFFF;
-        border-width: 15px;
-    }
+.comments .commenter-pic {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    border-radius: 100%;
+    border: 2px solid #fff;
+    overflow: hidden;
+    background-color: #fff;
 }
 
-.comment-list .comment-post {
-    margin-top: 6px;
+.comments .add-comment .commenter-name {
+    width: 100%;
+    padding-left: 75px;
+    position: absolute;
+    top: 20px;
+    left: 0px;
+}
+
+.comments .add-comment input {
+    border-top: 0px;
+    border-bottom: 1px solid #ccc;
+    border-left: 0px;
+    border-right: 0px;
+    outline: 0px;
+    box-shadow: none;
+    border-radius: 0;
+    width: 100%;
+    padding: 0;
+    font-weight: normal;
+}
+
+    .comments .add-comment input:focus {
+        border-color: #03a9f4;
+        border-width: 2px;
+    }
+
+.comments .commenter-name .comment-time {
+    font-weight: normal;
+    margin-left: 8px;
+    font-size: 15px;
+}
+
+.comments p.comment-txt {
+    font-size: 15px;
+    border-bottom: 1px solid #ddd;
+    padding: 0px 0px 15px;
+}
+
+.comments .commenter-name {
+    display: inline-block;
+    position: relative;
+    left: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    height: 50px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.comments .comment-meta {
+    font-size: 14px;
+    color: #333;
+    padding: 2px 5px 0px;
+    line-height: 20px;
+    float: right;
+}
+
+.comments .reply-box {
+    display: none;
+}
+
+.comments .replied {
+    background-color: #fff;
+    width: 95%;
+    float: right;
+    margin-top: 15px;
+}
+
+/*======Responsive CSS=======*/
+@media (max-width: 767px) {
+    .comments .commenter-name {
+        font-size: 13px;
+        top: -5px;
+    }
+
+    .comments .commenter-pic {
+        width: 40px;
+        height: 40px;
+    }
+
+    .comments .commenter-name a {
+        display: block;
+    }
+
+    .comments .commenter-name .comment-time {
+        display: block;
+        margin-left: 0px;
+    }
 }
