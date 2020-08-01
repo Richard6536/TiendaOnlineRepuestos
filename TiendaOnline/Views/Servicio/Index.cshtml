@@ -1,12 +1,11 @@
-﻿@model IEnumerable<TiendaOnline.Models.Producto>
-
+﻿@model IEnumerable<TiendaOnline.Models.Servicio>
 @{
-    ViewBag.Title = "Home Page I";
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutServicio.cshtml";
 }
 
 <link rel="stylesheet" href="~/Content/Tienda/tienda-inicio.css" />
-
-<div class="card-group" style="margin:15px; margin-top:-50px!important">
+<div class="card-group" style="margin:15px">
     <div class="card">
         <div class="row no-gutters">
             <div class="col-auto">
@@ -37,7 +36,6 @@
         <a href="@Url.Action("Index","Servicio")" class="stretched-link"></a>
     </div>
 </div>
-
 <div class="row" style="margin-left:10px; margin-right:10px">
     <div class="col mb-4 container-tienda-right">
         <div class="card" style="cursor: pointer; border-radius:0px; border-bottom: 0px">
@@ -64,7 +62,7 @@
             @foreach (var categoria in ViewBag.Categorias)
             {
                 String checkStatus = "";
-                    
+
                 if (ViewBag.CategoriaFiltrada != null)
                 {
                     if (ViewBag.CategoriaFiltrada.Equals(categoria.NombreCategoria))
@@ -72,7 +70,7 @@
                         checkStatus = "checked";
                     }
                 }
-                <a href="@Url.Action("Index","Home", new { categoriaId = @categoria.Id })" class="list-group-item list-group-item-action">
+                <a href="@Url.Action("Index","Servicio", new { categoriaId = @categoria.Id })" class="list-group-item list-group-item-action">
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="customCheck1" @checkStatus>
                         <label class="custom-control-label" for="customCheck1">@categoria.NombreCategoria</label>
@@ -88,7 +86,7 @@
                 <ul class="pagination" style="margin-bottom: 0px!important">
                     @for (int i = 1; i <= ViewBag.PageCount; i++)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("Index","Home", new { page = i })">@i</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("Index","Servicio", new { page = i })">@i</a></li>
                     }
                 </ul>
             </div>
@@ -97,10 +95,10 @@
             @foreach (var item in Model)
             {
                 <div class="col-sm-3">
-                    <div class="card card-product" onclick="location.href='@Url.Action("VerProducto", "Productos", new { id = item.Id })';" style="cursor: pointer">
+                    <div class="card card-product" onclick="location.href='@Url.Action("VerServicio", "Servicio", new { id = item.Id })';" style="cursor: pointer">
                         @if (item.Imagenes.Count > 0)
                         {
-                            <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(item.Imagenes.First().DireccionImagen))" alt="...">
+                            <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Servicios/" + System.IO.Path.GetFileName(item.Imagenes.First().DireccionImagen))" alt="...">
                         }
                         <div class="card-body">
                             <h6 class="card-title">
@@ -120,12 +118,13 @@
 </div>
 
 <style>
-    .col-sm-3{
-        padding-right: 0px!important;
-        padding-left: 0px!important;
+    .col-sm-3 {
+        padding-right: 0px !important;
+        padding-left: 0px !important;
     }
-    .card-product:hover{
-        background-color:#efefef;
+
+    .card-product:hover {
+        background-color: #efefef;
         opacity: 0.6;
         -webkit-transition-duration: 0.5s;
         -moz-transition-duration: 0.5s;
@@ -133,16 +132,17 @@
         transition-duration: 0.5s;
     }
 
-    .card{
-        border-radius:0px;
+    .card {
+        border-radius: 0px;
     }
 
-    .row{
-        margin-right: 0px!important;
-        margin-left: 0px!important
+    .row {
+        margin-right: 0px !important;
+        margin-left: 0px !important
     }
 
-    .card-body{
+    .card-body {
         padding: 1rem;
     }
 </style>
+

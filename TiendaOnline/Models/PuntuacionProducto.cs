@@ -27,5 +27,9 @@ namespace TiendaOnline.Models
         public int? ProductoId { get; set; }
         [ForeignKey("ProductoId")]
         public virtual Producto Producto { get; set; }
+
+        public int? ServicioId { get; set; }
+        [ForeignKey("ServicioId")]
+        public virtual Servicio Servicio { get; set; }
     }
 }

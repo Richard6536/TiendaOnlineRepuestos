@@ -21,6 +21,7 @@ namespace TiendaOnline.Models
         public DbSet<Comentario> Comentarios { get; set; }
         public DbSet<Imagen> Imagenes { get; set; }
         public DbSet<Producto> Productos { get; set; }
+        public DbSet<Servicio> Servicios { get; set; }
         public DbSet<ProductoCarro> ProductosCarro { get; set; }
         public DbSet<PuntuacionProducto> PuntuacionesProducto { get; set; }
         public DbSet<Categoria> Categorias { get; set; }

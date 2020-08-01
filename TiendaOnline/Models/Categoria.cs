@@ -15,17 +15,21 @@ namespace TiendaOnline.Models
     [Table("Categoria")]
     public class Categoria
     {
+        public enum CategoriaTipo { Producto, Servicio }
+
         [Key]
         public int Id { get; set; }
 
         public string NombreCategoria { get; set; }
+
+        public CategoriaTipo TipoCategoria { get; set; }
 
         public int? TiendaId { get; set; }
         [ForeignKey("TiendaId")]
         public virtual Tienda Tienda { get; set; }
 
         public virtual List<Producto> Productos { get; set; }
-
+        public virtual List<Servicio> Servicios { get; set; }
 
         public static Boolean CrearCategoria(TiendaOnlineContext _db, Categoria _categoria)
         {
@@ -52,7 +56,8 @@ namespace TiendaOnline.Models
 
             Categoria categoriaOriginal = _db.Categorias.Find(_categoria.Id);
             categoriaOriginal.NombreCategoria = _categoria.NombreCategoria;
-
+            categoriaOriginal.TipoCategoria = _categoria.TipoCategoria;
+            
             _db.SaveChanges();
 
             return true;
@@ -76,84 +81,178 @@ namespace TiendaOnline.Models
             return categoria;
         }
 
-        public static Tuple<List<Producto>, Boolean> BuscarProductosPorCategoria(TiendaOnlineContext _db, int id, string busqueda)
+        public static Tuple<List<Producto>, List<Servicio>, Boolean> BuscarProductosPorCategoria(TiendaOnlineContext _db, int id, string busqueda, string seccion, bool desdeTienda, Tienda tienda)
         {
             bool agregado = false;
             bool agregadoExacto = false;
+
             Producto productoExacto = null;
+            Servicio servicioExacto = null;
 
             List<Producto> productosFiltrados = new List<Producto>();
+            List<Servicio> serviciosFiltrados = new List<Servicio>();
 
-            List<Producto> productos = _db.Productos.ToList();
+            List<Producto> productos = new List<Producto>();
+            List<Servicio> servicios = new List<Servicio>();
+
+            if (desdeTienda) {
+                //Realiza busqueda de productos/servicios solamente desde una tienda.
+                productos = tienda.Productos.ToList();
+                servicios = tienda.Servicios.ToList();
+            }
+            else {
+                //Realiza busqueda de todos los productos/servicios.
+                productos = _db.Productos.ToList();
+                servicios = _db.Servicios.ToList();
+            }
+
+
+            //Si recibo una categoría, solo filtro productos/servicios pertenecientes a esa categoría.
             if (id != -1)
             {
-                productos = _db.Categorias.Find(id).Productos;
+                if (seccion.Equals("producto"))
+                {
+                    productos = _db.Categorias.Find(id).Productos;
+                }
+                else if (seccion.Equals("servicio"))
+                {
+                    servicios = _db.Categorias.Find(id).Servicios;
+                }
+                
             }
 
             if (busqueda == null || busqueda.Equals(""))
             {
-                return Tuple.Create(productos, false);
+                return Tuple.Create(productos, servicios, false);
             }
 
-            foreach (var producto in productos)
+            if (seccion.Equals("producto"))
             {
-
-                string[] prodArrayDB = Regex.Split(producto.Nombre, @"(?:\s*,\s*)|\s+");
-                string[] prodArrayBS = Regex.Split(busqueda, @"(?:\s*,\s*)|\s+");
-
-                if (producto.Nombre.Equals(busqueda, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    //productosFiltrados.Add(producto);
-                    productoExacto = producto;
-                    agregadoExacto = true;
-                }
-
-                if (!agregadoExacto)
+                foreach (var producto in productos)
                 {
 
-                    //string[] prodArray = producto.Nombre.Split(' ');
-                    foreach (string valdb in prodArrayDB.Where(i => !string.IsNullOrEmpty(i)))
+                    string[] prodArrayDB = Regex.Split(producto.Nombre, @"(?:\s*,\s*)|\s+");
+                    string[] prodArrayBS = Regex.Split(busqueda, @"(?:\s*,\s*)|\s+");
+
+                    if (producto.Nombre.Equals(busqueda, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        foreach (string valbs in prodArrayBS.Where(i => !string.IsNullOrEmpty(i)))
-                        {
-                            if (valdb.Equals(valbs, StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                productosFiltrados.Add(producto);
-                                agregado = true;
-                            }
-                        }
-
-                        if (agregado)
-                            break;
+                        //productosFiltrados.Add(producto);
+                        productoExacto = producto;
+                        agregadoExacto = true;
                     }
 
-                    agregado = false;
+                    if (!agregadoExacto)
+                    {
+
+                        //string[] prodArray = producto.Nombre.Split(' ');
+                        foreach (string valdb in prodArrayDB.Where(i => !string.IsNullOrEmpty(i)))
+                        {
+                            foreach (string valbs in prodArrayBS.Where(i => !string.IsNullOrEmpty(i)))
+                            {
+                                if (valdb.Equals(valbs, StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    productosFiltrados.Add(producto);
+                                    agregado = true;
+                                }
+                            }
+
+                            if (agregado)
+                                break;
+                        }
+
+                        agregado = false;
+                    }
+                    agregadoExacto = false;
                 }
-                agregadoExacto = false;
-            }
 
-            if (productoExacto != null)
+                if (productoExacto != null)
+                {
+                    productosFiltrados.Add(productoExacto);
+                    productosFiltrados.Reverse();
+                    agregadoExacto = true;
+                    productoExacto = null;
+                }
+
+                return Tuple.Create(productosFiltrados, servicios, agregadoExacto);
+            }
+            else if (seccion.Equals("servicio"))
             {
-                productosFiltrados.Add(productoExacto);
-                productosFiltrados.Reverse();
-                agregadoExacto = true;
-                productoExacto = null;
+                foreach (var servicio in servicios)
+                {
+
+                    string[] prodArrayDB = Regex.Split(servicio.Nombre, @"(?:\s*,\s*)|\s+");
+                    string[] prodArrayBS = Regex.Split(busqueda, @"(?:\s*,\s*)|\s+");
+
+                    if (servicio.Nombre.Equals(busqueda, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        //productosFiltrados.Add(producto);
+                        servicioExacto = servicio;
+                        agregadoExacto = true;
+                    }
+
+                    if (!agregadoExacto)
+                    {
+
+                        //string[] prodArray = producto.Nombre.Split(' ');
+                        foreach (string valdb in prodArrayDB.Where(i => !string.IsNullOrEmpty(i)))
+                        {
+                            foreach (string valbs in prodArrayBS.Where(i => !string.IsNullOrEmpty(i)))
+                            {
+                                if (valdb.Equals(valbs, StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    serviciosFiltrados.Add(servicio);
+                                    agregado = true;
+                                }
+                            }
+
+                            if (agregado)
+                                break;
+                        }
+
+                        agregado = false;
+                    }
+                    agregadoExacto = false;
+                }
+
+                if (servicioExacto != null)
+                {
+                    serviciosFiltrados.Add(servicioExacto);
+                    serviciosFiltrados.Reverse();
+                    agregadoExacto = true;
+                    servicioExacto = null;
+                }
+
+                return Tuple.Create(productos, serviciosFiltrados, agregadoExacto);
             }
 
-            return Tuple.Create(productosFiltrados, agregadoExacto);
-
+            return null;
         }
 
 
-        public static List<Categoria> buscarCategoriasPorTienda(TiendaOnlineContext _db, IEnumerable<Producto> productosTienda)
+        public static List<Categoria> buscarCategoriasPorTienda(TiendaOnlineContext _db, IEnumerable<Producto> productosTienda, IEnumerable<Servicio> serviciosTienda, bool esProducto)
         {
             List<Categoria> categorias = new List<Categoria>();
             foreach (Categoria cat in _db.Categorias.ToList()){
-                foreach (Producto prod in productosTienda){
-                    if (prod.CategoriaId == cat.Id)
-                        if (categorias.Contains(cat) == false)
-                            categorias.Add(cat);
+
+                if (esProducto)
+                {
+                    foreach (var prod in productosTienda)
+                    {
+                        if (prod.CategoriaId == cat.Id)
+                            if (categorias.Contains(cat) == false)
+                                categorias.Add(cat);
+                    }
                 }
+                else
+                {
+                    foreach (var serv in serviciosTienda)
+                    {
+                        if (serv.CategoriaId == cat.Id)
+                            if (categorias.Contains(cat) == false)
+                                categorias.Add(cat);
+                    }
+                }
+
 
             }
 

@@ -1,0 +1,58 @@
+﻿@model TiendaOnline.Models.Servicio
+
+@{
+    ViewBag.Title = "EditarServicio";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="card my-4">
+        <h5 class="card-header">Editar Servicio</h5>
+        <div class="card-body">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="container">
+                <div class="row">
+                    <div class="form-group col-xs-6" style="margin-right:15px">
+                        @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                    </div>
+                    @*<div class="form-group col-xs-6" style="margin-right:15px">
+                            @Html.LabelFor(model => model.Stock, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.Stock, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Stock, "", new { @class = "text-danger" })
+                        </div>*@
+                    <div class="form-group col-xs-6" style="margin-right:15px">
+                        @Html.LabelFor(model => model.Precio, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Precio, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Precio, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group col-xs-6" style="margin-right:15px">
+                        @Html.Label("Categoria", htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownList("CategoriaId", null, htmlAttributes: new { @class = "form-control", style = "width:200px!important" })
+                        @Html.ValidationMessageFor(model => model.CategoriaId, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group col-xs-6" style="margin-right:15px">
+                        @Html.LabelFor(model => model.SoloCotizable, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.SoloCotizable, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SoloCotizable, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group">
+                    <label for="comment">Descripción</label>
+                    @Html.TextAreaFor(model => model.Descripcion, new { @class = "form-control", @rows = "5", id = "comment" })
+                    @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Editar" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}

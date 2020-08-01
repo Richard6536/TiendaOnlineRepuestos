@@ -28,6 +28,10 @@ namespace TiendaOnline.Models
         [ForeignKey("ProductoId")]
         public virtual Producto Producto { get; set; }
 
+        public int? ServicioId { get; set; }
+        [ForeignKey("ServicioId")]
+        public virtual Servicio Servicio { get; set; }
+
         public static ProductoCarro CrearProductoCarro(int? _idProducto, int _idUsuario, int _cantidad, TiendaOnlineContext _db)
         {
             Usuario usuario = _db.Usuarios.Where(u => u.Id == _idUsuario).FirstOrDefault();

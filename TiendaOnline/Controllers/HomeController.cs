@@ -23,7 +23,7 @@ namespace TiendaOnline.Controllers
             int start = (page - 1) * productsPerPage;
 
             //Categorias
-            IEnumerable<Categoria> categorias = db.Categorias.ToList();
+            IEnumerable<Categoria> categorias = db.Categorias.Where(c => c.TipoCategoria == Categoria.CategoriaTipo.Producto).ToList();
             ViewBag.Categorias = categorias;
             if(categoriaId != -1)
             {
@@ -110,31 +110,85 @@ namespace TiendaOnline.Controllers
         }
 
 
-        public ActionResult Tienda(int? id, int page = 1, int categoriaId = -1)
+        public ActionResult Tienda(int? id, int page = 1, int categoriaId = -1, string seccion = "producto", string search = "")
         {
             Tienda tienda = db.Tienda.Find(id);
+            IEnumerable<Producto> productosTienda = null;
+            IEnumerable<Servicio> serviciosTienda = null;
 
             if (tienda == null)
                 return RedirectToAction("Index", "Home");
 
-            IEnumerable<Producto> productosTienda = tienda.Productos;
             int productsPerPage = 12;
             int start = (page - 1) * productsPerPage;
 
-            //Categorias
-            ViewBag.Categorias = Categoria.buscarCategoriasPorTienda(db, productosTienda);
-            if (categoriaId != -1) {
-                
-                productosTienda = productosTienda.Where(p => p.CategoriaId == categoriaId).ToList();
-                ViewBag.CategoriaFiltrada = db.Categorias.Find(categoriaId).NombreCategoria;
+            if (seccion.Equals("producto")) {
+                productosTienda = tienda.Productos;
+
+                //Realiza una busqueda
+                if (!search.Equals("")) {
+                    Tuple<List<Producto>, List<Servicio>, Boolean> productosFiltrados = Categoria.BuscarProductosPorCategoria(db, -1, search, seccion, true, tienda);
+                    productosTienda = productosFiltrados.Item1;
+                }
+
+                //Categorias
+                ViewBag.Categorias = Categoria.buscarCategoriasPorTienda(db, tienda.Productos, null, true);
+
+                if (categoriaId != -1) {
+                    productosTienda = productosTienda.Where(p => p.CategoriaId == categoriaId).ToList();
+                    ViewBag.CategoriaFiltrada = db.Categorias.Find(categoriaId).NombreCategoria;
+                }
+
+                ViewBag.PageCount = Math.Ceiling(productosTienda.Count() / (double)productsPerPage);
+                productosTienda = productosTienda.OrderBy(p => p.Id).Skip(start).Take(productsPerPage);
+                ViewBag.PaginatedProducts = productosTienda;
+                ViewBag.Seccion = seccion;
+
+            }
+            else if (seccion.Equals("servicio")){
+                serviciosTienda = tienda.Servicios;
+
+                //Realiza una busqueda
+                if (!search.Equals(""))
+                {
+                    Tuple<List<Producto>, List<Servicio>, Boolean> serviciosFiltrados = Categoria.BuscarProductosPorCategoria(db, -1, search, seccion, true, tienda);
+                    serviciosTienda = serviciosFiltrados.Item2;
+                }
+
+                //Categorias
+                ViewBag.Categorias = Categoria.buscarCategoriasPorTienda(db, tienda.Productos, null, true);
+
+                if (categoriaId != -1)
+                {
+
+                    serviciosTienda = serviciosTienda.Where(p => p.CategoriaId == categoriaId).ToList();
+                    ViewBag.CategoriaFiltrada = db.Categorias.Find(categoriaId).NombreCategoria;
+                }
+
+                ViewBag.PageCount = Math.Ceiling(serviciosTienda.Count() / (double)productsPerPage);
+                serviciosTienda = serviciosTienda.OrderBy(p => p.Id).Skip(start).Take(productsPerPage);
+                ViewBag.PaginatedProducts = serviciosTienda;
+                ViewBag.Seccion = seccion;
             }
 
-            ViewBag.PageCount = Math.Ceiling(productosTienda.Count() / (double)productsPerPage);
-            productosTienda = productosTienda.OrderBy(p => p.Id).Skip(start).Take(productsPerPage);
-            ViewBag.PaginatedProducts = productosTienda;
+
 
             return View(tienda);
         }
 
+        public ActionResult BuscarProductos(int tiendaId, string productoBusqueda, string seccion)
+        {
+
+            //Tuple<List<Producto>, Boolean> productosFiltrados = Categoria.BuscarProductosPorCategoria(db, -1, productoBusqueda);
+
+            return View();
+        }
+
+        public ActionResult Portal()
+        {
+
+
+            return View();
+        }
     }
 }

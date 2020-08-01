@@ -1,7 +1,8 @@
-﻿@model TiendaOnline.Models.Producto
+﻿@model TiendaOnline.Models.Servicio
 
 @{
-    ViewBag.Title = "VerProducto";
+    ViewBag.Title = "VerServicio";
+    Layout = "~/Views/Shared/_LayoutServicio.cshtml";
 }
 
 <link href="~/Content/VerProducto/product-view.css" rel="stylesheet">
@@ -41,7 +42,7 @@
                                 classPic = "tab-pane";
                             }
 
-                            <div class="@classPic" id="@picNum"><img style="object-fit: contain; height:340px; background-color:white" src="@Url.Content("~/ImagenesUsers/" + Model.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(imagen.DireccionImagen))" /></div>
+                            <div class="@classPic" id="@picNum"><img style="object-fit: contain; height:340px; background-color:white" src="@Url.Content("~/ImagenesUsers/" + Model.Tienda.Id + "/Servicios/" + System.IO.Path.GetFileName(imagen.DireccionImagen))" /></div>
                             cont_pic++;
                         }
 
@@ -64,7 +65,7 @@
                                 classPic = "";
                             }
 
-                            <li class="@classPic"><a data-target="@picNum" data-toggle="tab"><img style="object-fit: contain; height:70px; background-color:white" src="@Url.Content("~/ImagenesUsers/" + Model.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(imagen.DireccionImagen))" /></a></li>
+                            <li class="@classPic"><a data-target="@picNum" data-toggle="tab"><img style="object-fit: contain; height:70px; background-color:white" src="@Url.Content("~/ImagenesUsers/" + Model.Tienda.Id + "/Servicios/" + System.IO.Path.GetFileName(imagen.DireccionImagen))" /></a></li>
                             cont_picPrev++;
                         }
 
@@ -105,7 +106,7 @@
         <div class="row">
             <div class="col-12">
 
-                <input value="@Model.Id" name="idProducto" hidden />
+                <input value="@Model.Id" name="idServicio" hidden />
                 <textarea class="form-control" placeholder="Escribe un comentario" rows="4" id="textAreaComment" name="comentario" aria-label="With textarea"></textarea>
                 <div style="width:100%; text-align:right; padding-top:5px"><button type="button" onclick="enviarComentario(@Model.Id)" class="btn btn-success">Comentar</button></div>
 
@@ -129,7 +130,7 @@
                                     {
                                         <div style="display:inline; width:50%; text-align:right">
                                             <a href="#" class="material-icons" style="color:green" data-toggle="modal" data-target="#editarModal" data-id="@item.Id" data-commentary="@item.Mensaje" id="btnEdit">edit</a>
-                                            <a href="@Url.Action("EliminarComentario","Productos", new { id = item.Id, producto_id = Model.Id })" style="color:red" class="material-icons" title="Editar" id="btnDelete">delete_outline</a>
+                                            <a href="@Url.Action("EliminarComentario","Servicio", new { id = item.Id, servicio_id = Model.Id })" style="color:red" class="material-icons" title="Editar" id="btnDelete">delete_outline</a>
 
                                         </div>
 
@@ -220,11 +221,11 @@
             var token = $('input[name="__RequestVerificationToken"]', form).val();
             $.ajax({
                 type: "POST",
-                url: "/Productos/EditarComentarioAction",
+                url: "/Servicio/EditarComentarioAction",
                 data: {
                     __RequestVerificationToken: token,
                     id: $id,
-                    producto_id: @Model.Id,
+                    servicio_id: @Model.Id,
                     mensajeEdit: $mensajeEdit.value
                 },
                 success: function (result) {
@@ -269,10 +270,10 @@
 
             $.ajax({
                 type: "POST",
-                url: "/Productos/Comentar",
+                url: "/Servicio/Comentar",
                 data: {
                     __RequestVerificationToken: token,
-                    idProducto: id,
+                    idServicio: id,
                     comentario: $textAreaComment.value
                 },
                 success: function (result) {
@@ -291,7 +292,7 @@
         }
 
         function AgregarComentario(comentario) {
- 
+
 
             //$("#contenedorComentarios").prepend("<div class='card' style='background-color:white!important; padding: 0px!important; margin-top:10px'><div class='card-body'><h5 class='card-title'>" + comentario.NombreUsuario + "</h5><p class='card-text'>" + comentario.Mensaje + "</p></div><div class='card-footer text-muted row' style='margin-left:0px!important; margin-right:0px!important'><div id='content-footer-' style='display:inline; width:50%'>" + comentario.Fecha + "</div><div style='display:inline; width:50%; text-align:right'><a href='#' class='material-icons' style='color:green' data-toggle='modal' data-target='#editarModal' data-id='item.Id' data-commentary='item.Mensaje' id='btnEdit'>edit</a>  <a href='Url.Action("EliminarComentario","Productos", new { id = item.Id, producto_id = Model.Id })' style='color:red' class='material-icons' title='Editar' id='btnDelete'>delete_outline</a> </div></div></div>");
 
@@ -306,3 +307,5 @@
     </script>
 
 }
+
+

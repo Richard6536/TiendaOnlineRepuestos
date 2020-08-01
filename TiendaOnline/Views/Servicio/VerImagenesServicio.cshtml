@@ -1,0 +1,181 @@
+﻿@model TiendaOnline.Models.Servicio
+
+@{
+    ViewBag.Title = "VerImagenesServicio";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+
+    string msgError = "";
+    if (TempData["msgError"] != null)
+    {
+        msgError = (string)TempData["msgError"];
+    }
+}
+
+@if (msgError != null && msgError != "")
+{
+    <div style="text-align: center">
+        <div style="width: 90%; margin: 0 auto; text-align: left">
+            <div class="quick-actions_homepage">
+                <div class="alert alert-error alert-block">
+                    <a class="close" data-dismiss="alert" href="#">×</a>
+                    <h4 class="alert-heading">Alerta</h4>
+                    @msgError
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+<!-- Jumbotron Header -->
+<header class="jumbotron my-4">
+    <!-- Page Features -->
+    <div class="display-3" id="title_prev" style="width:100%; display:none; text-align:center"><h3>Vista Previa</h3></div>
+    <div class="row text-center">
+        <output id="result" />
+    </div>
+    <hr />
+
+    @using (Html.BeginForm("VerImagenesServicio", "Servicio", FormMethod.Post, new { @class = "input-group", style = "width:100%", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="input-group-prepend">
+            <button class="btn btn-primary" id="inputGroupFileAddon01">Subir</button>
+        </div>
+
+        <div class="custom-file">
+            <input type="file" multiple class="custom-file-input" name="files" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+            <label class="custom-file-label" for="inputGroupFile01">Escoge una Imagen</label>
+        </div>
+
+        @Html.HiddenFor(model => model.Id)
+    }
+
+</header>
+
+@foreach (var item in Model.Imagenes)
+{
+    <div class="col-lg-3 col-md-6 mb-4" style="float:left">
+        <div class="card h-100">
+            <img class="card-img-top" style="object-fit:contain; height: 200px" src="@Url.Content("~/ImagenesUsers/" + item.Servicio.Tienda.Id + "/Servicios/" + System.IO.Path.GetFileName(item.DireccionImagen))" alt="">
+            <div class="card-footer">
+                <a href="#" style="width:48.9%" class="btn btn-primary">Editar</a>
+                <a href="#" style="width:48.9%" data-toggle="modal" data-target="#borrarModal" data-id="@item.Id" class="btn btn-danger">Eliminar</a>
+            </div>
+        </div>
+    </div>
+}
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+<!-- Delete Modal-->
+<div class="modal fade" style="display:none;" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> TITULO </h5>
+            </div>
+            <div class="modal-body">No habrá forma de recuperar la información después de presionar en "Aceptar".</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                <a style="color:white" class="btn btn-danger btn-ok">Aceptar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+
+    <script>
+
+        //e  es el elemnto que hace aparecer el modal
+        //la informacion se le agrega en data-id y hay oportunidad de agregar mas como data-name, etc
+        //esa informacion se le asigna al btn ok del modal
+        $('#borrarModal').on('show.bs.modal', function (e) {
+
+            var data = $(e.relatedTarget).data();
+            $('.modal-title', this).text("¿Está seguro de eliminar esta imagen?");
+            $('.btn-ok', this).data('recordId', data.id);
+        });
+
+
+        //El boton modal cuando es clickeado lee la informacion que se le fue asignada anteriormente
+        //luego forma la url correcta y envia en modo post
+        $('#borrarModal').on('click', '.btn-ok', function (e) {
+            var $id = $(this).data('recordId');
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Productos/EliminarImagenServicio",
+                data: {
+                    __RequestVerificationToken: token,
+                    id: $id,
+                    prodid: @Model.Id
+                },
+                success: function (result) {
+                    if (result.exito == false) {
+                        alert(result.mensaje);
+                    }
+                    else {
+                        location.reload(true);
+                    }
+                },
+                error: function (response) {
+                    //debugger;
+                    //alert('eror');
+                }
+            });
+        });
+
+
+    </script>
+
+    <script>
+        var files;
+        window.onload = function () {
+            var filesInput = document.getElementById("inputGroupFile01");
+
+            filesInput.addEventListener("change", function (event) {
+
+                files = event.target.files; //FileList object
+                var output = document.getElementById("result");
+                var outputTittle = document.getElementById("tittle");
+
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+
+                    //Only pics
+                    if (!file.type.match('image'))
+                        continue;
+
+                    var picReader = new FileReader();
+
+                    picReader.addEventListener("load", function (event) {
+
+                        var picFile = event.target;
+                        var div = document.createElement("div");
+
+                        div.innerHTML = "<div class='col-lg-3 col-md-6 mb-4' style='float:left'><div class='card h-100'><img class='card-img-top' style='object-fit:contain; height:200px' src='" + picFile.result + "' title='" + picFile.name + "'/></div></div>";
+                        document.getElementById("title_prev").style.display = "";
+
+                        output.insertBefore(div, null);
+
+                    });
+
+                    //Read the image
+                    picReader.readAsDataURL(file);
+                }
+
+            });
+        }
+    </script>
+}
+
+
+
+

@@ -30,16 +30,22 @@ namespace TiendaOnline.Models
 
 
         public enum ImagenSize { Regular, MediaPagina, PaginaEntera }
+        public enum ImagenTipo { Producto, Servicio }
 
         [Key]
         public int Id { get; set; }
         public string DireccionImagen { get; set; }
         public string NombreImagen { get; set; }
         public ImagenSize DimensionImagen { get; set; }
+        public ImagenTipo TipoImagen { get; set; }
 
         public int? ProductoId { get; set; }
         [ForeignKey("ProductoId")]
         public virtual Producto Producto { get; set; }
+
+        public int? ServicioId { get; set; }
+        [ForeignKey("ServicioId")]
+        public virtual Servicio Servicio { get; set; }
 
         public static Producto SubirImagenesProducto(List<HttpPostedFileBase> files, TiendaOnlineContext _db, Producto _producto)
         {
@@ -55,6 +61,7 @@ namespace TiendaOnline.Models
                 {
                     nuevaImagen.DireccionImagen = path;
                     nuevaImagen.DimensionImagen = ImagenSize.Regular;
+                    nuevaImagen.TipoImagen = ImagenTipo.Producto;
                     nuevaImagen.Producto = producto;
                     nuevaImagen.NombreImagen = filename;
 
@@ -65,6 +72,35 @@ namespace TiendaOnline.Models
             }
 
             return producto;
+        }
+
+        public static Servicio SubirImagenesServicio(List<HttpPostedFileBase> files, TiendaOnlineContext _db, Servicio _servicio)
+        {
+            Servicio servicio = _db.Servicios.Where(e => e.Nombre == _servicio.Nombre).FirstOrDefault();
+
+            foreach (HttpPostedFileBase file in files)
+            {
+                Imagen nuevaImagen = new Imagen();
+                string filename = Path.GetRandomFileName() + Path.GetExtension(file.FileName);
+                string path = GuardarImagenEnTienda(_servicio.Tienda, "Servicios", filename, file);
+
+                if (path != "existe")
+                {
+                    nuevaImagen.DireccionImagen = path;
+                    nuevaImagen.DimensionImagen = ImagenSize.Regular;
+                    nuevaImagen.TipoImagen = ImagenTipo.Servicio;
+                    nuevaImagen.Servicio = servicio;
+                    nuevaImagen.NombreImagen = filename;
+
+                    _db.Imagenes.Add(nuevaImagen);
+                    _db.SaveChanges();
+
+                }
+            }
+
+
+
+            return servicio;
         }
 
         //sirve para subir cualquier imagen, no solo de productos

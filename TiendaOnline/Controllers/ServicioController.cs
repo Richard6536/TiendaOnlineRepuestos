@@ -7,37 +7,51 @@ using TiendaOnline.Models;
 
 namespace TiendaOnline.Controllers
 {
-    public class ProductosController : Controller
+    public class ServicioController : Controller
     {
         TiendaOnlineContext db = new TiendaOnlineContext();
-        //si no tiene tienda no puede usar nada de esto
-        //hay excepciones como "ver producto"
-
-        //controller para los usuarios comunes que crean productos en sus propias tiendas
-
-        //crear/editar/eliminar
-        //las categorias vienen por default y son creadas por admins... 
-
-        // GET: Productos
-        public ActionResult Index()
+        public ActionResult Index(int page = 1, int categoriaId = -1)
         {
-            if (Session["Rol"] == null)
-                return RedirectToAction("IniciarSesion", "Login");
+            List<Servicio> servicios = db.Servicios.ToList();
 
-            if (Session["TiendaId"] == null)
-                return RedirectToAction("IniciarSesion", "Login");
+            int productsPerPage = 12;
+            int start = (page - 1) * productsPerPage;
 
-            return View();
+            //Categorias
+            IEnumerable<Categoria> categorias = db.Categorias.Where(c => c.TipoCategoria == Categoria.CategoriaTipo.Servicio).ToList();
+            ViewBag.Categorias = categorias;
+            if (categoriaId != -1)
+            {
+                servicios = servicios.Where(p => p.CategoriaId == categoriaId).ToList();
+                ViewBag.CategoriaFiltrada = db.Categorias.Find(categoriaId).NombreCategoria;
+            }
+
+            //---------
+
+            //Productos
+            ViewBag.PageCount = Math.Ceiling(servicios.Count() / (double)productsPerPage);
+            IEnumerable<Servicio> prods = servicios.OrderBy(p => p.Id).Skip(start).Take(productsPerPage);
+            ViewBag.PaginatedProducts = prods;
+
+            return View(servicios);
         }
 
-        public ActionResult VerProducto(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(String value, int categoriaId)
         {
-            Producto producto = db.Productos.Find(id);
-            producto.Comentarios.Reverse();
-            return View(producto);
+            return RedirectToAction("Index", "Servicio", new { id = categoriaId });
         }
 
-        public ActionResult ListaProductos()
+        public ActionResult VerServicio(int id)
+        {
+            Servicio servicio = db.Servicios.Find(id);
+            servicio.Comentarios.Reverse();
+            return View(servicio);
+
+        }
+
+        public ActionResult ListaServicios()
         {
             if (Session["Rol"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
@@ -47,12 +61,12 @@ namespace TiendaOnline.Controllers
 
             int tiendaId = (int)Session["TiendaId"];
             Tienda tienda = db.Tienda.Find(tiendaId);
-            List<Producto> productosTienda = tienda.Productos.ToList();
+            List<Servicio> serviciosTienda = tienda.Servicios.ToList();
 
-            return View(productosTienda);
+            return View(serviciosTienda);
         }
 
-        public ActionResult CrearProducto()
+        public ActionResult CrearServicio()
         {
             if (Session["Rol"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
@@ -60,7 +74,7 @@ namespace TiendaOnline.Controllers
             if (Session["TiendaId"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
 
-            List<Categoria> categorias = db.Categorias.Where(p => p.TipoCategoria == Categoria.CategoriaTipo.Producto).ToList();
+            List<Categoria> categorias = db.Categorias.Where(s => s.TipoCategoria == Categoria.CategoriaTipo.Servicio).ToList();
             categorias.Reverse();
 
             ViewBag.CategoriaId = new SelectList(categorias, "Id", "NombreCategoria");
@@ -70,7 +84,7 @@ namespace TiendaOnline.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CrearProducto(Producto model)
+        public ActionResult CrearServicio(Servicio model)
         {
             if (Session["Rol"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
@@ -80,12 +94,12 @@ namespace TiendaOnline.Controllers
 
             int tiendaId = (int)Session["TiendaId"];
             Tienda tienda = db.Tienda.Find(tiendaId);
-            Producto.CrearProducto(model, tienda, db);
+            Servicio.CrearServicio(model, tienda, db);
 
-            return RedirectToAction("ListaProductos");
+            return RedirectToAction("ListaServicios");
         }
 
-        public ActionResult EditarProducto(int id)
+        public ActionResult EditarServicio(int id)
         {
             if (Session["Rol"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
@@ -93,19 +107,19 @@ namespace TiendaOnline.Controllers
             if (Session["TiendaId"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
 
-            Producto producto = db.Productos.Find(id);
+            Servicio servicio = db.Servicios.Find(id);
 
             List<Categoria> categorias = db.Categorias.Where(c => c.TipoCategoria == Categoria.CategoriaTipo.Servicio).ToList();
             categorias.Reverse();
 
-            ViewBag.CategoriaId = new SelectList(categorias, "Id", "NombreCategoria", producto.Id);
+            ViewBag.CategoriaId = new SelectList(categorias, "Id", "NombreCategoria", servicio.Id);
 
-            return View(producto);
+            return View(servicio);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditarProducto(Producto model)
+        public ActionResult EditarServicio(Servicio model)
         {
             if (Session["Rol"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
@@ -116,14 +130,14 @@ namespace TiendaOnline.Controllers
             int tiendaId = (int)Session["TiendaId"];
             Tienda tienda = db.Tienda.Find(tiendaId);
 
-            Producto.EditarProducto(model, tienda, db);
+            Servicio.EditarServicio(model, tienda, db);
 
-            return RedirectToAction("ListaProductos");
+            return RedirectToAction("ListaServicios");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EliminarProducto(int id)
+        public ActionResult EliminarServicio(int id)
         {
 
             if (Session["Rol"] == null)
@@ -144,7 +158,7 @@ namespace TiendaOnline.Controllers
             int tiendaId = (int)Session["TiendaId"];
             Tienda tienda = db.Tienda.Find(tiendaId);
 
-            Producto.EliminarProducto(db, tienda, id);
+            Servicio.EliminarServicio(db, tienda, id);
 
             return Json(new
             {
@@ -153,7 +167,8 @@ namespace TiendaOnline.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult VerImagenesProducto(int id)
+
+        public ActionResult VerImagenesServicio(int id)
         {
             if (Session["Rol"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
@@ -163,31 +178,31 @@ namespace TiendaOnline.Controllers
 
             int tiendaId = (int)Session["TiendaId"];
             Tienda tienda = db.Tienda.Find(tiendaId);
-            Producto producto = tienda.Productos.Where(p => p.Id == id).FirstOrDefault();
+            Servicio servicio = tienda.Servicios.Where(p => p.Id == id).FirstOrDefault();
 
-            return View(producto);
+            return View(servicio);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult VerImagenesProducto(List<HttpPostedFileBase> files, int id)
+        public ActionResult VerImagenesServicio(List<HttpPostedFileBase> files, int id)
         {
-            if(files.Count == 1 && files.Contains(null))
-                return RedirectToAction("VerImagenesProducto", new { id = id });
+            if (files.Count == 1 && files.Contains(null))
+                return RedirectToAction("VerImagenesServicio", new { id = id });
 
             if (files.Contains(null))
             {
                 //me habia dado error al subir 2 imagens una vez y no pude repetir el problema
                 TempData["msgError"] = "Hubo un error al subir imagenes. Se le recomienda subir de una en una";
-                return RedirectToAction("VerImagenesProducto", new { id = id });
+                return RedirectToAction("VerImagenesServicio", new { id = id });
             }
 
-            foreach(HttpPostedFileBase file in files)
+            foreach (HttpPostedFileBase file in files)
             {
-                if(file.ContentLength > Imagen.MAX_SIZE)
+                if (file.ContentLength > Imagen.MAX_SIZE)
                 {
                     TempData["msgError"] = "Una de las imagenes subidas supera el peso máximo de " + Imagen.MAX_SIZE_IN_MB + " MB";
-                    return RedirectToAction("VerImagenesProducto", new { id = id });
+                    return RedirectToAction("VerImagenesServicio", new { id = id });
                 }
 
             }
@@ -195,67 +210,17 @@ namespace TiendaOnline.Controllers
 
             int tiendaId = (int)Session["TiendaId"];
             Tienda tienda = db.Tienda.Find(tiendaId);
-            Producto producto = tienda.Productos.Where(p => p.Id == id).FirstOrDefault();
+            Servicio servicio = tienda.Servicios.Where(p => p.Id == id).FirstOrDefault();
 
-            Imagen.SubirImagenesProducto(files, db, producto);
+            Imagen.SubirImagenesServicio(files, db, servicio);
 
-            return RedirectToAction("VerImagenesProducto", new { id = id});
+            return RedirectToAction("VerImagenesServicio", new { id = id });
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EliminarImagenProducto(int id, int prodid)
-        {
-            if (Session["Rol"] == null)
-            {
-                return Json(new
-                {
-                    exito = false,
-                    mensaje = "La sesión ha terminado."
-                }, JsonRequestBehavior.AllowGet);
-            }
-
-            if (Session["Rol"] == null)
-                return RedirectToAction("IniciarSesion", "Login");
-
-            if (Session["TiendaId"] == null)
-                return RedirectToAction("IniciarSesion", "Login");
-
-            int tiendaId = (int)Session["TiendaId"];
-            Tienda tienda = db.Tienda.Find(tiendaId);
-
-            try
-            {
-                Producto prod = tienda.Productos.Where(p => p.Id == prodid).FirstOrDefault();
-                Imagen img = prod.Imagenes.Where(i => i.Id == id).FirstOrDefault();
-
-                if (img == null)
-                    throw new Exception();
-
-                Imagen.EliminarImagen(db, id);
-            }
-            catch
-            {
-                if (Session["Rol"] == null)
-                {
-                    return Json(new
-                    {
-                        exito = false,
-                        mensaje = "Hubo un problema encontrando el registro a eliminar."
-                    }, JsonRequestBehavior.AllowGet);
-                }
-            }
-
-            return Json(new
-            {
-                exito = true,
-                mensaje = "Eliminación exitosa."
-            }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Comentar(int idProducto, string comentario)
+        public ActionResult Comentar(int idServicio, string comentario)
         {
             if (Session["Rol"] == null)
             {
@@ -268,7 +233,7 @@ namespace TiendaOnline.Controllers
 
             int idUsuario = (int)Session["Id"];
 
-            Comentario cp = Producto.EnviarComentario(idProducto, idUsuario, comentario, db);
+            Comentario cp = Servicio.EnviarComentario(idServicio, idUsuario, comentario, db);
             String Fecha = cp.Fecha.ToString();
             String NombreUsuario = cp.Usuario.Nombre;
             String Mensaje = cp.Mensaje;
@@ -286,20 +251,20 @@ namespace TiendaOnline.Controllers
             return Json(new { exito = true, respuesta = sJSON });
         }
 
-        public ActionResult EliminarComentario(int id, int producto_id)
+        public ActionResult EliminarComentario(int id, int servicio_id)
         {
-            Producto prod = db.Productos.Find(producto_id);
-            Producto.EliminarComentario(db, prod, id);
+            Servicio serv = db.Servicios.Find(servicio_id);
+            Servicio.EliminarComentario(db, serv, id);
 
-            return RedirectToAction("VerProducto", new { id = producto_id });
+            return RedirectToAction("VerProducto", new { id = servicio_id });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditarComentarioAction(int id, int producto_id, string mensajeEdit)
         {
-            Producto prod = db.Productos.Find(producto_id);
-            Tuple<Comentario, Boolean> data = Producto.EditarComentario(db, prod, id, mensajeEdit);
+            Servicio serv = db.Servicios.Find(producto_id);
+            Tuple<Comentario, Boolean> data = Servicio.EditarComentario(db, serv, id, mensajeEdit);
 
             if (data.Item2 == false)
             {

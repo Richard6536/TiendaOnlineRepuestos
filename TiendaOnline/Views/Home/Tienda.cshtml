@@ -24,29 +24,72 @@
     </div>
 
     <a class="btn btn-primary btn-xs" href="#" role="button">Leer comentarios</a>
+
+</div>
+
+
+<div class="card-group" style="margin:15px">
+    <div class="card">
+        <div class="row no-gutters">
+            <div class="col-auto">
+                <img src="https://i.imgur.com/8XkIdYl.jpg" width="100" class="img-fluid" alt="">
+            </div>
+            <div class="col">
+                <div class="card-block px-3 pt-xl-3">
+                    <h4 class="card-title">Productos</h4>
+                    <p class="card-text">Description</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="@Url.Action("Tienda","Home", new { seccion = "producto"})" class="stretched-link"></a>
+    </div>
+    <div class="card">
+        <div class="row no-gutters">
+            <div class="col-auto">
+                <img src="https://i.imgur.com/2Pmixay.png" width="100" class="img-fluid" alt="">
+            </div>
+            <div class="col">
+                <div class="card-block px-3 pt-xl-3">
+                    <h4 class="card-title">Servicios</h4>
+                    <p class="card-text">Description</p>
+                </div>
+            </div>
+        </div>
+        <a href="@Url.Action("Tienda","Home", new { seccion = "servicio"})" class="stretched-link"></a>
+    </div>
 </div>
 
 <div class="row" style="margin-left:10px; margin-right:10px">
+
     <div class="col mb-4 container-tienda-right">
+
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb breadcrumb-style">
                 <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Inicio</a></li>
                 <li class="breadcrumb-item"><a href="@Url.Action("Tienda","Home", new { id = Model.Id})">@Model.Nombre</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    @ViewBag.CategoriaFiltrada
+                    @ViewBag.Seccion
                 </li>
             </ol>
         </nav>
-        <div class="card" style="cursor: pointer; border-radius:0px; border-bottom: 0px">
-            <div class="card-body">
-                <div class="input-group mb-3" style="margin-bottom: 0px!important">
-                    <input type="text" class="form-control" placeholder="Buscar en @Model.Nombre" aria-label="Buscar en @Model.Nombre" aria-describedby="button-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fas fa-search"></i></button>
+
+
+        @using (Html.BeginForm("Tienda", "Home"))
+        {
+            <div class="card" style="cursor: pointer; border-radius:0px; border-bottom: 0px">
+                <div class="card-body">
+                    <div class="input-group mb-3" style="margin-bottom: 0px!important">
+                        <input value="@Model.Id" name="tiendaId" hidden />
+                        <input value="@ViewBag.Seccion" name="seccion" hidden />
+                        <input type="text" class="form-control" name="search" placeholder="Buscar en @Model.Nombre" aria-label="Buscar en @Model.Nombre" aria-describedby="button-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="submit" id="button-addon2"><i class="fas fa-search"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
 
         <div class="card" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" style="cursor: pointer; border-radius:0px; border-top: 0px">
             <div class="card-body">
@@ -57,58 +100,112 @@
         <div class="list-group collapse" id="collapseExample" style="border-radius:0px">
             @foreach (var categoria in ViewBag.Categorias)
             {
-                <a href="@Url.Action("Tienda","Home", new { categoriaId = @categoria.Id })" class="list-group-item list-group-item-action">@categoria.NombreCategoria</a>
+                <a href="@Url.Action("Tienda","Home", new { categoriaId = @categoria.Id, seccion = ViewBag.Seccion })" class="list-group-item list-group-item-action">@categoria.NombreCategoria</a>
             }
         </div>
     </div>
 
-    <div class="col-xs-12 col-sm-9 container-tienda-left">
+    @if (ViewBag.Seccion.Equals("producto"))
+    {
+        <div class="col-xs-12 col-sm-9 container-tienda-left">
 
-        <div class="card" style="cursor: pointer; border-radius:0px; border-bottom: 0px">
-            <div class="card-body card-pagination">
-                <div class="align-items-end d-flex justify-content-end">
-                    <ul class="pagination" style="margin-bottom: 0px!important">
-                        @for (int i = 1; i <= ViewBag.PageCount; i++)
-                        {
-                            <li class="page-item"><a class="page-link" href="@Url.Action("Tienda","Home", new { page = i })">@i</a></li>
-                        }
-                    </ul>
+            <div class="card" style="cursor: pointer; border-radius:0px; border-bottom: 0px">
+                <div class="card-body card-pagination">
+                    <div class="align-items-end d-flex justify-content-end">
+                        <ul class="pagination" style="margin-bottom: 0px!important">
+                            @for (int i = 1; i <= ViewBag.PageCount; i++)
+                            {
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Tienda","Home", new { page = i })">@i</a></li>
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            @{
+            <div class="row">
+                @{
 
-                foreach (var item in ViewBag.PaginatedProducts)
-                {
-                    <div class="col-sm-3">
-                        <div class="card" onclick="location.href='@Url.Action("VerProducto", "Productos", new { id = item.Id })';" style="cursor: pointer; border-radius:0px">
-                            @{
-                                if (item.Imagenes.Count > 0)
-                                {
-                                    <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(item.Imagenes[0].DireccionImagen))" alt="...">
+                    foreach (var item in ViewBag.PaginatedProducts)
+                    {
+                        <div class="col-sm-3">
+                            <div class="card" onclick="location.href='@Url.Action("VerProducto", "Productos", new { id = item.Id })';" style="cursor: pointer; border-radius:0px">
+                                @{
+                                    if (item.Imagenes.Count > 0)
+                                    {
+                                        <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Productos/" + System.IO.Path.GetFileName(item.Imagenes[0].DireccionImagen))" alt="...">
+                                    }
                                 }
-                            }
 
-                            <div class="card-body">
-                                <h6 class="card-title">
-                                    <span class="d-inline-block text-truncate" style="max-width: 200px;">
-                                        @item.Nombre
-                                    </span>
-                                </h6>
-                            </div>
-                            <div class="card-footer" style="background-color: #fff; border-top:0px; padding-top:0px; text-align:right">
-                                <small class="text-muted" style="font-size:20px">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</small>
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <span class="d-inline-block text-truncate" style="max-width: 200px;">
+                                            @item.Nombre
+                                        </span>
+                                    </h6>
+                                </div>
+                                <div class="card-footer" style="background-color: #fff; border-top:0px; padding-top:0px; text-align:right">
+                                    <small class="text-muted" style="font-size:20px">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</small>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 }
-            }
 
 
+            </div>
         </div>
-    </div>
+    }
+    else if (ViewBag.Seccion.Equals("servicio"))
+    {
+        <div class="col-xs-12 col-sm-9 container-tienda-left">
+
+            <div class="card" style="cursor: pointer; border-radius:0px; border-bottom: 0px">
+                <div class="card-body card-pagination">
+                    <div class="align-items-end d-flex justify-content-end">
+                        <ul class="pagination" style="margin-bottom: 0px!important">
+                            @for (int i = 1; i <= ViewBag.PageCount; i++)
+                            {
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Tienda","Home", new { page = i })">@i</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @{
+
+                    foreach (var item in ViewBag.PaginatedProducts)
+                    {
+                        <div class="col-sm-3">
+                            <div class="card" onclick="location.href='@Url.Action("VerServicio", "Servicio", new { id = item.Id })';" style="cursor: pointer; border-radius:0px">
+                                @{
+                                    if (item.Imagenes.Count > 0)
+                                    {
+                                        <img style="object-fit: contain; height:200px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Servicios/" + System.IO.Path.GetFileName(item.Imagenes[0].DireccionImagen))" alt="...">
+                                    }
+                                }
+
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <span class="d-inline-block text-truncate" style="max-width: 200px;">
+                                            @item.Nombre
+                                        </span>
+                                    </h6>
+                                </div>
+                                <div class="card-footer" style="background-color: #fff; border-top:0px; padding-top:0px; text-align:right">
+                                    <small class="text-muted" style="font-size:20px">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+
+            </div>
+        </div>
+    }
+
 </div>
+}
 
 <style>
     .checked {
@@ -127,6 +224,7 @@
         margin-right: 0px !important;
         margin-left: 0px !important
     }
+
     .col-sm-3 {
         padding-right: 0px !important;
         padding-left: 0px !important;
@@ -136,16 +234,18 @@
         margin-bottom: 1.1rem;
     }
 
-    .card-body{
+    .card-body {
         padding: 1rem;
     }
-    .card-pagination{
-             padding: 5px!important;
+
+    .card-pagination {
+        padding: 5px !important;
     }
 
-    .breadcrumb-style{
-        margin-bottom:0px!important;
-        border-radius: 0px; background-color:#fff;
+    .breadcrumb-style {
+        margin-bottom: 0px !important;
+        border-radius: 0px;
+        background-color: #fff;
         border-right: 1px solid rgba(0,0,0,.125);
         border-left: 1px solid rgba(0,0,0,.125);
         border-top: 1px solid rgba(0,0,0,.125);

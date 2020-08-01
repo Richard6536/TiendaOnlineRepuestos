@@ -21,6 +21,8 @@ namespace TiendaOnline.Models
         public string Nombre { get; set; }
 
         public virtual List<Producto> Productos { get; set; }
+        public virtual List<Servicio> Servicios { get; set; }
+
         public virtual List<UsuarioTienda> UsuariosTienda { get; set; }
 
         public static Tienda CrearNuevaTienda(TiendaOnlineContext _db, Tienda _model)

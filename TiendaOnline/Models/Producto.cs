@@ -150,7 +150,7 @@ namespace TiendaOnline.Models
             _db.SaveChanges();
         }
 
-        public static void EnviarComentario(int id, int iduser, string comentario, TiendaOnlineContext _db)
+        public static Comentario EnviarComentario(int id, int iduser, string comentario, TiendaOnlineContext _db)
         {
             Producto producto = _db.Productos.Find(id);
             Usuario usuario = _db.Usuarios.Find(iduser);
@@ -164,6 +164,33 @@ namespace TiendaOnline.Models
             producto.Comentarios.Add(cp);
 
             _db.SaveChanges();
+
+            return cp;
+        }
+
+        public static void EliminarComentario(TiendaOnlineContext _db, Producto _producto, int _idComentario)
+        {
+            Comentario comentario = _producto.Comentarios.Where(p => p.Id == _idComentario).FirstOrDefault();
+
+            if (comentario == null)
+                return;
+
+            _db.Comentarios.Remove(comentario);
+            _db.SaveChanges();
+        }
+
+        public static Tuple<Comentario, Boolean> EditarComentario(TiendaOnlineContext _db, Producto _producto, int _idComentario, string _mensajeEdit)
+        {
+            Comentario comentario = _producto.Comentarios.Where(p => p.Id == _idComentario).FirstOrDefault();
+            if (comentario == null)
+                return new Tuple<Comentario, Boolean>(null, false);
+
+            comentario.Mensaje = _mensajeEdit;
+            comentario.Fecha = DateTime.Now;
+
+            _db.SaveChanges();
+
+            return new Tuple<Comentario, Boolean>(comentario, true); ;
         }
 
         public static string Truncate(string value, int maxChars)

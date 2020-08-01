@@ -210,6 +210,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ProductosController.cs" />
+    <Compile Include="Controllers\ServicioController.cs" />
     <Compile Include="Controllers\SuperAdminController.cs" />
     <Compile Include="Controllers\TiendaController.cs" />
     <Compile Include="Controllers\TiendaUserController.cs" />
@@ -230,6 +231,14 @@
     <Compile Include="Migrations\201904220556126_ValidacionEmail.Designer.cs">
       <DependentUpon>201904220556126_ValidacionEmail.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007270608192_Servicios.cs" />
+    <Compile Include="Migrations\202007270608192_Servicios.Designer.cs">
+      <DependentUpon>202007270608192_Servicios.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007272102110_Servicios-Imagen.cs" />
+    <Compile Include="Migrations\202007272102110_Servicios-Imagen.Designer.cs">
+      <DependentUpon>202007272102110_Servicios-Imagen.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Carrocompra.cs" />
     <Compile Include="Models\Categoria.cs" />
@@ -239,6 +248,7 @@
     <Compile Include="Models\ProductoCarro.cs" />
     <Compile Include="Models\PuntuacionProducto.cs" />
     <Compile Include="Models\ReporteErrores.cs" />
+    <Compile Include="Models\Servicio.cs" />
     <Compile Include="Models\Tienda.cs" />
     <Compile Include="Models\TiendaOnlineContext.cs" />
     <Compile Include="Models\Usuario.cs" />
@@ -252,6 +262,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Comentarios\comment-list.css" />
     <Content Include="Content\Index\carousel.css" />
+    <Content Include="Content\Portal\carousel-multi.css" />
     <Content Include="Content\simple-sidebar.css" />
     <Content Include="Content\Tienda\tienda-inicio.css" />
     <Content Include="Content\VerProducto\product-view.css" />
@@ -352,6 +363,15 @@
     <Content Include="Views\Productos\VerProducto.cshtml" />
     <Content Include="Views\Home\Tienda.cshtml" />
     <Content Include="Views\Shared\_LayoutTiendaInicio.cshtml" />
+    <Content Include="Views\Home\Portal.cshtml" />
+    <Content Include="Views\Shared\_LayoutPortal.cshtml" />
+    <Content Include="Views\Servicio\Index.cshtml" />
+    <Content Include="Views\Shared\_LayoutServicio.cshtml" />
+    <Content Include="Views\Servicio\CrearServicio.cshtml" />
+    <Content Include="Views\Servicio\ListaServicios.cshtml" />
+    <Content Include="Views\Servicio\EditarServicio.cshtml" />
+    <Content Include="Views\Servicio\VerImagenesServicio.cshtml" />
+    <Content Include="Views\Servicio\VerServicio.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -380,6 +400,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904220556126_ValidacionEmail.resx">
       <DependentUpon>201904220556126_ValidacionEmail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007270608192_Servicios.resx">
+      <DependentUpon>202007270608192_Servicios.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007272102110_Servicios-Imagen.resx">
+      <DependentUpon>202007272102110_Servicios-Imagen.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
