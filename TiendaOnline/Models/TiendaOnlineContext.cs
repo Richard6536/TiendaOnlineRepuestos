@@ -16,9 +16,9 @@ namespace TiendaOnline.Models
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<UsuarioTienda> UsuariosTienda { get; set; }
-
         public DbSet<Carrocompra> CarrosCompra { get; set; }
         public DbSet<Comentario> Comentarios { get; set; }
+        public DbSet<ComentarioRespuesta> ComentarioRespuesta { get; set; }
         public DbSet<Imagen> Imagenes { get; set; }
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Servicio> Servicios { get; set; }

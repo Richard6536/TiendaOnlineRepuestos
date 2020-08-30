@@ -35,7 +35,7 @@
     </div>
     <hr />
 
-    @using (Html.BeginForm("VerImagenesProducto", "Productos", FormMethod.Post, new { @class = "input-group", style = "width:100%", enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("VerImagenesProducto", "Producto", FormMethod.Post, new { @class = "input-group", style = "width:100%", enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
         <div class="input-group-prepend">
@@ -111,7 +111,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/Productos/EliminarImagenProducto",
+                url: "/Producto/EliminarImagenProducto",
                 data: {
                     __RequestVerificationToken: token,
                     id: $id,

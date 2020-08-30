@@ -12,67 +12,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-
-    @{
-        var nombreTienda = "";
-        var urlTienda = "";
-
-        if (Session["TiendaNombre"] != null)
-        {
-            nombreTienda = (string)Session["TiendaNombre"];
-            urlTienda = "/TiendaUser/Index/" + (int)Session["TiendaId"];
-        }
-        else
-        {
-            nombreTienda = "Crear Tienda";
-            urlTienda = "/Home/CrearTienda";
-        }
-    }
 </head>
 <body style="background-color:#f8f8f8">
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ffd800">
-        <a class="navbar-brand" href="#">Repuestos</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="~/">Inicio <span class="sr-only">(current)</span></a>
-                </li>
-
-                <!--
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Categorías
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                    </div>
-                </li>
-                -->
-            </ul>
-            <form class="form-inline">
-                <input class="form-control mr-sm-2" type="search" placeholder="Productos" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
-            </form>
-
-            <div class="navbar-form">
-                @if (Session["Rol"] != null)
-                {
-                    <a class="btn btn-default navbar-right" href="/Login/CerrarSesion" style="color:transparent; color:gray"><span class="glyphicon glyphicon-lock"></span> Cerrar Sesión</a>
-                    <a class="btn btn-default navbar-right" href="@urlTienda" style="color:white; background-color:black; margin-right:5px"><span class="glyphicon glyphicon-home"></span> @nombreTienda</a>
-                }
-                else
-                {
-                    <a class="btn btn-default navbar-right" href="/Login/IniciarSesion" style="color:transparent; color:gray"><span class="glyphicon glyphicon-lock"></span> Iniciar Sesión</a>
-                }
-
-            </div>
-        </div>
-    </nav>
 
     <div class="container-fluid">
         @RenderBody()

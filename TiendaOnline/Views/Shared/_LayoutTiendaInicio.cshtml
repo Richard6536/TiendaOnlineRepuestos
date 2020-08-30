@@ -8,9 +8,9 @@
 
     <!-- Custom styles for this template -->
     <link href="~/Content/Index/carousel.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/6e60627bfa.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="~/Content/Layout/search-input.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
     @{
         var nombreTienda = "";
@@ -28,9 +28,10 @@
         }
     }
 </head>
+<!--background-color: #ffeb74 / #f3f3f3-->
 <body style="background-color: #f3f3f3">
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ffd800">
-        <a class="navbar-brand" href="#">Repuestos</a>
+        <a class="navbar-brand" href="#">Dullin</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -40,40 +41,46 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="~/">Inicio <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Categorías
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                    </div>
-                </li>
             </ul>
-            <form class="form-inline">
-                <input class="form-control mr-sm-2" type="search" placeholder="Productos" aria-label="Search">
-                <button class="btn btn-outline-dark my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
-            </form>
-
-            <div class="navbar-form">
-                @if (Session["Rol"] != null)
-                {
-                    <a class="btn btn-default navbar-right" href="/Login/CerrarSesion" style="color:transparent; color:gray"><span class="glyphicon glyphicon-lock"></span> Cerrar Sesión</a>
-                    <a class="btn btn-default navbar-right" href="@urlTienda" style="color:white; background-color:black; margin-right:5px"><span class="glyphicon glyphicon-home"></span> @nombreTienda</a>
+            <div style="width:100%">
+                @{
+                    Html.RenderAction("_CategoriesPartial", "Layout");
                 }
-                else
-                {
-                    <a class="btn btn-default navbar-right" href="/Login/IniciarSesion" style="color:transparent; color:gray"><span class="glyphicon glyphicon-lock"></span> Iniciar Sesión</a>
-                }
-
             </div>
         </div>
     </nav>
+    <ul class="nav justify-content-end" style="background-color:#ffeb74">
+        @if (Session["Rol"] != null)
+        {
+            <li class="nav-item">
+                <a class="nav-link active" style="color:#565656" href="/Login/CerrarSesion"><i class="fas fa-sign-in-alt"></i> Cerrar Sesión</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" style="color:#565656" href="@urlTienda"><i class="fas fa-store"></i> @nombreTienda</a>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item">
+                <a class="nav-link active" style="color:#565656" href="/Login/Registrate"><i class="fas fa-user-plus"></i> Crear Cuenta</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" style="color:#565656" href="/Login/IniciarSesion"><i class="fas fa-sign-in-alt"></i> Ingresa</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" style="color:#565656" href="#"><i class="fas fa-store"></i> Crea una Tienda</a>
+            </li>
+        }
+
+
+    </ul>
     @RenderBody()
     <br />
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
+    @RenderSection("scripts", required: false)
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/6e60627bfa.js" crossorigin="anonymous"></script>
 </body>
 </html>

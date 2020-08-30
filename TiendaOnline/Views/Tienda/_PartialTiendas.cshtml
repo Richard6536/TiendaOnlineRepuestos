@@ -1,0 +1,62 @@
+﻿@model IEnumerable<TiendaOnline.Models.Tienda>
+<div class="row">
+
+    @if ((TiendaOnline.Clases.TiendaHome.ViewProductType)ViewBag.ViewProductType == TiendaOnline.Clases.TiendaHome.ViewProductType.Grid)
+    {
+        <link rel="stylesheet" href="~/Content/Tienda/tienda-product-card-grid.css" />
+        foreach (var item in Model)
+        {
+            <div class="col-sm-3">
+                <div class="card card-product" onclick="location.href='@Url.Action("Tienda", "Home", new { id = item.Id })';">
+                    @{
+                        if (item.ImageProfile != null)
+                        {
+                            <img class="img-product" src="@Url.Content("~/ImagenesUsers/" + item.Id + "/Logos/" + System.IO.Path.GetFileName(item.ImageProfile.DireccionImagen))" alt="...">
+                        }
+                    }
+
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <span class="d-inline-block text-truncate text-product">
+                                @item.Nombre
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else if ((TiendaOnline.Clases.TiendaHome.ViewProductType)ViewBag.ViewProductType == TiendaOnline.Clases.TiendaHome.ViewProductType.List)
+    {
+        <link rel="stylesheet" href="~/Content/Tienda/tienda-product-card-list.css" />
+        foreach (var item in Model)
+        {
+            <div class="col-sm-3">
+                <div class="card card-product" onclick="location.href='@Url.Action("VerServicio", "Servicio", new { id = item.Id })';">
+                    <div class="row" style="height:150px">
+                        <div class="image-content">
+                            @{
+                                if (item.ImageProfile != null)
+                                {
+                                    <img class="img-product" style="object-fit:contain; width:150px; height:150px; padding:5px" src="@Url.Content("~/ImagenesUsers/" + item.Id + "/Servicios/" + System.IO.Path.GetFileName(item.ImageProfile.DireccionImagen))" alt="...">
+                                }
+                            }
+                        </div>
+                        <div style="width:50%">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <span class="d-inline-block">
+                                        @item.Nombre
+                                    </span>
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+    }
+
+</div>
+

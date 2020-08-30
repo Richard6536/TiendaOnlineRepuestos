@@ -1,0 +1,90 @@
+﻿
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.carousel-container, .carousel-container-destacado, .carousel-container-descuento {
+    /*width: 100%;*/
+    /*margin: 50px auto;*/
+    min-height: 200px;
+    position: relative;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+
+    .carousel-container .carousel-inner, .carousel-container-destacado .carousel-inner, .carousel-container-descuento .carousel-inner {
+        overflow: hidden;
+    }
+
+    .carousel-container .track, .carousel-container-destacado .track-destacado, .carousel-container-descuento .track-descuento {
+        display: inline-flex;
+        transition: transform 0.5s;
+    }
+
+    .carousel-container .card-container, .carousel-container-destacado .card-container, .carousel-container-descuento .card-container {
+        width: 259px;
+        flex-shrink: 0;
+        /*padding-right: 15px;*/
+        box-sizing: border-box;
+    }
+
+        .carousel-container .card-container .card, .carousel-container-destacado .card-container .card, .carousel-container-descuento .card-container .card {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            /*border-radius: 10px;*/
+            display: flex;
+            flex-direction: column;
+        }
+
+.nav button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid #ffd800;
+    position: absolute;
+    background-color: #ffd800;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.nav .prev, .nav .prev-destacado, .nav .prev-descuento {
+    left: -10px;
+    display: none;
+}
+
+    .nav .prev.show, .nav .prev-destacado.show, .nav .prev-descuento.show {
+        display: block;
+    }
+
+.nav .next, .nav .next-destacado, .nav .next-descuento {
+    right: -10px;
+}
+
+    .nav .next.hide, .nav .next-destacado.hide, .nav .next-descuento.hide {
+        display: none;
+    }
+
+.card-carousel > * {
+    flex: 1;
+}
+
+.card-carousel .img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+}
+
+.card-carousel .info {
+    flex-basis: 40px;
+    background: #333;
+    color: #fff;
+    flex-grow: 0;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+
+/*PRODUCTOS DESTACADOS*/

@@ -10,7 +10,7 @@ using System.Data.Entity.Infrastructure;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.IO;
-
+using System.Drawing;
 
 namespace TiendaOnline.Models
 {
@@ -30,7 +30,7 @@ namespace TiendaOnline.Models
 
 
         public enum ImagenSize { Regular, MediaPagina, PaginaEntera }
-        public enum ImagenTipo { Producto, Servicio }
+        public enum ImagenTipo { Producto, Servicio, ProfileTienda, HeaderTienda }
 
         [Key]
         public int Id { get; set; }
@@ -46,6 +46,10 @@ namespace TiendaOnline.Models
         public int? ServicioId { get; set; }
         [ForeignKey("ServicioId")]
         public virtual Servicio Servicio { get; set; }
+
+        public int? TiendaId { get; set; }
+        [ForeignKey("TiendaId")]
+        public virtual Tienda Tienda { get; set; }
 
         public static Producto SubirImagenesProducto(List<HttpPostedFileBase> files, TiendaOnlineContext _db, Producto _producto)
         {
@@ -136,6 +140,58 @@ namespace TiendaOnline.Models
             return fullPath;
         }
 
+        public static string GuardarLogoEnTienda(TiendaOnlineContext _db, Tienda tienda, string carpeta, string nombrefile, string file, ImagenTipo tipoImagen)
+        {
+            string convertedBase64String = file.Replace("data:image/png;base64,", String.Empty);
+
+            int tiendaId = tienda.Id;
+            string fullPath = "";
+
+            var basePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/ImagenesUsers/" + tiendaId + "/" + carpeta));
+            if (!File.Exists(basePath))
+            {
+                Directory.CreateDirectory(basePath);
+            }
+
+            fullPath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/ImagenesUsers/" + tiendaId + "/" + carpeta), nombrefile);
+            try
+            {
+                if (File.Exists(fullPath)){
+                    if (ImagenTipo.HeaderTienda == tipoImagen)
+                        EliminarImagen(_db, tienda.ImageHeader.Id);
+                    else if (ImagenTipo.ProfileTienda == tipoImagen)
+                        EliminarImagen(_db, tienda.ImageProfile.Id);
+                }
+
+
+                Imagen nuevaImagen = new Imagen();
+
+                nuevaImagen.DireccionImagen = fullPath;
+                nuevaImagen.DimensionImagen = ImagenSize.Regular;
+                nuevaImagen.TipoImagen = tipoImagen;
+                nuevaImagen.Tienda = tienda;
+                nuevaImagen.NombreImagen = nombrefile;
+
+                if (ImagenTipo.HeaderTienda == tipoImagen)
+                    tienda.ImageHeader = nuevaImagen;
+                else if (ImagenTipo.ProfileTienda == tipoImagen)
+                    tienda.ImageProfile = nuevaImagen;
+
+                _db.Imagenes.Add(nuevaImagen);
+                _db.SaveChanges();
+
+                File.WriteAllBytes(fullPath, Convert.FromBase64String(convertedBase64String));
+
+            }
+            catch (Exception e)
+            {
+                String message = e.StackTrace;
+                return null;
+            }
+
+            return fullPath;
+        }
+
         public static bool EliminarImagen(TiendaOnlineContext _db, int id)
         {
             Imagen imagen = _db.Imagenes.Find(id);
@@ -145,10 +201,15 @@ namespace TiendaOnline.Models
             imagen.Producto = null;
             imagen.ProductoId = null;
 
+            imagen.Servicio = null;
+            imagen.ServicioId = null;
+
+            imagen.Tienda = null;
+            imagen.TiendaId = null;
 
             try
             {
-                System.IO.File.Delete(imagen.DireccionImagen);
+                File.Delete(imagen.DireccionImagen);
             }
             catch
             {

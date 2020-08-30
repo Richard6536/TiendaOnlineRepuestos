@@ -1,0 +1,13 @@
+﻿@model TiendaOnline.Models.Tienda
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+}
+
+<h2>Ajustes</h2>
+
+<ul>
+    <li>@Html.ActionLink("Información de Contacto", "InformacionContacto", new { id = Model.Id })</li>
+    <li>@Html.ActionLink("Administrar Logos", "Logos", new { id = Model.Id })</li>
+</ul>

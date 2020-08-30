@@ -7,7 +7,7 @@ using TiendaOnline.Models;
 
 namespace TiendaOnline.Controllers
 {
-    public class ProductosController : Controller
+    public class ProductoController : Controller
     {
         TiendaOnlineContext db = new TiendaOnlineContext();
         //si no tiene tienda no puede usar nada de esto
@@ -95,7 +95,7 @@ namespace TiendaOnline.Controllers
 
             Producto producto = db.Productos.Find(id);
 
-            List<Categoria> categorias = db.Categorias.Where(c => c.TipoCategoria == Categoria.CategoriaTipo.Servicio).ToList();
+            List<Categoria> categorias = db.Categorias.Where(c => c.TipoCategoria == Categoria.CategoriaTipo.Producto).ToList();
             categorias.Reverse();
 
             ViewBag.CategoriaId = new SelectList(categorias, "Id", "NombreCategoria", producto.Id);
@@ -286,6 +286,41 @@ namespace TiendaOnline.Controllers
             return Json(new { exito = true, respuesta = sJSON });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResponderComentarioTienda(int idComentario, string respuesta)
+        {
+            if (Session["Rol"] == null)
+            {
+                return Json(new
+                {
+                    exito = false,
+                    respuesta = "Necesita iniciar sesión para comentar."
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            int idUsuario = (int)Session["Id"];
+            ComentarioRespuesta cr = Comentario.ResponderComentario(db, idComentario, idUsuario, respuesta);
+
+            String Fecha = cr.Fecha.ToString();
+            String NombreUsuario = cr.Usuario.Nombre;
+            String Mensaje = cr.Mensaje;
+            int Id = idComentario;
+
+            System.Web.Script.Serialization.JavaScriptSerializer oSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            string sJSON = oSerializer.Serialize(
+                new
+                {
+                    Id,
+                    NombreUsuario,
+                    Mensaje,
+                    Fecha
+                }
+            );
+
+            return Json(new { exito = true, respuesta = sJSON });
+        }
+
         public ActionResult EliminarComentario(int id, int producto_id)
         {
             Producto prod = db.Productos.Find(producto_id);
@@ -294,10 +329,31 @@ namespace TiendaOnline.Controllers
             return RedirectToAction("VerProducto", new { id = producto_id });
         }
 
+        public ActionResult EliminarRespuesta(int id, int producto_id, int comentario_id)
+        {
+
+            if (Session["Rol"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            if (Session["TiendaId"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            Comentario comentario = db.Comentarios.Find(comentario_id);
+            Comentario.EliminarComentarioRespuesta(db, comentario, id);
+
+            return RedirectToAction("VerProducto", new { id = producto_id });
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditarComentarioAction(int id, int producto_id, string mensajeEdit)
         {
+            if (Session["Rol"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            if (Session["TiendaId"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
             Producto prod = db.Productos.Find(producto_id);
             Tuple<Comentario, Boolean> data = Producto.EditarComentario(db, prod, id, mensajeEdit);
 
@@ -315,6 +371,37 @@ namespace TiendaOnline.Controllers
                 new
                 {
                     id,
+                    NombreUsuario,
+                    Mensaje,
+                    Fecha
+                }
+            );
+
+            return Json(new { exito = true, respuesta = sJSON });
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditarRespuestaAction(int comentarioRespuesta_id, int comentario_id, string mensajeEdit)
+        {
+            Comentario comentario = db.Comentarios.Find(comentario_id);
+            Tuple<ComentarioRespuesta, Boolean> data = Comentario.EditarComentarioRespuesta(db, comentario, comentarioRespuesta_id, mensajeEdit);
+
+            if (data.Item2 == false)
+            {
+                //Comentario no encontrado. Hacer algo.
+            }
+
+            String NombreUsuario = data.Item1.Usuario.NombreUsuario;
+            String Mensaje = data.Item1.Mensaje;
+            String Fecha = data.Item1.Fecha.ToString();
+
+            System.Web.Script.Serialization.JavaScriptSerializer oSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            string sJSON = oSerializer.Serialize(
+                new
+                {
+                    comentarioRespuesta_id,
                     NombreUsuario,
                     Mensaje,
                     Fecha

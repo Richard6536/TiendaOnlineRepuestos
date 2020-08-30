@@ -1,0 +1,22 @@
+﻿@model TiendaOnline.Models.Tienda
+
+@{
+    ViewBag.Title = "CrearTienda";
+}
+<br />
+<div class="text-center" style="max-width: 30rem; margin: 0 auto; float: none">
+    <h1 class="display-4" style="margin-bottom:30px">Crea tu Tienda!</h1>
+    @using (Html.BeginForm("_CrearTienda", "Home"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="input-group mb-3">
+            @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", @Placeholder = "Ingresa el Nombre de tu Tienda" } })
+            <div class="input-group-append">
+                <button class="btn btn-outline-dark" style="background-color:#ffd800" type="button">CREAR</button>
+            </div>
+        </div>
+        @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+    }
+</div>
+<br />

@@ -1,0 +1,438 @@
+﻿@model TiendaOnline.Models.Tienda
+
+@{
+    ViewBag.Title = "Logos";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+}
+
+
+
+<style>
+    .ic-container {
+        position: relative;
+    }
+
+    .ic-overlay-n,
+    .ic-overlay-e,
+    .ic-overlay-s,
+    .ic-overlay-w {
+        position: absolute;
+        background-color: #000;
+        opacity: 0.7;
+    }
+
+    .ic-overlay-n {
+        top: 0;
+    }
+
+    .ic-overlay-e {
+        top: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .ic-overlay-s {
+        bottom: 0;
+    }
+
+    .ic-overlay-w {
+        top: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .ic-resize-handle-ne,
+    .ic-resize-handle-se,
+    .ic-resize-handle-nw,
+    .ic-resize-handle-sw {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #c92437;
+        z-index: 999;
+    }
+
+    .ic-resize-handle-nw {
+        top: -5px;
+        left: -5px;
+        cursor: nw-resize;
+    }
+
+    .ic-resize-handle-sw {
+        bottom: -5px;
+        left: -5px;
+        cursor: sw-resize;
+    }
+
+    .ic-resize-handle-ne {
+        top: -5px;
+        right: -5px;
+        cursor: ne-resize;
+    }
+
+    .ic-resize-handle-se {
+        bottom: -5px;
+        right: -5px;
+        cursor: se-resize;
+    }
+
+    .ic-crop-marker {
+        position: absolute;
+        z-index: 999;
+        border: solid 2px rgba(201, 36, 55, 0.5);
+        cursor: move;
+    }
+
+    .ic-move-handle {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .ic-container img {
+        display: block;
+        max-width: 100%;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+    section {
+        height: 100%;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .drop {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        font-family: Lobster, Arial, serif;
+        font-size: 30px;
+        color: #333;
+        background-color: rgba(255, 255, 255, 0.2);
+        border: 5px dashed rgba(51, 51, 51, 0.4);
+        cursor: pointer;
+        transition-properties: border;
+        -webkit-transition-duration: 0.2s;
+        transition-duration: 0.2s;
+    }
+
+        .drop.dragging,
+        .drop:hover {
+            border-color: rgba(51, 51, 51, 0.8);
+        }
+
+        .drop p {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            margin-top: -19px;
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+    .image-resize {
+        max-width: 800px;
+        margin: auto;
+    }
+
+    .thumbnail {
+        display: inline-block;
+        margin: auto;
+        padding: 5px;
+        background-color: rgba(255, 255, 255, 0.4);
+        border-radius: 5px;
+    }
+
+        .thumbnail img {
+            display: block;
+            border-radius: 5px;
+        }
+
+    #sectionDragAndDrop {
+        height: 200px;
+    }
+</style>
+<script>
+    window.console = window.console || function (t) { };
+</script>
+<script>
+    if (document.location.search.match(/type=embed/gi)) {
+        window.parent.postMessage("resize", "*");
+    }
+</script>
+
+<div class="card-group" style="margin-top:15px">
+    <div class="card">
+        <div class="card-footer text-center">
+            <small class="text-muted">Subir nuevo Logo de perfil</small>
+        </div>
+        <div class="card-body">
+            <section id="sectionDragAndDrop">
+                <div class="drop" id="drop">
+                    <p>Soltar o subir imagen.</p>
+                </div>
+                <input class="file-upload hidden" name="fileImagePerfil" id="fileUpload" type="file">
+            </section>
+            <section class="hidden" id="sectionResize">
+                <div class="image-resize" id="imageResize"></div>
+                <button class="btn btn-default" id="crop"><span class='fa fa-crop'></span> Guardar Cambios</button>
+            </section>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-footer text-center">
+            <small class="text-muted">Logo de perfil actual</small>
+        </div>
+        <div class="card-body text-center"style="background-color:darkorange; padding:0px!important">
+            <div class="card" style="height:150px; width:100%; background-image:url(https://i.imgur.com/2e2nXD6.jpg)">
+                <div style="text-align:center">
+                    <a title="@Model.Nombre" class="twPc-avatarLink shadow-sm">
+                        <section id="sectionThumbnail" class="hidden">
+                            <div class="thumbnail" id="thumbnail"></div>
+                        </section>
+                        @if (Model.ImageProfile != null)
+                        {
+                            <img id="logoPerfilActual" src="@Url.Content("~/ImagenesUsers/" + Model.Id + "/Logos/" + System.IO.Path.GetFileName(Model.ImageProfile.DireccionImagen))" class="twPc-avatarImg">
+                        }
+                    </a>
+                </div>
+            </div>
+            <!--
+           <img id="logoPerfilActual" style="object-fit: contain" src="Url.Content("~/ImagenesUsers/" + Model.Id + "/Logos/" + System.IO.Path.GetFileName(Model.ImageProfile.DireccionImagen))" alt="...">
+    -->
+        </div>
+    </div>
+</div>
+<div style="width:100%; text-align:center; margin-top:15px">
+    <button class="btn btn-success" onclick="sendImage()" type="submit">Guardar cambios</button>
+</div>
+<br />
+
+
+<style>
+
+    .twPc-div {
+        background: #fff none repeat scroll 0 0;
+        border: 1px solid #e1e8ed;
+        border-radius: 6px;
+        height: 200px;
+        width: 100%;
+        // orginal twitter width: 290px;
+    }
+
+    .twPc-bg {
+        background-image: url("https://pbs.twimg.com/profile_banners/50988711/1384539792/600x200");
+        background-position: 0 50%;
+        background-size: 100% auto;
+        border-bottom: 1px solid #e1e8ed;
+        border-radius: 4px 4px 0 0;
+        height: 95px;
+        width: 100%;
+    }
+
+    .twPc-block {
+        display: block !important;
+    }
+
+    .twPc-button {
+        margin: -35px -10px 0;
+        text-align: right;
+        width: 100%;
+    }
+
+    .twPc-avatarLink {
+        background-color: #fff;
+        border-radius: 6px;
+        display: inline-block !important;
+        margin-top: 90px;
+        width: 120px;
+        height: 118px;
+        padding: 1px;
+        vertical-align: central;
+    }
+
+    .twPc-avatarImg {
+        border: 2px solid #fff;
+        border-radius: 7px;
+        box-sizing: border-box;
+        color: #fff;
+        width: 110px;
+        height: 110px;
+    }
+
+    .twPc-divUser {
+        margin: 5px 0 0;
+    }
+
+    .twPc-divName {
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 21px;
+    }
+
+        .twPc-divName a {
+            color: inherit !important;
+        }
+
+    .twPc-divStats {
+        margin-left: 11px;
+        padding: 10px 0;
+    }
+
+    .twPc-Arrange {
+        box-sizing: border-box;
+        display: table;
+        margin: 0;
+        min-width: 100%;
+        padding: 0;
+        table-layout: auto;
+    }
+
+    ul.twPc-Arrange {
+        list-style: outside none none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .twPc-ArrangeSizeFit {
+        display: table-cell;
+        padding: 0;
+        vertical-align: top;
+    }
+
+        .twPc-ArrangeSizeFit a:hover {
+            text-decoration: none;
+        }
+
+    .twPc-StatValue {
+        display: block;
+        font-size: 18px;
+        font-weight: 500;
+        transition: color 0.15s ease-in-out 0s;
+    }
+
+    .twPc-StatLabel {
+        color: #8899a6;
+        font-size: 10px;
+        letter-spacing: 0.02em;
+        overflow: hidden;
+        text-transform: uppercase;
+        transition: color 0.15s ease-in-out 0s;
+    }
+</style>
+<script>
+    function MostrarSectionDragAndDrop() {
+        $('#sectionDragAndDrop').remove('hidden');
+        $('#imgPerfilActual').addClass('hidden');
+    }
+</script>
+
+<script src="https://static.codepen.io/assets/common/stopExecutionOnTimeout-157cd5b220a5c80d4ff8e0e70ac069bffd87a61252088146915e8726e5d9f147.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='https://codepen.io/joshhunt18/pen/dtpzw.js'></script>
+<script id="rendered-js">
+    $('#drop').on('click', function () {
+        $('#fileUpload').trigger('click');
+    });
+
+    $('#fileUpload').on('change', function (e) {
+        addImage(e.target);
+    });
+
+    $("#drop").on("dragover", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).addClass('dragging');
+    });
+
+    $("#drop").on("dragleave", function (e) {
+        $(this).removeClass('dragging');
+    });
+
+    $("#drop").on("drop", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var data = e.dataTransfer || e.originalEvent.dataTransfer;
+        addImage(data);
+    });
+
+    function addImage(data) {
+        var file = data.files[0];
+        if (file.type.indexOf('image') === -1) {
+            alert('Sorry, the file you uploaded doesn\'t appear to be an image.');
+            return false;
+        }
+
+        var reader = new FileReader();
+        reader.onload = function (event) {
+            var img = new Image();
+            img.onload = function () {
+                if (img.width < 200 || img.height < 200) {
+                    alert('Sorry, the image you uploaded doesn\'t appear to be large enough.');
+                    return false;
+                }
+                cropImage(img);
+
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+
+    }
+
+    function cropImage(originalImage) {
+
+        $(originalImage).attr('id', 'fullImage');
+        $('#imageResize').html(originalImage);
+        $('#sectionDragAndDrop').addClass('hidden');
+        $('#sectionResize').removeClass('hidden');
+
+        var newImage = new imageCrop('#fullImage', 200, 200);
+
+        $('#crop').on('click', function () {
+            var results = newImage.crop();
+            $('#thumbnail').html(results.img);
+            $('#sectionResize').addClass('hidden');
+            $('#logoPerfilActual').addClass('hidden');
+            $('#sectionThumbnail').removeClass('hidden');
+            $('#sectionDragAndDrop').removeClass('hidden');
+            //sendImage(results);
+        });
+    }
+
+    function sendImage() {
+        var imgsrc = document.getElementById("thumbnail").getElementsByTagName("img")[0];
+        var data = new FormData();
+        data.append('fileImagePerfil', imgsrc.src);
+        $.ajax({
+            type: "POST",
+            url: "/Ajustes/Logos",
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                if (result.exito == false) {
+                    alert(result.mensaje);
+                }
+                else {
+                    location.reload(true);
+                }
+            },
+            error: function (response) {
+                //debugger;
+                //alert('eror');
+            }
+        });
+    }
+</script>

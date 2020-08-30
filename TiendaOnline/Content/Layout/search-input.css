@@ -1,0 +1,12 @@
+﻿.form-search-input {
+    display: block !important;
+    width: 50%;
+}
+
+@media (max-width: 576px){
+    .form-search-input {
+        display: block !important;
+        width: 100%;
+    }
+
+}

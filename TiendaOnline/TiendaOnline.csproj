@@ -206,10 +206,14 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Clases\Busqueda.cs" />
     <Compile Include="Clases\PasswordHash.cs" />
+    <Compile Include="Clases\TiendaHome.cs" />
+    <Compile Include="Controllers\AjustesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LayoutController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Controllers\ProductosController.cs" />
+    <Compile Include="Controllers\ProductoController.cs" />
     <Compile Include="Controllers\ServicioController.cs" />
     <Compile Include="Controllers\SuperAdminController.cs" />
     <Compile Include="Controllers\TiendaController.cs" />
@@ -239,10 +243,43 @@
     <Compile Include="Migrations\202007272102110_Servicios-Imagen.Designer.cs">
       <DependentUpon>202007272102110_Servicios-Imagen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202008010036277_nuevos campos producto.cs" />
+    <Compile Include="Migrations\202008010036277_nuevos campos producto.Designer.cs">
+      <DependentUpon>202008010036277_nuevos campos producto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008030148358_Tienda.cs" />
+    <Compile Include="Migrations\202008030148358_Tienda.Designer.cs">
+      <DependentUpon>202008030148358_Tienda.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008030400548_Contacto.cs" />
+    <Compile Include="Migrations\202008030400548_Contacto.Designer.cs">
+      <DependentUpon>202008030400548_Contacto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008110406552_Tienda Imagenes.cs" />
+    <Compile Include="Migrations\202008110406552_Tienda Imagenes.Designer.cs">
+      <DependentUpon>202008110406552_Tienda Imagenes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008131739212_Descripcion en Tienda.cs" />
+    <Compile Include="Migrations\202008131739212_Descripcion en Tienda.Designer.cs">
+      <DependentUpon>202008131739212_Descripcion en Tienda.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008131813110_ImageHeader and ImageProfile.cs" />
+    <Compile Include="Migrations\202008131813110_ImageHeader and ImageProfile.Designer.cs">
+      <DependentUpon>202008131813110_ImageHeader and ImageProfile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008282349396_ComentarioRespuesta Modelo.cs" />
+    <Compile Include="Migrations\202008282349396_ComentarioRespuesta Modelo.Designer.cs">
+      <DependentUpon>202008282349396_ComentarioRespuesta Modelo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008282354024_ComentarioRespuesta Model 2.cs" />
+    <Compile Include="Migrations\202008282354024_ComentarioRespuesta Model 2.Designer.cs">
+      <DependentUpon>202008282354024_ComentarioRespuesta Model 2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Carrocompra.cs" />
     <Compile Include="Models\Categoria.cs" />
     <Compile Include="Models\Comentario.cs" />
+    <Compile Include="Models\ComentarioRespuesta.cs" />
     <Compile Include="Models\Imagen.cs" />
     <Compile Include="Models\Producto.cs" />
     <Compile Include="Models\ProductoCarro.cs" />
@@ -261,10 +298,14 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Comentarios\comment-list.css" />
+    <Content Include="Content\Index\carousel-multi-products.css" />
     <Content Include="Content\Index\carousel.css" />
+    <Content Include="Content\Layout\search-input.css" />
     <Content Include="Content\Portal\carousel-multi.css" />
     <Content Include="Content\simple-sidebar.css" />
     <Content Include="Content\Tienda\tienda-inicio.css" />
+    <Content Include="Content\Tienda\tienda-product-card-grid.css" />
+    <Content Include="Content\Tienda\tienda-product-card-list.css" />
     <Content Include="Content\VerProducto\product-view.css" />
     <Content Include="Scripts\Scripts Personalizados\tienda.js" />
     <Content Include="vendor\bootstrap\css\bootstrap.css" />
@@ -353,14 +394,14 @@
     <Content Include="Views\Home\CrearTienda.cshtml" />
     <Content Include="Views\Usuarios\CrearUsuario.cshtml" />
     <Content Include="Views\Usuarios\ListaUsuarios.cshtml" />
-    <Content Include="Views\Productos\ListaProductos.cshtml" />
-    <Content Include="Views\Productos\CrearProducto.cshtml" />
-    <Content Include="Views\Productos\VerImagenesProducto.cshtml" />
+    <Content Include="Views\Producto\ListaProductos.cshtml" />
+    <Content Include="Views\Producto\CrearProducto.cshtml" />
+    <Content Include="Views\Producto\VerImagenesProducto.cshtml" />
     <Content Include="Views\SuperAdmin\EditarTienda.cshtml" />
     <Content Include="Views\Usuarios\EditarUsuario.cshtml" />
-    <Content Include="Views\Productos\EditarProducto.cshtml" />
+    <Content Include="Views\Producto\EditarProducto.cshtml" />
     <Content Include="Views\Login\Registrate.cshtml" />
-    <Content Include="Views\Productos\VerProducto.cshtml" />
+    <Content Include="Views\Producto\VerProducto.cshtml" />
     <Content Include="Views\Home\Tienda.cshtml" />
     <Content Include="Views\Shared\_LayoutTiendaInicio.cshtml" />
     <Content Include="Views\Home\Portal.cshtml" />
@@ -372,10 +413,19 @@
     <Content Include="Views\Servicio\EditarServicio.cshtml" />
     <Content Include="Views\Servicio\VerImagenesServicio.cshtml" />
     <Content Include="Views\Servicio\VerServicio.cshtml" />
+    <Content Include="Views\Ajustes\Index.cshtml" />
+    <Content Include="Views\Ajustes\InformacionContacto.cshtml" />
+    <Content Include="Views\Shared\_CategoriesPartial.cshtml" />
+    <Content Include="Views\Home\Search.cshtml" />
+    <Content Include="Views\Ajustes\Logos.cshtml" />
+    <Content Include="Views\Tienda\_PartialProducts.cshtml" />
+    <Content Include="Views\Tienda\_PartialServices.cshtml" />
+    <Content Include="Views\Tienda\_PartialTiendas.cshtml" />
+    <Content Include="Views\Home\_CrearTienda.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Tienda\" />
+    <Folder Include="Views\Layout\" />
     <Folder Include="Views\Transaction\" />
   </ItemGroup>
   <ItemGroup>
@@ -406,6 +456,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007272102110_Servicios-Imagen.resx">
       <DependentUpon>202007272102110_Servicios-Imagen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008010036277_nuevos campos producto.resx">
+      <DependentUpon>202008010036277_nuevos campos producto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008030148358_Tienda.resx">
+      <DependentUpon>202008030148358_Tienda.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008030400548_Contacto.resx">
+      <DependentUpon>202008030400548_Contacto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008110406552_Tienda Imagenes.resx">
+      <DependentUpon>202008110406552_Tienda Imagenes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008131739212_Descripcion en Tienda.resx">
+      <DependentUpon>202008131739212_Descripcion en Tienda.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008131813110_ImageHeader and ImageProfile.resx">
+      <DependentUpon>202008131813110_ImageHeader and ImageProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008282349396_ComentarioRespuesta Modelo.resx">
+      <DependentUpon>202008282349396_ComentarioRespuesta Modelo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008282354024_ComentarioRespuesta Model 2.resx">
+      <DependentUpon>202008282354024_ComentarioRespuesta Model 2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

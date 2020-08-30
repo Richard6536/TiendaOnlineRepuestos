@@ -1,0 +1,176 @@
+﻿@model TiendaOnline.Models.Tienda
+
+@{
+    ViewBag.Title = "InformacionContacto";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+}
+
+<script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css" />
+<!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
+<style>
+
+    .mapboxgl-ctrl-geocoder {
+        min-width: 100%;
+    }
+
+    #map {
+        margin-top: 10px;
+    }
+</style>
+
+<br />
+<h3>Informacion de Contacto</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+<div class="form-horizontal">
+    <hr />
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+
+    <div style="margin-right:10px">
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4 mb-3">
+                @Html.LabelFor(model => model.Correo, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.Correo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Correo, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4 mb-3">
+                @Html.LabelFor(model => model.Telefono, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Descripción</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+    </div>
+
+    <div id="geocoder" class="geocoder"></div>
+    <div id="map" style="width:100%; height:300px"></div>
+
+    <div style="margin-right:10px">
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                @Html.LabelFor(model => model.Local, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.Local, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Local, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4 mb-3">
+                @Html.LabelFor(model => model.Direccion, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.Direccion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Direccion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                @Html.LabelFor(model => model.Longitud, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.Longitud, new { htmlAttributes = new { @class = "form-control", Id = "lngInput" } })
+                @Html.ValidationMessageFor(model => model.Longitud, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4 mb-3">
+                @Html.LabelFor(model => model.Latitud, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.Latitud, new { htmlAttributes = new { @class = "form-control", Id = "latInput" } })
+                @Html.ValidationMessageFor(model => model.Latitud, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Guardar Cambios" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
+}
+
+<script>
+    var currentMarker = null;
+    var lngLat = null;
+
+    var latitudInput =  document.getElementById("latInput").value.replace(",", ".");
+    var longitudInput = document.getElementById("lngInput").value.replace(",", ".");
+
+    document.getElementById("latInput").value = latitudInput;
+    document.getElementById("lngInput").value = longitudInput;
+
+ 
+    mapboxgl.accessToken = 'pk.eyJ1IjoiemVyb2RzIiwiYSI6ImNrM2t3cG0xNzB5bzgzam12dHdwY2luMXgifQ.3qy4aurdz4Vjp4QNr1-feg';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [longitudInput, latitudInput],
+        zoom: 13
+    });
+
+    var geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl
+    });
+
+    function createMarker(currentMarker, lng, lat) {
+        currentMarker = new mapboxgl.Marker({draggable: true})
+        .setLngLat([lng, lat])
+        .addTo(map);
+
+        return currentMarker;
+    }
+
+    currentMarker = createMarker(currentMarker, longitudInput, latitudInput);
+
+    document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+    
+    function onDragEnd() {
+        seLngLat(currentMarker);
+    }
+
+    currentMarker.on('dragend', onDragEnd);
+
+    map.on('click', function (e) {
+
+        if (currentMarker !== null) {
+            currentMarker.remove();
+        }
+
+        // Tuve que crear un nuevo Marcador en vez de llamar a la funcion createMarker() porque la funcion onDragEnd()
+        // no se ejecutaba si el marcador no estaba dentro de map.on('click')
+        currentMarker = new mapboxgl.Marker({draggable: true})
+        .setLngLat([e.lngLat.lng,  e.lngLat.lat])
+        .addTo(map);
+
+        //currentMarker = createMarker(currentMarker, e.lngLat.lng, e.lngLat.lat);
+
+        currentMarker.on('dragend', onDragEnd);
+        seLngLat(currentMarker);
+    });
+
+
+    function seLngLat(currentMarker) {
+        if (currentMarker !== null) {
+            lngLat = currentMarker.getLngLat();
+
+            var currentLng = lngLat.lng + "";
+            var currentLat = lngLat.lat + "";
+
+            document.getElementById("latInput").value = currentLat.replace(".", ",");
+            document.getElementById("lngInput").value = currentLng.replace(".", ",");
+        }
+    }
+
+</script>

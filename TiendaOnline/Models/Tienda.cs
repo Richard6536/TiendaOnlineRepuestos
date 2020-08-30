@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Validation;
 using System.Data.Entity.Infrastructure;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace TiendaOnline.Models
 {
@@ -16,13 +17,19 @@ namespace TiendaOnline.Models
     {
         [Key]
         public int Id { get; set; }
-
         [Required(ErrorMessage = "El campo Nombre es obligatorio")]
         public string Nombre { get; set; }
-
+        public string Correo { get; set; }
+        public int Telefono { get; set; }
+        public string Descripcion { get; set; }
+        public string Local { get; set; }
+        public string Direccion { get; set; }
+        public double Latitud { get; set; }
+        public double Longitud { get; set; }
+        public virtual Imagen ImageProfile { get; set; }
+        public virtual Imagen ImageHeader { get; set; }
         public virtual List<Producto> Productos { get; set; }
         public virtual List<Servicio> Servicios { get; set; }
-
         public virtual List<UsuarioTienda> UsuariosTienda { get; set; }
 
         public static Tienda CrearNuevaTienda(TiendaOnlineContext _db, Tienda _model)
@@ -38,10 +45,24 @@ namespace TiendaOnline.Models
 
         public static Tienda EditarTienda(TiendaOnlineContext _db, Tienda _model)
         {
-            Tienda tienda = _db.Tienda.Where(t => t.Id == _model.Id).FirstOrDefault();
-            tienda = _model;
 
-            _db.Tienda.Add(tienda);
+            Tienda tienda = _db.Tienda.Where(t => t.Id == _model.Id).FirstOrDefault();
+            tienda.Correo = _model.Correo;
+            tienda.Telefono = _model.Telefono;
+            tienda.Local = _model.Local;
+            tienda.Direccion = _model.Direccion;
+
+            try
+            {
+                tienda.Latitud = _model.Latitud;
+                tienda.Longitud = _model.Longitud;
+            }
+            catch (Exception e)
+            {
+                string message = "";
+            }
+
+
             _db.SaveChanges();
 
             return tienda;

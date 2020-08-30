@@ -11,6 +11,9 @@ namespace TiendaOnline.Controllers
     public class LoginController : Controller
     {
         TiendaOnlineContext db = new TiendaOnlineContext();
+        //Si el Usuario crea una Tienda sin registrarse, la tienda esperará hasta que
+        //el Usuario se registre.
+        public static Tienda creacionDeTiendaEnEspera = new Tienda();
 
         //quizas no aqui pero
         //el usuario luego de registrarse por su cuenta
@@ -68,9 +71,7 @@ namespace TiendaOnline.Controllers
                 return View();
             }
 
-            Session["Id"] = user.Id;
-            Session["Nombre"] = user.NombreUsuario;
-            Session["Rol"] = user.RolUsuario;
+            MantenerSesion(user);
 
             UsuarioTienda usTienda = db.UsuariosTienda.Where(ut => ut.Usuario.Id == user.Id).FirstOrDefault();
             if (usTienda != null)
@@ -90,6 +91,13 @@ namespace TiendaOnline.Controllers
 
         }
 
+        public void MantenerSesion(Usuario user)
+        {
+            Session["Id"] = user.Id;
+            Session["Nombre"] = user.NombreUsuario;
+            Session["Rol"] = user.RolUsuario;
+        }
+
         public bool ValidarUsuario(string _nombreUsuario, string _password)
         {
             bool valido = false;
@@ -104,8 +112,11 @@ namespace TiendaOnline.Controllers
             return valido;
         }
 
-        public ActionResult Registrate()
+        public ActionResult Registrate(string nombreTienda)
         {
+            if (nombreTienda != null && nombreTienda != "")
+                creacionDeTiendaEnEspera.Nombre = nombreTienda;
+
             return View();
         }
 
@@ -133,11 +144,32 @@ namespace TiendaOnline.Controllers
             TryValidateModel(model);
 
             if (ModelState.IsValid == false)
-            {
                 return View(model);
-            }
+
             model.RolUsuario = Usuario.TipoUsuario.Cliente;
-            Usuario.CrearNuevoUsuario(db, model);
+
+            int tiendaId = 0;
+            Tienda tiendaCreada = null;
+            if (creacionDeTiendaEnEspera != null)
+            {
+                tiendaCreada = Tienda.CrearNuevaTienda(db, creacionDeTiendaEnEspera);
+                tiendaId = tiendaCreada.Id;
+            }
+
+            Usuario usuarioCreado = Usuario.CrearNuevoUsuario(db, model, tiendaId);
+            MantenerSesion(usuarioCreado);
+
+            if(tiendaCreada != null)
+            {
+                UsuarioTienda usTienda = usuarioCreado.UsuarioTiendas.Where(ut => ut.Tienda.Id == tiendaCreada.Id).FirstOrDefault();
+                if (usTienda != null)
+                {
+                    Session["TiendaId"] = usTienda.Tienda.Id;
+                    Session["TiendaNombre"] = usTienda.Tienda.Nombre;
+                }
+
+                return RedirectToAction("Index", "TiendaUser", new { id = tiendaCreada.Id });
+            }
 
             return RedirectToAction("IniciarSesion");
         }

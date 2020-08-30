@@ -1,0 +1,69 @@
+﻿@model IEnumerable<TiendaOnline.Models.Servicio>
+<div class="row">
+
+    @if ((TiendaOnline.Clases.TiendaHome.ViewProductType)ViewBag.ViewProductType == TiendaOnline.Clases.TiendaHome.ViewProductType.Grid)
+    {
+        <link rel="stylesheet" href="~/Content/Tienda/tienda-product-card-grid.css" />
+        foreach (var item in Model)
+        {
+            <div class="col-sm-3">
+                <div class="card card-product" onclick="location.href='@Url.Action("VerServicio", "Servicio", new { id = item.Id })';">
+                    @{
+                        if (item.Imagenes.Count > 0)
+                        {
+                            <img class="img-product" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Servicios/" + System.IO.Path.GetFileName(item.Imagenes[0].DireccionImagen))" alt="...">
+                        }
+                    }
+
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <span class="d-inline-block text-truncate text-product">
+                                @item.Nombre
+                            </span>
+                        </h6>
+                    </div>
+                    <div class="card-footer card-footer-product">
+                        <small class="text-muted small-product-size">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</small>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else if ((TiendaOnline.Clases.TiendaHome.ViewProductType)ViewBag.ViewProductType == TiendaOnline.Clases.TiendaHome.ViewProductType.List)
+    {
+        <link rel="stylesheet" href="~/Content/Tienda/tienda-product-card-list.css" />
+        foreach (var item in Model)
+        {
+            <div class="col-sm-3">
+                <div class="card card-product" onclick="location.href='@Url.Action("VerServicio", "Servicio", new { id = item.Id })';">
+                    <div class="row" style="height:150px">
+                        <div class="image-content">
+                            @{
+                                if (item.Imagenes.Count > 0)
+                                {
+                                    <img class="img-product" style="object-fit:contain; width:150px; height:150px; padding:5px" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Servicios/" + System.IO.Path.GetFileName(item.Imagenes[0].DireccionImagen))" alt="...">
+                                }
+                            }
+                        </div>
+                        <div style="width:50%">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <span class="d-inline-block">
+                                        @item.Nombre
+                                    </span>
+                                </h6>
+                            </div>
+
+                            <div class="card-footer card-footer-product">
+                                <small class="text-muted small-product-size">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+    }
+
+</div>
+

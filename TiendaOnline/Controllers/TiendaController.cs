@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TiendaOnline.Clases;
 using TiendaOnline.Models;
 
 namespace TiendaOnline.Controllers
@@ -49,5 +50,25 @@ namespace TiendaOnline.Controllers
 
             return View(tienda);
         }
+
+
+        public ActionResult _PartialProducts(TiendaHome.ViewProductType viewProductType, IEnumerable<Producto> productos)
+        {
+            ViewBag.ViewProductType = viewProductType;
+            return PartialView(productos);
+        }
+
+        public ActionResult _PartialServices(TiendaHome.ViewProductType viewProductType, IEnumerable<Servicio> servicios)
+        {
+            ViewBag.ViewProductType = viewProductType;
+            return PartialView(servicios);
+        }
+
+        public ActionResult _PartialTiendas(TiendaHome.ViewProductType viewProductType, IEnumerable<Tienda> tiendas)
+        {
+            ViewBag.ViewProductType = viewProductType;
+            return PartialView(tiendas);
+        }
+
     }
 }

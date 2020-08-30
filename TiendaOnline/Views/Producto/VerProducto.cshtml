@@ -85,6 +85,14 @@
                     <span class="review-no">Tienda: <a href="@Url.Action("Tienda","Home", new { id = Model.Tienda.Id})">@Model.Tienda.Nombre</a></span>
                 </div>
                 <p class="card-text">@Model.Descripcion.</p>
+                @if (!Model.EsGenerico)
+                {
+                    <p class="card-text">Marca: @Model.Marca.</p>
+                    <p class="card-text" style="margin-top:-15px">Modelo: @Model.Modelo.</p>
+                    <p class="card-text" style="margin-top:-15px">Año: @Model.Year.</p>
+                }
+
+
                 <h5 class="card-text">Precio: <span>$@Decimal.Parse(Model.Precio.ToString(), System.Globalization.NumberStyles.Float)</span></h5>
                 <div class="action">
                     <button class="add-to-cart btn btn-default" type="button">Agregar al Carro</button>
@@ -125,18 +133,62 @@
 
                                 @if (Session["Id"] != null)
                                 {
-                                    if ((int)Session["Id"] == item.Usuario.Id)
-                                    {
-                                        <div style="display:inline; width:50%; text-align:right">
-                                            <a href="#" class="material-icons" style="color:green" data-toggle="modal" data-target="#editarModal" data-id="@item.Id" data-commentary="@item.Mensaje" id="btnEdit">edit</a>
-                                            <a href="@Url.Action("EliminarComentario","Productos", new { id = item.Id, producto_id = Model.Id })" style="color:red" class="material-icons" title="Editar" id="btnDelete">delete_outline</a>
-
-                                        </div>
-
-                                    }
+                                    <div style="display:inline; width:50%; text-align:right">
+                                        @if ((int)Session["Id"] == item.Usuario.Id)
+                                        {
+                                            <a href="#" style="color:green" data-toggle="modal" title="Editar" data-target="#editarModal" data-id="@item.Id" data-commentary="@item.Mensaje" id="btnEdit"><i class="fas fa-edit"></i></a>
+                                            <a href="@Url.Action("EliminarComentario","Producto", new { id = item.Id, producto_id = Model.Id })" style="color:red" class="material-icons" title="Eliminar" id="btnDelete"><i class="fas fa-trash"></i></a>
+                                        }
+                                        @if (Session["TiendaId"] != null && (int)Session["TiendaId"] == Model.Tienda.Id && item.ComentariosRespuesta.Count == 0)
+                                        {
+                                            <a href="#" style="color:black; display: none" class="material-icons" data-val="@item.Id" title="Responder" id="btnReplyAdmin" name="btnReply"><i class="fas fa-reply"></i></a>
+                                        }
+                                    </div>
                                 }
                             </div>
+
                         </div>
+                        <div style="width:100%; text-align:right; display: flex; margin-top:10px" id="containerReply-@item.Id">
+                            <div style="flex-grow: 1;"></div>
+                            <div style="width:80%">
+                                @if (item.ComentariosRespuesta.Count > 0)
+                                {
+                                    <div class="card" style="background-color:white!important; text-align:left; padding: 0px!important; margin-top:10px">
+                                        <div class="card-body">
+                                            @if (item.ComentariosRespuesta.First().Usuario.UsuarioTiendas.Count > 0)
+                                            {
+                                                <h5 class="card-title">@item.ComentariosRespuesta.First().Usuario.UsuarioTiendas.First().Tienda.Nombre</h5>
+                                            }
+
+                                            <p id="content-body-@item.ComentariosRespuesta.First().Id" class="card-text">@item.ComentariosRespuesta.First().Mensaje</p>
+                                        </div>
+                                        <div class="card-footer text-muted row" style="margin-left:0px!important; margin-right:0px!important">
+                                            <div id="content-footer-@item.ComentariosRespuesta.First().Id" style="display:inline; width:50%">@item.ComentariosRespuesta.First().Fecha.ToString()</div>
+
+                                            @if (Session["Id"] != null)
+                                            {
+                                                <div style="display:inline; width:50%; text-align:right">
+                                                    @if ((int)Session["Id"] == item.ComentariosRespuesta.First().Usuario.Id)
+                                                    {
+
+                                                        <a href="#" style="color:green" data-toggle="modal" data-target="#editarModalReply" title="Editar" data-idcomment="@item.Id" data-id="@item.ComentariosRespuesta.First().Id" data-commentary="@item.ComentariosRespuesta.First().Mensaje" id="btnEditReply"><i class="fas fa-edit"></i></a>
+                                                        <a href="@Url.Action("EliminarRespuesta","Producto", new { id = item.ComentariosRespuesta.First().Id, producto_id = Model.Id, comentario_id = item.Id })" style="color:red" class="material-icons" title="Eliminar" id="btnDelete"><i class="fas fa-trash"></i></a>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+
+                                    </div>
+                                }
+
+                                <div id="containerReply_admin_@item.Id" style="display:none">
+                                    <textarea class="form-control" placeholder="Escribe un comentario" rows="4" id="textAreaReply_@item.Id" name="comentario" aria-label="With textarea"></textarea>
+                                    <div style="width:100%; text-align:right; padding-top:5px"><button type="button" onclick="enviarRespuestaComentario(@item.Id)" class="btn btn-success">Responder</button></div>
+                                </div>
+
+                            </div>
+                        </div>
+
                     }
                 </div>
 
@@ -148,7 +200,7 @@
 </div>
 
 
-<!-- Editar Modal-->
+<!-- Editar Modal Comentario-->
 <div class="modal fade" style="display:none;" id="editarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -157,6 +209,25 @@
             </div>
             <div class="modal-body">
                 <textarea class="form-control" rows="4" id="textAreaCommentEdit" name="comentario" aria-label="With textarea"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                <a style="color:white" class="btn btn-danger btn-ok">Aceptar</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Editar Modal ComentarioRespuesta-->
+<div class="modal fade" style="display:none;" id="editarModalReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> Edita tu comentario </h5>
+            </div>
+            <div class="modal-body" id="modalBodyReply">
+                <textarea class="form-control" rows="4" id="textAreaCommentEditReply" name="comentario" aria-label="With textarea"></textarea>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
@@ -203,8 +274,8 @@
 @section scripts{
     <script>
         $(document).on("click", "#btnEdit", function () {
-         var dataId = $(this).data('commentary');
-         $(".modal-body #textAreaCommentEdit").val(dataId);
+             var dataId = $(this).data('commentary');
+             $(".modal-body #textAreaCommentEdit").val(dataId);
         });
 
         $('#editarModal').on('show.bs.modal', function (e) {
@@ -220,7 +291,7 @@
             var token = $('input[name="__RequestVerificationToken"]', form).val();
             $.ajax({
                 type: "POST",
-                url: "/Productos/EditarComentarioAction",
+                url: "/Producto/EditarComentarioAction",
                 data: {
                     __RequestVerificationToken: token,
                     id: $id,
@@ -248,12 +319,71 @@
                 }
             });
         });
+
+        //------- REPLY ----------------
+
+        $(document).on("click", "#btnEditReply", function () {
+            var dataComment = $(this).data('commentary');
+            var dataComentId = $(this).data('idcomment');
+
+            $("#modalBodyReply #textAreaCommentEditReply").val(dataComment);
+            $('#modalBodyReply #textAreaCommentEditReply').data('idcomment', dataComentId);
+        });
+
+        $('#editarModalReply').on('show.bs.modal', function (e) {
+            var data = $(e.relatedTarget).data();
+            $('.btn-ok', this).data('comentarioReply_id', data.id);
+        });
+
+        $('#editarModalReply').on('click', '.btn-ok', function (e) {
+            var $id = $(this).data('comentarioReply_id');
+            var $idComentario = $('#textAreaCommentEditReply').data('idcomment');
+            var $mensajeEdit = document.getElementById("textAreaCommentEditReply");
+
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+            $.ajax({
+                type: "POST",
+                url: "/Producto/EditarRespuestaAction",
+                data: {
+                    __RequestVerificationToken: token,
+                    comentarioRespuesta_id: $id,
+                    comentario_id: $idComentario,
+                    mensajeEdit: $mensajeEdit.value
+                },
+                success: function (result) {
+                    if (result.exito == false) {
+                        alert("La operación no ha podido completarse");
+                    }
+                    else {
+                        $('#editarModalReply').modal('toggle');
+
+                        var comentario = JSON.parse(result.respuesta);
+                        var cBodyId = "content-body-" + comentario.comentarioRespuesta_id;
+                        var cFooterId = "content-footer-" + comentario.comentarioRespuesta_id;
+
+                        document.getElementById(cBodyId).innerHTML = comentario.Mensaje;
+                        document.getElementById(cFooterId).innerHTML = comentario.Fecha;
+                    }
+                },
+                error: function (response) {
+                    //debugger;
+                    //alert('eror');
+                }
+            });
+        });
+
+        $(document).on("click", "#btnReplyAdmin", function () {
+            var dataId = $(this).data('val');
+            //$("#contenedorComentarios").prepend();
+            document.getElementById("containerReply_admin_"+dataId).style.display = "";
+        });
     </script>
     <script>
 
         //Esconder Carousel en esta vista
-
         document.getElementById("myCarousel").style.display = "none";
+
     </script>
     <script>
         function enviarComentario(id) {
@@ -269,7 +399,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/Productos/Comentar",
+                url: "/Producto/Comentar",
                 data: {
                     __RequestVerificationToken: token,
                     idProducto: id,
@@ -291,10 +421,6 @@
         }
 
         function AgregarComentario(comentario) {
- 
-
-            //$("#contenedorComentarios").prepend("<div class='card' style='background-color:white!important; padding: 0px!important; margin-top:10px'><div class='card-body'><h5 class='card-title'>" + comentario.NombreUsuario + "</h5><p class='card-text'>" + comentario.Mensaje + "</p></div><div class='card-footer text-muted row' style='margin-left:0px!important; margin-right:0px!important'><div id='content-footer-' style='display:inline; width:50%'>" + comentario.Fecha + "</div><div style='display:inline; width:50%; text-align:right'><a href='#' class='material-icons' style='color:green' data-toggle='modal' data-target='#editarModal' data-id='item.Id' data-commentary='item.Mensaje' id='btnEdit'>edit</a>  <a href='Url.Action("EliminarComentario","Productos", new { id = item.Id, producto_id = Model.Id })' style='color:red' class='material-icons' title='Editar' id='btnDelete'>delete_outline</a> </div></div></div>");
-
             $("#contenedorComentarios").prepend("<div class='card' style='background-color:white!important; padding: 0px!important; margin-top:10px'><div class='card-body'><h5 class='card-title'>" + comentario.NombreUsuario + "</h5><p class='card-text'>" + comentario.Mensaje + "</p></div><div class='card-footer text-muted'>" + comentario.Fecha + "</div></div>");
 
             var c = @Model.Comentarios.Count + 1;
@@ -303,6 +429,53 @@
             location.reload();
         }
 
+        function enviarRespuestaComentario(id) {
+
+            var $textAreaReply = document.getElementById("textAreaReply_"+id);
+
+            if ($textAreaReply.value == "") {
+                return;
+            }
+
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Producto/ResponderComentarioTienda",
+                data: {
+                    __RequestVerificationToken: token,
+                    idComentario: id,
+                    respuesta: $textAreaReply.value
+                },
+                success: function (result) {
+                    if (result.exito == false) {
+                        alert(result.respuesta);
+                    }
+                    else if (result.exito == true) {
+                        var comentario = JSON.parse(result.respuesta);
+
+                        location.reload();
+                        //AgregarComentario(comentario);
+                    }
+                },
+                error: function (response) {
+                    alert("error");
+                }
+            });
+        }
     </script>
 
+
+    <script>
+        var tiendaId = @Session["TiendaId"];
+        if (@Session["TiendaId"] != null) {
+            if (@Model.Tienda.Id == tiendaId) {
+                var list = document.getElementsByName("btnReply");
+                for (var i = 0; i < list.length; i++) {
+                  list[i].style.display = "";
+                }
+            }
+        }
+    </script>
 }

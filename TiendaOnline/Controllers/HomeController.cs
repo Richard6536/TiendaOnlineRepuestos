@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TiendaOnline.Models;
+using TiendaOnline.Clases;
+using Newtonsoft.Json;
 
 namespace TiendaOnline.Controllers
 {
@@ -14,6 +16,10 @@ namespace TiendaOnline.Controllers
         //asi como giko que muestra todos los productos y permite filtrar por categoria
         //aqui se muestran todas las casas independiente de quien las subio
 
+        public ActionResult Portal()
+        {
+            return View();
+        }
 
         public ActionResult Index(int page = 1, int categoriaId = -1)
         {
@@ -21,6 +27,8 @@ namespace TiendaOnline.Controllers
 
             int productsPerPage = 12;
             int start = (page - 1) * productsPerPage;
+
+            ViewBag.Tiendas = db.Tienda.ToList();
 
             //Categorias
             IEnumerable<Categoria> categorias = db.Categorias.Where(c => c.TipoCategoria == Categoria.CategoriaTipo.Producto).ToList();
@@ -62,17 +70,15 @@ namespace TiendaOnline.Controllers
             return View();
         }
 
-        public ActionResult CrearTienda()
+        public ActionResult _CrearTienda()
         {
-            return View();
+            return PartialView();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CrearTienda(Tienda model)
+        public ActionResult _CrearTienda(Tienda model)
         {
-            if (Session["Id"] == null)
-                return RedirectToAction("IniciarSesion", "Login");
 
             ModelState.Clear();
             if (model.Nombre == null || model.Nombre == "")
@@ -92,23 +98,47 @@ namespace TiendaOnline.Controllers
                 return View(model);
             }
 
-            Tienda tienda = Models.Tienda.CrearNuevaTienda(db, model);
+            if (Session["Id"] == null)
+                return RedirectToAction("Registrate", "Login", new { nombreTienda = model.Nombre });
 
-            int userId = (int)Session["Id"];
-            Usuario usuario = db.Usuarios.Find(userId);
-            Usuario.EditarUsuario(db, usuario, tienda.Id, UsuarioTienda.RolEnTienda.Admin);
-
-            UsuarioTienda usTienda = db.UsuariosTienda.Where(ut => ut.Usuario.Id == userId).FirstOrDefault();
-
-            if (usTienda != null)
+            else
             {
-                Session["TiendaId"] = usTienda.Tienda.Id;
-                Session["TiendaNombre"] = usTienda.Tienda.Nombre;
+                int userId = (int)Session["Id"];
+                Tienda tienda = Models.Tienda.CrearNuevaTienda(db, model);
+                UsuarioTienda usTienda = UsuarioTienda.CrearUsuarioTienda(db, userId, tienda);
+
+                if (usTienda != null)
+                {
+                    Session["TiendaId"] = usTienda.Tienda.Id;
+                    Session["TiendaNombre"] = usTienda.Tienda.Nombre;
+                }
+
+                return RedirectToAction("Index", "TiendaUser", new { id = tienda.Id });
             }
 
-            return RedirectToAction("Index", "TiendaUser", new { id = tienda.Id});
         }
 
+        [HttpPost]
+        public ActionResult OrdenarProductos(Producto.OrderByType orderType)
+        {
+            Session["OrderByProduct"] = orderType;
+            return Json(new
+            {
+                exito = true,
+                productos = "Ok"
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult ListarProductosGridList(TiendaHome.ViewProductType productView)
+        {
+            Session["ViewProductType"] = productView;
+            return Json(new
+            {
+                exito = true,
+                productos = "Ok"
+            }, JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult Tienda(int? id, int page = 1, int categoriaId = -1, string seccion = "producto", string search = "")
         {
@@ -116,47 +146,78 @@ namespace TiendaOnline.Controllers
             IEnumerable<Producto> productosTienda = null;
             IEnumerable<Servicio> serviciosTienda = null;
 
+            TiendaHome tiendaHome = new TiendaHome();
+            tiendaHome.OrderByProductName = "";
+            tiendaHome.ViewProductEnumType = TiendaHome.ViewProductType.Grid;
+            tiendaHome.ViewTypeName = "Grid";
+
             if (tienda == null)
                 return RedirectToAction("Index", "Home");
 
             int productsPerPage = 12;
             int start = (page - 1) * productsPerPage;
 
-            if (seccion.Equals("producto")) {
+            if (seccion.Equals("producto"))
+            {
+
                 productosTienda = tienda.Productos;
 
+                //Verificar si productos deben estar ordenados
+                if (Session["OrderByProduct"] != null)
+                {
+                    Tuple<IEnumerable<Producto>, string> tupleSort = Producto.SortProduct(productosTienda, (Producto.OrderByType)Session["OrderByProduct"]);
+                    productosTienda = tupleSort.Item1;
+                    tiendaHome.OrderByProductName = tupleSort.Item2;
+                }
+
+                //Verificar si productos están en List o Grid
+                if (Session["ViewProductType"] != null)
+                {
+                    tiendaHome.ViewProductEnumType = (TiendaHome.ViewProductType)Session["ViewProductType"];
+                    if ((TiendaHome.ViewProductType)Session["ViewProductType"] == TiendaHome.ViewProductType.Grid)
+                        tiendaHome.ViewTypeName = "Grid";
+                    else if((TiendaHome.ViewProductType)Session["ViewProductType"] == TiendaHome.ViewProductType.List)
+                        tiendaHome.ViewTypeName = "List";
+                }
+
                 //Realiza una busqueda
-                if (!search.Equals("")) {
-                    Tuple<List<Producto>, List<Servicio>, Boolean> productosFiltrados = Categoria.BuscarProductosPorCategoria(db, -1, search, seccion, true, tienda);
+                if (!search.Equals(""))
+                {
+                    Tuple<List<Producto>, List<Servicio>, List<Tienda>, Boolean, Busqueda.BusquedaTipo, string> productosFiltrados = Busqueda.BuscarProductosPorCategoria(db, -1, search, seccion, true, tienda);
                     productosTienda = productosFiltrados.Item1;
                 }
 
                 //Categorias
-                ViewBag.Categorias = Categoria.buscarCategoriasPorTienda(db, tienda.Productos, null, true);
+                ViewBag.Categorias = Busqueda.buscarCategoriasPorTienda(db, tienda.Productos, null, true);
 
-                if (categoriaId != -1) {
+                if (categoriaId != -1)
+                {
                     productosTienda = productosTienda.Where(p => p.CategoriaId == categoriaId).ToList();
                     ViewBag.CategoriaFiltrada = db.Categorias.Find(categoriaId).NombreCategoria;
                 }
 
                 ViewBag.PageCount = Math.Ceiling(productosTienda.Count() / (double)productsPerPage);
-                productosTienda = productosTienda.OrderBy(p => p.Id).Skip(start).Take(productsPerPage);
+                productosTienda = productosTienda.Skip(start).Take(productsPerPage);
                 ViewBag.PaginatedProducts = productosTienda;
                 ViewBag.Seccion = seccion;
 
+                tiendaHome.Tienda = tienda;
+                tiendaHome.Productos = productosTienda;
+
             }
-            else if (seccion.Equals("servicio")){
+            else if (seccion.Equals("servicio"))
+            {
                 serviciosTienda = tienda.Servicios;
 
                 //Realiza una busqueda
                 if (!search.Equals(""))
                 {
-                    Tuple<List<Producto>, List<Servicio>, Boolean> serviciosFiltrados = Categoria.BuscarProductosPorCategoria(db, -1, search, seccion, true, tienda);
+                    Tuple<List<Producto>, List<Servicio>, List<Tienda>, Boolean, Busqueda.BusquedaTipo, string> serviciosFiltrados = Busqueda.BuscarProductosPorCategoria(db, -1, search, seccion, true, tienda);
                     serviciosTienda = serviciosFiltrados.Item2;
                 }
 
                 //Categorias
-                ViewBag.Categorias = Categoria.buscarCategoriasPorTienda(db, tienda.Productos, null, true);
+                ViewBag.Categorias = Busqueda.buscarCategoriasPorTienda(db, tienda.Productos, null, true);
 
                 if (categoriaId != -1)
                 {
@@ -171,9 +232,7 @@ namespace TiendaOnline.Controllers
                 ViewBag.Seccion = seccion;
             }
 
-
-
-            return View(tienda);
+            return View(tiendaHome);
         }
 
         public ActionResult BuscarProductos(int tiendaId, string productoBusqueda, string seccion)
@@ -184,11 +243,18 @@ namespace TiendaOnline.Controllers
             return View();
         }
 
-        public ActionResult Portal()
+        [HttpPost]
+        public ActionResult Search(string seccion, int categoria_field, string prod_field, string marca_field, string modelo_field, int? year_field)
         {
+            Tuple<List<Producto>, List<Servicio>, List<Tienda>, Boolean, Busqueda.BusquedaTipo, string> repuestosServiciosTiendasFiltrados = Busqueda.BuscarProductosPorCategoriaConModeloMarcaYear(db, categoria_field, prod_field, modelo_field, marca_field, year_field, seccion, false, null);
 
+            Busqueda busquedaResult = new Busqueda();
+            busquedaResult.BusquedaText = repuestosServiciosTiendasFiltrados.Item6;
+            busquedaResult.Productos = repuestosServiciosTiendasFiltrados.Item1;
+            busquedaResult.Servicios = repuestosServiciosTiendasFiltrados.Item2;
+            busquedaResult.Tiendas = repuestosServiciosTiendasFiltrados.Item3;
 
-            return View();
+            return View(busquedaResult);
         }
     }
 }

@@ -28,6 +28,16 @@ namespace TiendaOnline.Models
         public int? UsuarioId { get; set; }
         [ForeignKey("UsuarioId")]
         public virtual Usuario Usuario { get; set; }
+        public static UsuarioTienda CrearUsuarioTienda(TiendaOnlineContext _db, int idUsuario, Tienda tienda)
+        {
+            //Asignar Rol Administrador a Usuario
+            Usuario usuario = _db.Usuarios.Find(idUsuario);
+            Usuario.EditarUsuario(_db, usuario, tienda.Id, UsuarioTienda.RolEnTienda.Admin);
+            UsuarioTienda usTienda = _db.UsuariosTienda.Where(ut => ut.Usuario.Id == idUsuario).FirstOrDefault();
+
+            return usTienda;
+        }
 
     }
+
 }

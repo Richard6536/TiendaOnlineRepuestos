@@ -14,6 +14,9 @@ namespace TiendaOnline.Models
     [Table("Producto")]
     public class Producto
     {
+
+        public enum OrderByType { PrecioAscendente, PrecioDescendente, Relevante }
+
         [Key]
         public int Id { get; set; }
 
@@ -25,6 +28,14 @@ namespace TiendaOnline.Models
         public float Precio { get; set; }
 
         public string Descripcion { get; set; }
+
+        public string Modelo { get; set; }
+
+        public string Marca { get; set; }
+
+        public bool EsGenerico { get; set; }
+
+        public int Year { get; set; }
 
         public float PuntuacionActual { get; set; }
 
@@ -49,6 +60,8 @@ namespace TiendaOnline.Models
         public static bool CrearProducto(Producto _producto, Tienda _tienda, TiendaOnlineContext _db)
         {
             Producto prod = _tienda.Productos.Where(p => p.Nombre == _producto.Nombre).FirstOrDefault();
+            if (prod != null)
+                return false;
 
             _tienda.Productos.Add(_producto);
             _db.SaveChanges();
@@ -70,6 +83,9 @@ namespace TiendaOnline.Models
             prod.SoloCotizable = _producto.SoloCotizable;
             prod.Descripcion = _producto.Descripcion;
             prod.Stock = _producto.Stock;
+            prod.Marca = _producto.Marca;
+            prod.Modelo = _producto.Modelo;
+            prod.Year = _producto.Year;
 
             _db.SaveChanges();
 
@@ -175,6 +191,11 @@ namespace TiendaOnline.Models
             if (comentario == null)
                 return;
 
+            if (comentario.ComentariosRespuesta.Count > 0)
+            {
+                _db.ComentarioRespuesta.Remove(comentario.ComentariosRespuesta.First());
+            }
+
             _db.Comentarios.Remove(comentario);
             _db.SaveChanges();
         }
@@ -190,12 +211,32 @@ namespace TiendaOnline.Models
 
             _db.SaveChanges();
 
-            return new Tuple<Comentario, Boolean>(comentario, true); ;
+            return new Tuple<Comentario, Boolean>(comentario, true);
         }
 
         public static string Truncate(string value, int maxChars)
         {
             return value.Length <= maxChars ? value : value.Substring(0, maxChars) + "...";
+        }
+
+        public static Tuple<IEnumerable<Producto>, string> SortProduct(IEnumerable<Producto> productos, OrderByType orderByType)
+        {
+            String orderByProductName = "";
+            IEnumerable<Producto> productosOrdenados = null;
+            switch (orderByType)
+            {
+                case OrderByType.PrecioAscendente:
+                    productosOrdenados = productos.OrderBy(p => p.Precio).ToList();
+                    orderByProductName = "Precio Menor";
+                    break;
+
+                case OrderByType.PrecioDescendente:
+                    productosOrdenados = productos.OrderByDescending(p => p.Precio).ToList();
+                    orderByProductName = "Precio Mayor";
+                    break;
+            }
+
+            return new Tuple<IEnumerable<Producto>, string>(productosOrdenados, orderByProductName);
         }
     }
 }

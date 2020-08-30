@@ -42,6 +42,7 @@ namespace TiendaOnline.Models
         public virtual List<Carrocompra> CarroCompra { get; set; }
         public virtual List<PuntuacionProducto> Puntuaciones { get; set; }
         public virtual List<Comentario> Comentarios { get; set; }
+        public virtual List<ComentarioRespuesta> ComentariosRespuestas { get; set; }
         public virtual List<UsuarioTienda> UsuarioTiendas { get; set; }
 
 
@@ -112,9 +113,9 @@ namespace TiendaOnline.Models
 
             if(_tiendaId > 0)
             {
-                UsuarioTienda existeAsoc = usuarioAEditar.UsuarioTiendas.Where(ut => ut.TiendaId == _tiendaId).FirstOrDefault();
+                UsuarioTienda existeAsoc = usuarioAEditar.UsuarioTiendas.Where(ut => ut.Tienda.Id == _tiendaId).FirstOrDefault();
 
-                if(existeAsoc != null)
+                if (existeAsoc != null)
                 {
                     existeAsoc.RolTienda = _rolTienda;
                 }

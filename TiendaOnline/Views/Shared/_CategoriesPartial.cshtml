@@ -1,0 +1,71 @@
+﻿
+@using (Html.BeginForm("Search", "Home", FormMethod.Post, new { @class = "form-search-input", @style = "margin: 0 auto" }))
+{
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <button class="btn btn-outline-secondary dropdown-toggle" style="background-color:#565656; color:#fff" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="spnCtg">Categorías</span></button>
+            <div class="dropdown-menu" id="top4list">
+                @foreach (var cProducto in ViewBag.categoriasProducto)
+                {
+                    <a class="dropdown-item" data-val="producto" name="@cProducto.Id" href="#">@cProducto.NombreCategoria</a>
+                }
+
+                <div role="separator" class="dropdown-divider"></div>
+                @foreach (var cServicio in ViewBag.categoriasServicio)
+                {
+                    <a class="dropdown-item" data-val="servicio" name="@cServicio.Id" href="#">@cServicio.NombreCategoria</a>
+                }
+            </div>
+
+        </div>
+        <input hidden id="seccion_field" name="seccion" />
+        <input hidden id="categorid" name="categoria_field" value="-1" />
+        <div class="input-group-append">
+            <a class="btn btn-dark" data-toggle="modal" data-target="#FilterModal"><i class="fas fa-filter" style="color:white"></i></a>
+        </div>
+        <input type="text" class="form-control" name="prod_field" placeholder="Repuestos, Servicios, Tiendas" aria-label="Text input with dropdown button">
+        <div class="input-group-append">
+            <button class="btn btn-dark" type="submit"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+
+    <!-- Delete Modal-->
+    <div class="modal fade" style="display:none;" id="FilterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"> <i class="fas fa-filter"></i> Filtrar </h5>
+                </div>
+                <div class="modal-body" style="margin-left:20px">
+                    <div class="col-md-10 mb-3">
+                        <input type="text" class="form-control" name="marca_field" placeholder="Marca" aria-label="Text input with dropdown button">
+                    </div>
+                    <div class="col-md-10 mb-3">
+                        <input type="text" class="form-control" name="modelo_field" placeholder="Modelo" aria-label="Text input with dropdown button">
+                    </div>
+                    <div class="col-md-10 mb-3">
+                        <input type="text" class="form-control" name="year_field" placeholder="Año" aria-label="Text input with dropdown button">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                    <a style="color:white" class="btn btn-danger btn-ok">Aceptar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    var lis = document.getElementById("top4list").getElementsByTagName('a');
+
+    for (var i = 0; i < lis.length; i++) {
+        lis[i].addEventListener('click', cargarDatos, false);
+    }
+
+    function cargarDatos() {
+        document.getElementById("spnCtg").innerHTML = this.innerHTML;
+        document.getElementById("categorid").value = this.name;
+        document.getElementById("seccion_field").value = $(this).data('val');
+    }
+</script>

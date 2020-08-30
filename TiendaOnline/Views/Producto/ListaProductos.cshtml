@@ -8,7 +8,7 @@
 
 <!-- ------------- -->
 <br />
-<a class="btn btn-primary" href="~/Productos/CrearProducto" style="color:white">Crear Producto</a>
+<a class="btn btn-primary" href="~/Producto/CrearProducto" style="color:white">Crear Producto</a>
 
 <table id="tablalista" class="layout display responsive-table">
     <thead>
@@ -32,8 +32,8 @@
                 <td class="organisationname">@Html.DisplayFor(modelItem => item.SoloCotizable)</td>
 
                 <td class="actions">
-                    <a href="@Url.Action("VerImagenesProducto", "Productos", new { id=item.Id })" style="color:#3047a0" class="material-icons" title="Edit">collections</a>
-                    <a href="@Url.Action("EditarProducto", "Productos", new { id=item.Id })" class="material-icons" title="Edit">edit</a>
+                    <a href="@Url.Action("VerImagenesProducto", "Producto", new { id=item.Id })" style="color:#3047a0" class="material-icons" title="Edit">collections</a>
+                    <a href="@Url.Action("EditarProducto", "Producto", new { id=item.Id })" class="material-icons" title="Edit">edit</a>
                     <a href="#" class="material-icons" style="color:red" title="Eliminar" data-toggle="modal" data-target="#borrarModal" data-id="@item.Id" data-name="@item.Nombre">delete_outline</a>
                 </td>
             </tr>
@@ -90,7 +90,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/Productos/EliminarProducto",
+                url: "/Producto/EliminarProducto",
                 data: {
                     __RequestVerificationToken: token,
                     id: $id
