@@ -32,17 +32,33 @@ namespace TiendaOnline.Models
         [ForeignKey("ServicioId")]
         public virtual Servicio Servicio { get; set; }
 
-        public static ProductoCarro CrearProductoCarro(int? _idProducto, int _idUsuario, int _cantidad, TiendaOnlineContext _db)
+        public static ProductoCarro CrearProductoCarro(int? _idProducto, int _idUsuario, int _cantidad, TiendaOnlineContext _db, bool esServicio)
         {
             Usuario usuario = _db.Usuarios.Where(u => u.Id == _idUsuario).FirstOrDefault();
-            Producto producto = _db.Productos.Where(p => p.Id == _idProducto).FirstOrDefault();
             Carrocompra miCarro = usuario.CarroCompra.First();
 
-            ProductoCarro existeProdCarro = miCarro.ProductosCarro.Where(pc => pc.Producto.Nombre == producto.Nombre).FirstOrDefault();
+            ProductoCarro existeProdCarro = null;
+            Producto repuesto = null;
+            Servicio servicio = null;
+
+            if (esServicio)
+            {
+                servicio = _db.Servicios.Where(p => p.Id == _idProducto).FirstOrDefault();
+                existeProdCarro = miCarro.ProductosCarro.Where(pc => pc.Servicio.Nombre == servicio.Nombre).FirstOrDefault();
+            }
+            else
+            {
+                repuesto = _db.Productos.Where(p => p.Id == _idProducto).FirstOrDefault();
+                existeProdCarro = miCarro.ProductosCarro.Where(pc => pc.Producto.Nombre == repuesto.Nombre).FirstOrDefault();
+            }
+
             if (existeProdCarro != null)
             {
                 existeProdCarro.Cantidad += _cantidad;
-                existeProdCarro.Total = producto.Precio * existeProdCarro.Cantidad;
+                if(esServicio)
+                    existeProdCarro.Total = 0; //Se debe Cotizar
+                else
+                    existeProdCarro.Total = repuesto.Precio * existeProdCarro.Cantidad;
 
                 _db.SaveChanges();
 
@@ -54,8 +70,17 @@ namespace TiendaOnline.Models
 
                 ProductoCarro productoCarro = new ProductoCarro();
                 productoCarro.Cantidad = _cantidad;
-                productoCarro.Total = producto.Precio * _cantidad;
-                productoCarro.Producto = producto;
+
+                if (esServicio)
+                {
+                    productoCarro.Total = 0; //Se debe Cotizar
+                    productoCarro.Servicio = servicio;
+                }
+                else
+                {
+                    productoCarro.Total = repuesto.Precio * _cantidad;
+                    productoCarro.Producto = repuesto;
+                }
                 productoCarro.CarroCompra = usuario.CarroCompra.First();
 
                 _db.ProductosCarro.Add(productoCarro);

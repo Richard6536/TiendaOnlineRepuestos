@@ -1,0 +1,151 @@
+﻿@model TiendaOnline.Models.Cotizacion
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+}
+
+<div class="card">
+    <div class="card-header">
+        Crear Cotización
+    </div>
+    <div class="card-body">
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="validationCustom01">Código</label>
+                @Html.EditorFor(model => model.Codigo, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @readonly = "readonly" } })
+            </div>
+        </div>
+    </div>
+    <div class="card-header">
+        Cliente
+    </div>
+    <div class="card-body">
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label>Nombre</label>
+                @Html.EditorFor(model => model.Usuario.Nombre, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @readonly = "readonly" } })
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Apellido</label>
+                @Html.EditorFor(model => model.Usuario.Apellido, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @readonly = "readonly" } })
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Email</label>
+                @Html.EditorFor(model => model.Usuario.Email, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @readonly = "readonly" } })
+            </div>
+        </div>
+    </div>
+    <div class="card-header">
+        Servicios
+    </div>
+    <div class="card-body">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="text-center" scope="col">#</th>
+                    <th class="text-center" scope="col">Nombre</th>
+                    <th class="text-center" scope="col">Categoría</th>
+                    <th class="text-center" scope="col">Valor Unitario</th>
+                    <th class="text-center" scope="col">Cantidad</th>
+                    <th class="text-center" scope="col">Valor Total</th>
+                    <th class="text-center">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int prodCont = 0;}
+                @foreach (var item in Model.ServiciosCotizados)
+                {
+                    prodCont = prodCont + 1;
+                    <tr>
+                        <th class="text-center" scope="row">@prodCont</th>
+                        <td>@item.Nombre</td>
+                        <td class="text-center">@item.Categoria.NombreCategoria</td>
+                        <td class="text-right">@item.Precio</td>
+                        <td class="text-center"><input type="number" readonly disabled style="width:60px; text-align:center" value="1" /></td>
+                        <td class="text-right">@item.Precio</td>
+                        <td class="text-center"><a class="btn btn-danger" style="color:white"><i class="fa fa-remove"></i></a></td>
+                    </tr>
+                }
+
+                <tr>
+                    <th scope="row" colspan="5">Total Neto</th>
+                    <th scope="row" class="text-right">@Model.TotalNeto</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th scope="row" colspan="5">IVA (19%)</th>
+                    <th scope="row" class="text-right">@Model.IVA</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th scope="row" colspan="5">Total A Pagar (inc. IVA):</th>
+                    <th scope="row" class="text-right">@Model.TotalAPagar</th>
+                    <td></td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer text-muted text-center">
+        <button class="btn btn-success" onclick="submitCotizacion()" type="submit" style="width:300px" id="btnSubmit">Crear Cotización</button>
+    </div>
+</div>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+
+@section scripts{
+    <script>
+
+        function submitCotizacion() {
+
+            var $btnSubmit = document.getElementById("btnSubmit");
+            $btnSubmit.disabled = true;
+
+
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+            $.ajax({
+                type: "POST",
+                url: "/Cotizacion/CrearCotizacionJS",
+                data: {
+                    __RequestVerificationToken: token,
+                    model:
+                        {
+                            Id: @Html.Raw(Json.Encode(Model.Id)),
+                            Codigo: @Html.Raw(Json.Encode(Model.Codigo)),
+                            Manual: false,
+                            TotalNeto: @Model.TotalNeto,
+                            IVA: @Model.IVA,
+                            TotalAPagar: @Model.TotalAPagar,
+                            UsuarioId:  @Html.Raw(Json.Encode(Model.Usuario.Id)),
+                            SolicitudCotizacionId: @Html.Raw(Json.Encode(Model.SolicitudCotizacion.Id))
+                        }
+                },
+                success: function (result) {
+
+                    //location.reload(true);
+                    if (result.exito == true) {
+                        //window.location.href = "/Cotizacion/VerCotizacion/" + result.id;
+                    }
+                    else if (result.exito == false) {
+                        $btnSubmit.disabled = false;
+                        alert(result.mensaje);
+                    }
+
+                },
+                error: function (result) {
+                    //debugger;
+                    $btnSubmit.disabled = false;
+                }
+            });
+
+        }
+    </script>
+
+}

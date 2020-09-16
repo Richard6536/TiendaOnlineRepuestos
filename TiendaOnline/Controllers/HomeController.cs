@@ -23,6 +23,7 @@ namespace TiendaOnline.Controllers
 
         public ActionResult Index(int page = 1, int categoriaId = -1)
         {
+
             List<Producto> productos = db.Productos.ToList();
 
             int productsPerPage = 12;
@@ -240,6 +241,16 @@ namespace TiendaOnline.Controllers
 
             //Tuple<List<Producto>, Boolean> productosFiltrados = Categoria.BuscarProductosPorCategoria(db, -1, productoBusqueda);
 
+            return View();
+        }
+
+        public ActionResult CalendarExample()
+        {
+            return View();
+        }
+
+        public ActionResult CalendarExampleDXDraggableEX()
+        {
             return View();
         }
 

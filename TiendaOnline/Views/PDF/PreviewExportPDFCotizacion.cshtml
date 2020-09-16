@@ -1,0 +1,8 @@
+﻿@model TiendaOnline.Models.Cotizacion
+@{
+    ViewBag.Title = "PreviewExportPDFCotizacion";
+    Layout = "~/Views/Shared/_LayoutBlancoPDF.cshtml";
+}
+
+@{Html.RenderAction("Cotizacion", "Documentos", new { id = Model.Id, tiendaId = Model.Tienda.Id, pdf = true }); }
+

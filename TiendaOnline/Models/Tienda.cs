@@ -28,9 +28,14 @@ namespace TiendaOnline.Models
         public double Longitud { get; set; }
         public virtual Imagen ImageProfile { get; set; }
         public virtual Imagen ImageHeader { get; set; }
+
         public virtual List<Producto> Productos { get; set; }
         public virtual List<Servicio> Servicios { get; set; }
         public virtual List<UsuarioTienda> UsuariosTienda { get; set; }
+        public virtual List<ClienteTienda> ClientesTienda { get; set; }
+        public virtual List<SolicitudCotizacion> SolicitudCotizaciones { get; set; }
+        public virtual List<Cotizacion> Cotizaciones { get; set; }
+        public virtual List<LogoRemitente> LogosRemitente { get; set; }
 
         public static Tienda CrearNuevaTienda(TiendaOnlineContext _db, Tienda _model)
         {

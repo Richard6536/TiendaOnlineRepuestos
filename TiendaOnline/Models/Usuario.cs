@@ -38,13 +38,22 @@ namespace TiendaOnline.Models
 
         public string NombreCompleto { get; set; }
 
+        public string Rut { get; set; }
+        public string Domicilio { get; set; }
+        public string Ciudad { get; set; }
+        public string Pais { get; set; }
+        public string Telefono { get; set; }
 
         public virtual List<Carrocompra> CarroCompra { get; set; }
         public virtual List<PuntuacionProducto> Puntuaciones { get; set; }
         public virtual List<Comentario> Comentarios { get; set; }
         public virtual List<ComentarioRespuesta> ComentariosRespuestas { get; set; }
-        public virtual List<UsuarioTienda> UsuarioTiendas { get; set; }
+        public virtual List<Cotizacion> Cotizaciones { get; set; }
 
+        //----------------------------------
+        public virtual List<UsuarioTienda> UsuarioTiendas { get; set; } //Debe ser un solo UsuarioTienda
+        //public virtual List<UsuarioCliente> UsuarioCliente { get; set; } //Debe ser un solo Usuario
+        //----------------------------------
 
         [NotMapped] //solo usado al crear/editar usuarios. No está asociado a la base de datos
         public UsuarioTienda.RolEnTienda RolEnTienda { get; set; }

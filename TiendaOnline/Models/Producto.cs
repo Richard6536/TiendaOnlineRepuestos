@@ -20,6 +20,8 @@ namespace TiendaOnline.Models
         [Key]
         public int Id { get; set; }
 
+        public string Codigo { get; set; }
+
         [Required(ErrorMessage = "El campo Nombre es obligatorio")]
         public string Nombre { get; set; }
 

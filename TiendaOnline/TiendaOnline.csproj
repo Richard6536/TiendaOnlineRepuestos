@@ -73,6 +73,21 @@
     <Reference Include="GitHub, Version=1.24.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GitHub.1.24.0\lib\netstandard2.0\GitHub.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.49.0\lib\net45\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.49.0\lib\net45\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.49.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.49.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.49.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -80,6 +95,12 @@
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.0\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rotativa.1.7.3\lib\net461\Rotativa.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -158,9 +179,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.4\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
@@ -207,14 +225,22 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Clases\Busqueda.cs" />
+    <Compile Include="Clases\Email.cs" />
     <Compile Include="Clases\PasswordHash.cs" />
     <Compile Include="Clases\TiendaHome.cs" />
     <Compile Include="Controllers\AjustesController.cs" />
+    <Compile Include="Controllers\AppointmentScheduleController.cs" />
+    <Compile Include="Controllers\CarroCompraController.cs" />
+    <Compile Include="Controllers\CotizacionController.cs" />
+    <Compile Include="Controllers\DocumentosController.cs" />
+    <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LayoutController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\PDFController.cs" />
     <Compile Include="Controllers\ProductoController.cs" />
     <Compile Include="Controllers\ServicioController.cs" />
+    <Compile Include="Controllers\SolicitudCotizacionController.cs" />
     <Compile Include="Controllers\SuperAdminController.cs" />
     <Compile Include="Controllers\TiendaController.cs" />
     <Compile Include="Controllers\TiendaUserController.cs" />
@@ -223,73 +249,74 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201904220251277_InitialCreate.cs" />
-    <Compile Include="Migrations\201904220251277_InitialCreate.Designer.cs">
-      <DependentUpon>201904220251277_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202009052238146_Reset.cs" />
+    <Compile Include="Migrations\202009052238146_Reset.Designer.cs">
+      <DependentUpon>202009052238146_Reset.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201904220323159_ValidacionesExtra.cs" />
-    <Compile Include="Migrations\201904220323159_ValidacionesExtra.Designer.cs">
-      <DependentUpon>201904220323159_ValidacionesExtra.cs</DependentUpon>
+    <Compile Include="Migrations\202009052327548_SolicitudCotizacion_AddFecha.cs" />
+    <Compile Include="Migrations\202009052327548_SolicitudCotizacion_AddFecha.Designer.cs">
+      <DependentUpon>202009052327548_SolicitudCotizacion_AddFecha.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201904220556126_ValidacionEmail.cs" />
-    <Compile Include="Migrations\201904220556126_ValidacionEmail.Designer.cs">
-      <DependentUpon>201904220556126_ValidacionEmail.cs</DependentUpon>
+    <Compile Include="Migrations\202009052334548_SolicitudCotizacion_ServicioRelacion.cs" />
+    <Compile Include="Migrations\202009052334548_SolicitudCotizacion_ServicioRelacion.Designer.cs">
+      <DependentUpon>202009052334548_SolicitudCotizacion_ServicioRelacion.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202007270608192_Servicios.cs" />
-    <Compile Include="Migrations\202007270608192_Servicios.Designer.cs">
-      <DependentUpon>202007270608192_Servicios.cs</DependentUpon>
+    <Compile Include="Migrations\202009062314190_Cotizacion_AddManual.cs" />
+    <Compile Include="Migrations\202009062314190_Cotizacion_AddManual.Designer.cs">
+      <DependentUpon>202009062314190_Cotizacion_AddManual.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202007272102110_Servicios-Imagen.cs" />
-    <Compile Include="Migrations\202007272102110_Servicios-Imagen.Designer.cs">
-      <DependentUpon>202007272102110_Servicios-Imagen.cs</DependentUpon>
+    <Compile Include="Migrations\202009102333554_SolicitudCotizacion_ServiciosList.cs" />
+    <Compile Include="Migrations\202009102333554_SolicitudCotizacion_ServiciosList.Designer.cs">
+      <DependentUpon>202009102333554_SolicitudCotizacion_ServiciosList.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202008010036277_nuevos campos producto.cs" />
-    <Compile Include="Migrations\202008010036277_nuevos campos producto.Designer.cs">
-      <DependentUpon>202008010036277_nuevos campos producto.cs</DependentUpon>
+    <Compile Include="Migrations\202009120216144_ReservaHora.cs" />
+    <Compile Include="Migrations\202009120216144_ReservaHora.Designer.cs">
+      <DependentUpon>202009120216144_ReservaHora.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202008030148358_Tienda.cs" />
-    <Compile Include="Migrations\202008030148358_Tienda.Designer.cs">
-      <DependentUpon>202008030148358_Tienda.cs</DependentUpon>
+    <Compile Include="Migrations\202009122242572_Datos_Usuario.cs" />
+    <Compile Include="Migrations\202009122242572_Datos_Usuario.Designer.cs">
+      <DependentUpon>202009122242572_Datos_Usuario.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202008030400548_Contacto.cs" />
-    <Compile Include="Migrations\202008030400548_Contacto.Designer.cs">
-      <DependentUpon>202008030400548_Contacto.cs</DependentUpon>
+    <Compile Include="Migrations\202009130028502_Cotizacion_SolicitudCotizacion_Relacion.cs" />
+    <Compile Include="Migrations\202009130028502_Cotizacion_SolicitudCotizacion_Relacion.Designer.cs">
+      <DependentUpon>202009130028502_Cotizacion_SolicitudCotizacion_Relacion.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202008110406552_Tienda Imagenes.cs" />
-    <Compile Include="Migrations\202008110406552_Tienda Imagenes.Designer.cs">
-      <DependentUpon>202008110406552_Tienda Imagenes.cs</DependentUpon>
+    <Compile Include="Migrations\202009131732341_Cotizacion_Comentario.cs" />
+    <Compile Include="Migrations\202009131732341_Cotizacion_Comentario.Designer.cs">
+      <DependentUpon>202009131732341_Cotizacion_Comentario.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202008131739212_Descripcion en Tienda.cs" />
-    <Compile Include="Migrations\202008131739212_Descripcion en Tienda.Designer.cs">
-      <DependentUpon>202008131739212_Descripcion en Tienda.cs</DependentUpon>
+    <Compile Include="Migrations\202009132212452_LogoRemitente.cs" />
+    <Compile Include="Migrations\202009132212452_LogoRemitente.Designer.cs">
+      <DependentUpon>202009132212452_LogoRemitente.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202008131813110_ImageHeader and ImageProfile.cs" />
-    <Compile Include="Migrations\202008131813110_ImageHeader and ImageProfile.Designer.cs">
-      <DependentUpon>202008131813110_ImageHeader and ImageProfile.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202008282349396_ComentarioRespuesta Modelo.cs" />
-    <Compile Include="Migrations\202008282349396_ComentarioRespuesta Modelo.Designer.cs">
-      <DependentUpon>202008282349396_ComentarioRespuesta Modelo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202008282354024_ComentarioRespuesta Model 2.cs" />
-    <Compile Include="Migrations\202008282354024_ComentarioRespuesta Model 2.Designer.cs">
-      <DependentUpon>202008282354024_ComentarioRespuesta Model 2.cs</DependentUpon>
+    <Compile Include="Migrations\202009160512304_Email.cs" />
+    <Compile Include="Migrations\202009160512304_Email.Designer.cs">
+      <DependentUpon>202009160512304_Email.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Agenda.cs" />
+    <Compile Include="Models\Calendario.cs" />
     <Compile Include="Models\Carrocompra.cs" />
     <Compile Include="Models\Categoria.cs" />
+    <Compile Include="Models\Cita.cs" />
+    <Compile Include="Models\ClienteTienda.cs" />
     <Compile Include="Models\Comentario.cs" />
     <Compile Include="Models\ComentarioRespuesta.cs" />
+    <Compile Include="Models\Cotizacion.cs" />
+    <Compile Include="Models\EmailConRefreshToken.cs" />
     <Compile Include="Models\Imagen.cs" />
+    <Compile Include="Models\LogoRemitente.cs" />
     <Compile Include="Models\Producto.cs" />
     <Compile Include="Models\ProductoCarro.cs" />
     <Compile Include="Models\PuntuacionProducto.cs" />
     <Compile Include="Models\ReporteErrores.cs" />
     <Compile Include="Models\Servicio.cs" />
+    <Compile Include="Models\SolicitudCotizacion.cs" />
     <Compile Include="Models\Tienda.cs" />
     <Compile Include="Models\TiendaOnlineContext.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Models\UsuarioTienda.cs" />
+    <Compile Include="Models\UsuarioTiendaMecanico.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -297,6 +324,8 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Calendar\main.css" />
+    <Content Include="Content\Calendar\main.js" />
     <Content Include="Content\Comentarios\comment-list.css" />
     <Content Include="Content\Index\carousel-multi-products.css" />
     <Content Include="Content\Index\carousel.css" />
@@ -307,6 +336,10 @@
     <Content Include="Content\Tienda\tienda-product-card-grid.css" />
     <Content Include="Content\Tienda\tienda-product-card-list.css" />
     <Content Include="Content\VerProducto\product-view.css" />
+    <Content Include="Rotativa\help-wkhtmltoimage.txt" />
+    <Content Include="Rotativa\help-wkhtmltopdf.txt" />
+    <Content Include="Rotativa\wkhtmltoimage.exe" />
+    <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Scripts\Scripts Personalizados\tienda.js" />
     <Content Include="vendor\bootstrap\css\bootstrap.css" />
     <Content Include="vendor\bootstrap\css\bootstrap.min.css" />
@@ -346,6 +379,7 @@
     <Content Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </Content>
+    <Content Include="App_Browsers\qt.browser" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -422,9 +456,24 @@
     <Content Include="Views\Tienda\_PartialServices.cshtml" />
     <Content Include="Views\Tienda\_PartialTiendas.cshtml" />
     <Content Include="Views\Home\_CrearTienda.cshtml" />
+    <Content Include="Views\Cotizacion\ListarCotizaciones.cshtml" />
+    <Content Include="Views\SolicitudCotizacion\ListaSolicitudesCotizaciones.cshtml" />
+    <Content Include="Views\Cotizacion\CrearCotizacion.cshtml" />
+    <Content Include="Views\SolicitudCotizacion\DetallesSolicitudCotizacion.cshtml" />
+    <Content Include="Views\Home\CalendarExample.cshtml" />
+    <Content Include="Views\Home\CalendarExampleDXDraggableEX.cshtml" />
+    <Content Include="Views\AppointmentSchedule\ProgramarCitas.cshtml" />
+    <Content Include="Views\CarroCompra\CarroCompra.cshtml" />
+    <Content Include="Views\Cotizacion\VerCotizacion.cshtml" />
+    <Content Include="Views\Ajustes\LogoRemitente.cshtml" />
+    <Content Include="Views\PDF\PreviewExportPDFCotizacion.cshtml" />
+    <Content Include="Views\Shared\_LayoutBlancoPDF.cshtml" />
+    <Content Include="Views\Documentos\Cotizacion.cshtml" />
+    <Content Include="Views\Documentos\Mensaje.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Email\" />
     <Folder Include="Views\Layout\" />
     <Folder Include="Views\Transaction\" />
   </ItemGroup>
@@ -442,44 +491,38 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201904220251277_InitialCreate.resx">
-      <DependentUpon>201904220251277_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202009052238146_Reset.resx">
+      <DependentUpon>202009052238146_Reset.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201904220323159_ValidacionesExtra.resx">
-      <DependentUpon>201904220323159_ValidacionesExtra.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202009052327548_SolicitudCotizacion_AddFecha.resx">
+      <DependentUpon>202009052327548_SolicitudCotizacion_AddFecha.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201904220556126_ValidacionEmail.resx">
-      <DependentUpon>201904220556126_ValidacionEmail.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202009052334548_SolicitudCotizacion_ServicioRelacion.resx">
+      <DependentUpon>202009052334548_SolicitudCotizacion_ServicioRelacion.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202007270608192_Servicios.resx">
-      <DependentUpon>202007270608192_Servicios.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202009062314190_Cotizacion_AddManual.resx">
+      <DependentUpon>202009062314190_Cotizacion_AddManual.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202007272102110_Servicios-Imagen.resx">
-      <DependentUpon>202007272102110_Servicios-Imagen.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202009102333554_SolicitudCotizacion_ServiciosList.resx">
+      <DependentUpon>202009102333554_SolicitudCotizacion_ServiciosList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202008010036277_nuevos campos producto.resx">
-      <DependentUpon>202008010036277_nuevos campos producto.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202009120216144_ReservaHora.resx">
+      <DependentUpon>202009120216144_ReservaHora.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202008030148358_Tienda.resx">
-      <DependentUpon>202008030148358_Tienda.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202009122242572_Datos_Usuario.resx">
+      <DependentUpon>202009122242572_Datos_Usuario.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202008030400548_Contacto.resx">
-      <DependentUpon>202008030400548_Contacto.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202009130028502_Cotizacion_SolicitudCotizacion_Relacion.resx">
+      <DependentUpon>202009130028502_Cotizacion_SolicitudCotizacion_Relacion.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202008110406552_Tienda Imagenes.resx">
-      <DependentUpon>202008110406552_Tienda Imagenes.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202009131732341_Cotizacion_Comentario.resx">
+      <DependentUpon>202009131732341_Cotizacion_Comentario.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202008131739212_Descripcion en Tienda.resx">
-      <DependentUpon>202008131739212_Descripcion en Tienda.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202009132212452_LogoRemitente.resx">
+      <DependentUpon>202009132212452_LogoRemitente.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202008131813110_ImageHeader and ImageProfile.resx">
-      <DependentUpon>202008131813110_ImageHeader and ImageProfile.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202008282349396_ComentarioRespuesta Modelo.resx">
-      <DependentUpon>202008282349396_ComentarioRespuesta Modelo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202008282354024_ComentarioRespuesta Model 2.resx">
-      <DependentUpon>202008282354024_ComentarioRespuesta Model 2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202009160512304_Email.resx">
+      <DependentUpon>202009160512304_Email.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

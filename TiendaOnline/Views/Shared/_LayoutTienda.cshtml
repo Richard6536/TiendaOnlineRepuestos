@@ -24,6 +24,8 @@
             <div class="sidebar-heading">@Session["TiendaNombre"] </div>
             <div class="list-group list-group-flush">
                 <a href="~/Usuarios/ListaUsuarios" class="list-group-item list-group-item-action bg-light">Usuarios</a>
+                <a href="~/SolicitudCotizacion/ListaSolicitudesCotizaciones" class="list-group-item list-group-item-action bg-light">Solicitudes Cotizaciones</a>
+                <a href="~/Cotizacion/ListarCotizaciones" class="list-group-item list-group-item-action bg-light">Cotizaciones</a>
                 <a href="~/Producto/ListaProductos" class="list-group-item list-group-item-action bg-light">Productos</a>
                 <a href="~/Servicio/ListaServicios" class="list-group-item list-group-item-action bg-light">Servicios</a>
                 <a href="~/Ajustes/Index" class="list-group-item list-group-item-action bg-light">Ajustes</a>
@@ -45,7 +47,7 @@
                     </ul>
                 </div>
             </nav>
-            <div class="container-fluid">
+            <div class="container-fluid" style="padding:15px">
                 @RenderBody()
             </div>
         </div>

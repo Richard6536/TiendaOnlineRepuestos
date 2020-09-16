@@ -107,5 +107,10 @@ namespace TiendaOnline.Controllers
                 mensaje = "Eliminación exitosa."
             }, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult LogoRemitente()
+        {
+            return View();
+        }
     }
 }

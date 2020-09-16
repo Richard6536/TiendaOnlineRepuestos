@@ -81,7 +81,7 @@ namespace TiendaOnline.Controllers
             }
 
 
-            Carrocompra carroCompra = Carrocompra.CrearCarroCompra(user, db);
+            Carrocompra carroCompra = Carrocompra.CrearCarroCompra(user.Id, db);
             Carrocompra.EliminarTodosLosProductosEnCarro(user, db);
 
             if (user.RolUsuario == Usuario.TipoUsuario.SuperAdmin)

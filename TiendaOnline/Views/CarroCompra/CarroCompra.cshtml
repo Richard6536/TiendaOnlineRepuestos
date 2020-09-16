@@ -1,0 +1,49 @@
+﻿@model TiendaOnline.Models.Carrocompra
+
+@{
+    ViewBag.Title = "CarroCompra";
+}
+
+<h2>Carro de Compra</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+@using (Html.BeginForm("CarroCompra", "CarroCompra", FormMethod.Post))
+{
+    <table class="table">
+        <tr>
+            <th>
+                Producto
+            </th>
+            <th>
+                Total
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.ProductosCarro)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Servicio.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Servicio.Precio)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+    </table>
+
+    <div style="width:100%">
+        @*<button class="btn btn-dark" type="submit">Cotizar</button>*@
+        <a class="add-to-cart btn btn-default" href="@Url.Action("RealizarCompra", "CarroCompra")">Cotizar</a>
+    </div>
+}

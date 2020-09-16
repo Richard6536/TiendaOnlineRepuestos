@@ -1,0 +1,122 @@
+﻿@model IEnumerable<TiendaOnline.Models.SolicitudCotizacion>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+}
+<div style="padding-top:10px">
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Codigo)
+            </th>
+            <th>
+                Fecha de Solicitud
+            </th>
+            <th>
+                Servicio Solicitado
+            </th>
+            <th>
+                Cliente
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a class="btn btn-success" style="color:white" href="@Url.Action("DetallesSolicitudCotizacion", "SolicitudCotizacion", new { id = item.Id })">Ver</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Codigo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+                <td>
+                    @if (item.Servicios.Count > 0)
+                    {
+                        <div>@item.Servicios.First().Nombre</div>
+                    }
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Usuario.NombreUsuario)
+                </td>
+                <td>
+                    <a href="#" class="material-icons" style="color:red" title="Eliminar" data-toggle="modal" data-target="#borrarModal" data-id="@item.Id" data-name="@item.Codigo">delete_outline</a>
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+<!-- Delete Modal-->
+<div class="modal fade" style="display:none;" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> TITULO </h5>
+            </div>
+            <div class="modal-body">No habrá forma de recuperar la información después de presionar en "Aceptar".</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                <a style="color:white" class="btn btn-danger btn-ok">Aceptar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+<script>
+
+    //e  es el elemnto que hace aparecer el modal
+    //la informacion se le agrega en data-id y hay oportunidad de agregar mas como data-name, etc
+    //esa informacion se le asigna al btn ok del modal
+    $('#borrarModal').on('show.bs.modal', function (e) {
+
+        var data = $(e.relatedTarget).data();
+        $('.modal-title', this).text("¿Está seguro de eliminar la Solicitud '" + data.name + "'?");
+        $('.btn-ok', this).data('recordId', data.id);
+    });
+
+
+    //El boton modal cuando es clickeado lee la informacion que se le fue asignada anteriormente
+    //luego forma la url correcta y envia en modo post
+    $('#borrarModal').on('click', '.btn-ok', function (e) {
+        var $id = $(this).data('recordId');
+        var form = $('#__AjaxAntiForgeryForm');
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+        $.ajax({
+            type: "POST",
+            url: "/SolicitudCotizacion/EliminarSolicitudCotizacion",
+            data: {
+                __RequestVerificationToken: token,
+                id: $id
+            },
+            success: function (result) {
+                if (result.exito == false) {
+                    alert(result.mensaje);
+                }
+                else {
+                    location.reload(true);
+                }
+            },
+            error: function (response) {
+                //debugger;
+                //alert('eror');
+            }
+        });
+    });
+
+
+</script>
+}

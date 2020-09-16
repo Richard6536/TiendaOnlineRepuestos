@@ -1,0 +1,204 @@
+﻿@model TiendaOnline.Models.Cotizacion
+
+@{
+    ViewBag.Title = "Documento Cotizacion";
+}
+
+<div class="card" style="background-color:#f7f7f7; border-top-right-radius:0px; border-top-left-radius:0px; margin-top: 10px">
+    <div class="card-body">
+        <div class="row">
+            <div style="width:50%; padding-left:32px">
+                <div class="row">
+                    <div><img style="width: 110px" src="https://i.imgur.com/1zcj4Gc.png" /></div>
+                    <div style="margin-left:10px; font-size:18px">
+                        <strong>Nombre:</strong> @Model.Tienda.Nombre<br />
+                        <strong>Dirección:</strong> @Model.Tienda.Direccion<br />
+                        <strong>Correo:</strong> @Model.Tienda.Correo<br />
+                        <strong>Tel:</strong> @Model.Tienda.Telefono
+                    </div>
+                </div>
+
+            </div>
+            <div style="width:50%; padding-right:16px">
+                <table class="table table-bordered table-striped" style="width:300px; font-size:18px; float:right !important;">
+                    <thead>
+                        <tr>
+                            <th class="text-center">COTIZACIÓN</th>
+                            <th class="text-center" style="width:400px">FECHA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th class="text-center">@Html.DisplayFor(model => model.Codigo)</th>
+                            <th class="text-center">@Model.Fecha.ToShortDateString()</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="divTable table-bordered">
+
+            <div class="divTableBody">
+                <div class="divTableRow" style="background-color:#949494; color:#ffffff">
+                    <div class="divTableCell">DATOS DEL CLIENTE</div>
+                </div>
+            </div>
+
+        </div>
+
+        <table class="table table-sm">
+
+            <tbody>
+                <tr>
+                    <td>Nombre</td>
+                    <td>@Model.Usuario.Nombre</td>
+                    <td>Apellido</td>
+                    <td>@Model.Usuario.Apellido</td>
+                </tr>
+                <tr>
+                    <td>Rut</td>
+                    <td>@Model.Usuario.Rut</td>
+                    <td>Correo</td>
+                    <td>@Model.Usuario.Email</td>
+                </tr>
+                <tr>
+                    <td>Teléfono</td>
+                    <td>@Model.Usuario.Telefono</td>
+                    <td>Domicilio</td>
+                    <td>@Model.Usuario.Domicilio</td>
+                </tr>
+                <tr>
+                    <td>Ciudad</td>
+                    <td>@Model.Usuario.Ciudad</td>
+                    <td>País</td>
+                    <td>@Model.Usuario.Pais</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <hr style="margin-top:-10px" />
+    <div class="card-body">
+        <table class="table table-bordered table-striped" style="width: 100%; font-size: 11px" id="TablaProductos">
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Código</th>
+                    <th>Nombre Producto</th>
+                    <th>Categoria</th>
+                    <th>Valor</th>
+                    <th>Cantidad</th>
+                    <th>Valor Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int prodCont = 0;}
+                @foreach (var item in Model.ServiciosCotizados)
+                {
+                    prodCont++;
+                    <tr>
+                        <td class="text-center">@prodCont</td>
+                        <td>900000</td>
+                        <td>@item.Nombre</td>
+                        <td>@item.Categoria.NombreCategoria</td>
+                        <td class="text-right">@item.Precio</td>
+                        <td class="text-center">1</td>
+                        <td class="text-right">@item.Precio</td>
+                    </tr>
+                }
+                <tr>
+                    <th class="text-right" scope="row" colspan="6">Sub Total Neto</th>
+                    <th scope="row" class="text-right">@Model.SubTotalNeto</th>
+                </tr>
+                <tr>
+                    <th class="text-right" scope="row" colspan="6">Descuento</th>
+                    <th scope="row" class="text-right">@Model.Descuento</th>
+                </tr>
+                <tr>
+                    <th class="text-right" scope="row" colspan="6">Total Neto</th>
+                    <th scope="row" class="text-right">@Model.TotalNeto</th>
+                </tr>
+                <tr>
+                    <th class="text-right" scope="row" colspan="6">IVA (19%)</th>
+                    <th scope="row" class="text-right">@Model.IVA</th>
+                </tr>
+                <tr>
+                    <th class="text-right" scope="row" colspan="6">Total A Pagar (inc. IVA):</th>
+                    <th scope="row" class="text-right">@Model.TotalAPagar</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr style="margin-top:-10px" />
+    <div class="card-body">
+        <div class="divTable">
+
+            <div class="divTableBody">
+                <div class="divTableRow" style="background-color:#949494; color:#ffffff">
+                    <div class="divTableCell">OBSERVACIONES</div>
+                </div>
+            </div>
+            <div style="margin-top:10px; margin-left:5px">
+                @if (Model.Comentario != null)
+                {
+                    @Model.Comentario
+                }
+                else
+                {
+                    <div>No hay observaciones.</div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .tabC {
+        table-layout: fixed;
+    }
+
+    .tabD {
+        word-wrap: break-word;
+    }
+
+
+    .divTable {
+        display: table;
+        width: 100%;
+    }
+
+    .divTableRow {
+        display: table-row;
+    }
+
+    .divTableHeading {
+        background-color: #EEE;
+        display: table-header-group;
+    }
+
+    .divTableCell, .divTableHead {
+        border: 0em solid #d8d8d8;
+        display: table-cell;
+        padding: 1px 4px;
+    }
+
+    .divTableHeading {
+        background-color: #EEE;
+        display: table-header-group;
+        font-weight: bold;
+    }
+
+    .divTableFoot {
+        background-color: #EEE;
+        display: table-footer-group;
+        font-weight: bold;
+    }
+
+    .divTableBody {
+        display: table-row-group;
+    }
+</style>
+

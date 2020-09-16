@@ -43,7 +43,7 @@
     border-radius: 50%;
     border: 1px solid #ffd800;
     position: absolute;
-    background-color: #ffd800;
+    background-color: rgba(255, 216, 0, 0.41);
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;

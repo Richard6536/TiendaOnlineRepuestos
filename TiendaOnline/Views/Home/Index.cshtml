@@ -12,9 +12,14 @@
         color: #ff9f1a;
     }
 </style>
-<div style="background-color:#fff098">
-    @Html.Action("_CrearTienda", "Home")
-</div>
+
+@if (Session["TiendaId"] == null)
+{
+    <div style="background-color:#fff098">
+        @Html.Action("_CrearTienda", "Home")
+    </div>
+}
+
 
 <div id="myCarousel" class="carousel slide carousel-height" data-ride="carousel">
     <ol class="carousel-indicators">

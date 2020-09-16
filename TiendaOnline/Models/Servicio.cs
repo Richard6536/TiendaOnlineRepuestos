@@ -36,12 +36,11 @@ namespace TiendaOnline.Models
         [ForeignKey("TiendaId")]
         public virtual Tienda Tienda { get; set; }
 
-
         public virtual List<PuntuacionProducto> Puntuaciones { get; set; }
         public virtual List<Comentario> Comentarios { get; set; }
         public virtual List<Imagen> Imagenes { get; set; }
 
-
+        public virtual List<SolicitudCotizacion> SolicitudCotizaciones { get; set; }
         public virtual List<ProductoCarro> ProductosCarro { get; set; }
 
         public static bool CrearServicio(Servicio _servicio, Tienda _tienda, TiendaOnlineContext _db)

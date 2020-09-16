@@ -25,16 +25,17 @@ namespace TiendaOnline.Models
         public virtual Usuario Usuario { get; set; }
 
 
-        public static Carrocompra CrearCarroCompra(Usuario _usuario, TiendaOnlineContext _db)
+        public static Carrocompra CrearCarroCompra(int _idUsuario, TiendaOnlineContext _db)
         {
-            if (_usuario.CarroCompra.Count > 0)
+            Usuario usuario = _db.Usuarios.Where(u => u.Id == _idUsuario).FirstOrDefault();
+            if (usuario.CarroCompra.Count > 0)
             {
-                return _usuario.CarroCompra.First();
+                return usuario.CarroCompra.First();
             }
 
             Carrocompra carroCompra = new Carrocompra();
             carroCompra.Total = 0;
-            carroCompra.Usuario = _usuario;
+            carroCompra.Usuario = usuario;
 
             _db.CarrosCompra.Add(carroCompra);
             _db.SaveChanges();

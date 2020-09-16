@@ -9,8 +9,7 @@ namespace TiendaOnline.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
-            ContextKey = "TiendaOnline.Models.TiendaOnlineContext";
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(TiendaOnline.Models.TiendaOnlineContext context)

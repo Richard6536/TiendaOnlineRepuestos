@@ -27,6 +27,13 @@ namespace TiendaOnline.Models
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<ReporteErrores> ReportesErrores { get; set; }
         public DbSet<Tienda> Tienda { get; set; }
+        public DbSet<SolicitudCotizacion> SolicitudCotizacion { get; set; }
+        public DbSet<Cotizacion> Cotizacions { get; set; }
+        public DbSet<LogoRemitente> LogoRemitente { get; set; }
+        public DbSet<EmailConRefreshToken> EmailsConRefreshTokens { get; set; }
+        public DbSet<Calendario> Calendario { get; set; }
+        public DbSet<Agenda> Agenda { get; set; }
+        public DbSet<Cita> Cita { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -41,5 +48,6 @@ namespace TiendaOnline.Models
 
 
         }
+
     }
 }
