@@ -19,7 +19,7 @@ namespace TiendaOnline.Models
         public string Email { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-
+         
         public static void CrearEmailConRefresh(TiendaOnlineContext _db, string email, string accessToken, string refreshToken)
         {
             EmailConRefreshToken existe = _db.EmailsConRefreshTokens.Where(e => e.Email == email.ToUpper()).FirstOrDefault();
