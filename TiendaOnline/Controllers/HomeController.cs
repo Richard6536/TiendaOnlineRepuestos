@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using TiendaOnline.Models;
 using TiendaOnline.Clases;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace TiendaOnline.Controllers
 {
@@ -23,6 +24,8 @@ namespace TiendaOnline.Controllers
 
         public ActionResult Index(int page = 1, int categoriaId = -1)
         {
+            UsuarioTienda usuarioTienda = db.UsuariosTienda.Where(ut => ut.Id == 1).FirstOrDefault();
+            UsuarioTienda usuarioTienda2 = db.UsuariosTienda.Where(ut => ut.Id == 2).FirstOrDefault();
 
             List<Producto> productos = db.Productos.ToList();
 

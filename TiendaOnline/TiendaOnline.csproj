@@ -49,6 +49,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.8.5\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="Carbon.Data.Protection, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Carbon.Data.Protection.1.2.0\lib\netstandard2.0\Carbon.Data.Protection.dll</HintPath>
     </Reference>
@@ -88,6 +91,9 @@
     <Reference Include="Google.Apis.PlatformServices, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.49.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
+    <Reference Include="MailKit, Version=2.9.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
+      <HintPath>..\packages\MailKit.2.9.0\lib\net46\MailKit.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -95,6 +101,9 @@
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.0\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MimeKit, Version=2.9.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+      <HintPath>..\packages\MimeKit.2.9.2\lib\net46\MimeKit.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -117,6 +126,7 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Text.Encodings.Web, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encodings.Web.4.7.1\lib\net461\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
@@ -226,10 +236,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Clases\Busqueda.cs" />
     <Compile Include="Clases\Email.cs" />
+    <Compile Include="Clases\HorarioTemporalTrabajador.cs" />
     <Compile Include="Clases\PasswordHash.cs" />
     <Compile Include="Clases\TiendaHome.cs" />
     <Compile Include="Controllers\AjustesController.cs" />
-    <Compile Include="Controllers\AppointmentScheduleController.cs" />
     <Compile Include="Controllers\CarroCompraController.cs" />
     <Compile Include="Controllers\CotizacionController.cs" />
     <Compile Include="Controllers\DocumentosController.cs" />
@@ -239,6 +249,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PDFController.cs" />
     <Compile Include="Controllers\ProductoController.cs" />
+    <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Controllers\ServicioController.cs" />
     <Compile Include="Controllers\SolicitudCotizacionController.cs" />
     <Compile Include="Controllers\SuperAdminController.cs" />
@@ -293,6 +304,66 @@
     <Compile Include="Migrations\202009160512304_Email.Designer.cs">
       <DependentUpon>202009160512304_Email.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009170109531_No se que era.cs" />
+    <Compile Include="Migrations\202009170109531_No se que era.Designer.cs">
+      <DependentUpon>202009170109531_No se que era.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009170619205_Email_send.cs" />
+    <Compile Include="Migrations\202009170619205_Email_send.Designer.cs">
+      <DependentUpon>202009170619205_Email_send.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009172106114_HorarioTienda.cs" />
+    <Compile Include="Migrations\202009172106114_HorarioTienda.Designer.cs">
+      <DependentUpon>202009172106114_HorarioTienda.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009172116458_HorarioTienda2.cs" />
+    <Compile Include="Migrations\202009172116458_HorarioTienda2.Designer.cs">
+      <DependentUpon>202009172116458_HorarioTienda2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009172146181_UsuarioTiendaCambio.cs" />
+    <Compile Include="Migrations\202009172146181_UsuarioTiendaCambio.Designer.cs">
+      <DependentUpon>202009172146181_UsuarioTiendaCambio.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009172159098_Relacion_TiendaUsuario&amp;TiendaUsuarioMecanico.cs" />
+    <Compile Include="Migrations\202009172159098_Relacion_TiendaUsuario&amp;TiendaUsuarioMecanico.Designer.cs">
+      <DependentUpon>202009172159098_Relacion_TiendaUsuario&amp;TiendaUsuarioMecanico.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009172211077_HorarioDescanso_Mecanico.cs" />
+    <Compile Include="Migrations\202009172211077_HorarioDescanso_Mecanico.Designer.cs">
+      <DependentUpon>202009172211077_HorarioDescanso_Mecanico.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009172253163_HorarioTrabajador.cs" />
+    <Compile Include="Migrations\202009172253163_HorarioTrabajador.Designer.cs">
+      <DependentUpon>202009172253163_HorarioTrabajador.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009192010115_USTM2.cs" />
+    <Compile Include="Migrations\202009192010115_USTM2.Designer.cs">
+      <DependentUpon>202009192010115_USTM2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009192302577_USTM_Cotizacion Relationship.cs" />
+    <Compile Include="Migrations\202009192302577_USTM_Cotizacion Relationship.Designer.cs">
+      <DependentUpon>202009192302577_USTM_Cotizacion Relationship.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009202156450_UsuarioTiendaMecanico_Tienda Relacion.cs" />
+    <Compile Include="Migrations\202009202156450_UsuarioTiendaMecanico_Tienda Relacion.Designer.cs">
+      <DependentUpon>202009202156450_UsuarioTiendaMecanico_Tienda Relacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009211805424_Cita Cambios.cs" />
+    <Compile Include="Migrations\202009211805424_Cita Cambios.Designer.cs">
+      <DependentUpon>202009211805424_Cita Cambios.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009212007516_Relacion Cotizacion_Cita.cs" />
+    <Compile Include="Migrations\202009212007516_Relacion Cotizacion_Cita.Designer.cs">
+      <DependentUpon>202009212007516_Relacion Cotizacion_Cita.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009212309169_Relacion Tienda_Calendario.cs" />
+    <Compile Include="Migrations\202009212309169_Relacion Tienda_Calendario.Designer.cs">
+      <DependentUpon>202009212309169_Relacion Tienda_Calendario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009212353098_Calendario_Update.cs" />
+    <Compile Include="Migrations\202009212353098_Calendario_Update.Designer.cs">
+      <DependentUpon>202009212353098_Calendario_Update.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Agenda.cs" />
     <Compile Include="Models\Calendario.cs" />
@@ -304,11 +375,14 @@
     <Compile Include="Models\ComentarioRespuesta.cs" />
     <Compile Include="Models\Cotizacion.cs" />
     <Compile Include="Models\EmailConRefreshToken.cs" />
+    <Compile Include="Models\HorarioTienda.cs" />
+    <Compile Include="Models\HorarioTrabajador.cs" />
     <Compile Include="Models\Imagen.cs" />
     <Compile Include="Models\LogoRemitente.cs" />
     <Compile Include="Models\Producto.cs" />
     <Compile Include="Models\ProductoCarro.cs" />
     <Compile Include="Models\PuntuacionProducto.cs" />
+    <Compile Include="Models\RegistroEnvio.cs" />
     <Compile Include="Models\ReporteErrores.cs" />
     <Compile Include="Models\Servicio.cs" />
     <Compile Include="Models\SolicitudCotizacion.cs" />
@@ -327,6 +401,8 @@
     <Content Include="Content\Calendar\main.css" />
     <Content Include="Content\Calendar\main.js" />
     <Content Include="Content\Comentarios\comment-list.css" />
+    <Content Include="Content\Datetimepicker\css\bootstrap-datetimepicker.min.css" />
+    <Content Include="Content\Datetimepicker\js\bootstrap-datetimepicker.min.js" />
     <Content Include="Content\Index\carousel-multi-products.css" />
     <Content Include="Content\Index\carousel.css" />
     <Content Include="Content\Layout\search-input.css" />
@@ -462,7 +538,6 @@
     <Content Include="Views\SolicitudCotizacion\DetallesSolicitudCotizacion.cshtml" />
     <Content Include="Views\Home\CalendarExample.cshtml" />
     <Content Include="Views\Home\CalendarExampleDXDraggableEX.cshtml" />
-    <Content Include="Views\AppointmentSchedule\ProgramarCitas.cshtml" />
     <Content Include="Views\CarroCompra\CarroCompra.cshtml" />
     <Content Include="Views\Cotizacion\VerCotizacion.cshtml" />
     <Content Include="Views\Ajustes\LogoRemitente.cshtml" />
@@ -470,10 +545,17 @@
     <Content Include="Views\Shared\_LayoutBlancoPDF.cshtml" />
     <Content Include="Views\Documentos\Cotizacion.cshtml" />
     <Content Include="Views\Documentos\Mensaje.cshtml" />
+    <Content Include="Views\Email\EnviarEmail.cshtml" />
+    <Content Include="Views\Email\ResultadoMail.cshtml" />
+    <Content Include="Views\Email\ErrorSeguridad.cshtml" />
+    <Content Include="Views\Usuarios\CrearMecanico.cshtml" />
+    <Content Include="Views\Cotizacion\AsociarMecanico.cshtml" />
+    <Content Include="Views\Schedule\SeleccionarHora.cshtml" />
+    <Content Include="Views\Schedule\CalendarioTienda.cshtml" />
+    <Content Include="Views\Ajustes\HorarioTienda.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Email\" />
     <Folder Include="Views\Layout\" />
     <Folder Include="Views\Transaction\" />
   </ItemGroup>
@@ -523,6 +605,51 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009160512304_Email.resx">
       <DependentUpon>202009160512304_Email.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009170109531_No se que era.resx">
+      <DependentUpon>202009170109531_No se que era.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009170619205_Email_send.resx">
+      <DependentUpon>202009170619205_Email_send.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009172106114_HorarioTienda.resx">
+      <DependentUpon>202009172106114_HorarioTienda.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009172116458_HorarioTienda2.resx">
+      <DependentUpon>202009172116458_HorarioTienda2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009172146181_UsuarioTiendaCambio.resx">
+      <DependentUpon>202009172146181_UsuarioTiendaCambio.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009172159098_Relacion_TiendaUsuario&amp;TiendaUsuarioMecanico.resx">
+      <DependentUpon>202009172159098_Relacion_TiendaUsuario&amp;TiendaUsuarioMecanico.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009172211077_HorarioDescanso_Mecanico.resx">
+      <DependentUpon>202009172211077_HorarioDescanso_Mecanico.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009172253163_HorarioTrabajador.resx">
+      <DependentUpon>202009172253163_HorarioTrabajador.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009192010115_USTM2.resx">
+      <DependentUpon>202009192010115_USTM2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009192302577_USTM_Cotizacion Relationship.resx">
+      <DependentUpon>202009192302577_USTM_Cotizacion Relationship.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009202156450_UsuarioTiendaMecanico_Tienda Relacion.resx">
+      <DependentUpon>202009202156450_UsuarioTiendaMecanico_Tienda Relacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009211805424_Cita Cambios.resx">
+      <DependentUpon>202009211805424_Cita Cambios.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009212007516_Relacion Cotizacion_Cita.resx">
+      <DependentUpon>202009212007516_Relacion Cotizacion_Cita.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009212309169_Relacion Tienda_Calendario.resx">
+      <DependentUpon>202009212309169_Relacion Tienda_Calendario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009212353098_Calendario_Update.resx">
+      <DependentUpon>202009212353098_Calendario_Update.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

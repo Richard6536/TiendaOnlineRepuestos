@@ -43,8 +43,14 @@ namespace TiendaOnline.Models
         public int? SolicitudCotizacionId { get; set; }
         [ForeignKey("SolicitudCotizacionId")]
         public virtual SolicitudCotizacion SolicitudCotizacion { get; set; }
-
+        public virtual List<RegistroEnvio> RegistrosEnvios { get; set; }
         public virtual List<Servicio> ServiciosCotizados { get; set; }
+
+        public int? UsuarioTiendaMecanicoId { get; set; }
+        [ForeignKey("UsuarioTiendaMecanicoId")]
+        public virtual UsuarioTiendaMecanico UsuarioTiendaMecanico { get; set; }
+
+        public virtual List<Cita> Citas { get; set; } //DEBE SER UNA!!!!!!!!!!
 
         public static Cotizacion CrearCotizacion(TiendaOnlineContext _db, Cotizacion _cotizacion, int _usuarioTiendaId, int _tiendaId)
         {
@@ -77,5 +83,19 @@ namespace TiendaOnline.Models
             return _cotizacion;
         }
 
+        public static Cotizacion AsociarMecanicoACotizacion(TiendaOnlineContext _db, int idTienda, int idCotizacion, int idUsuarioMecanico)
+        {
+            Tienda tienda = _db.Tienda.Where(ut => ut.Id == idTienda).FirstOrDefault();
+
+            Cotizacion cotizacion = tienda.Cotizaciones.Where(c => c.Id == idCotizacion).FirstOrDefault();
+            UsuarioTiendaMecanico usuarioTiendaMecanico = tienda.UsuarioTiendaMecanicos.Where(ust => ust.UsuarioTienda.Usuario.Id == idUsuarioMecanico).FirstOrDefault();
+
+            cotizacion.UsuarioTiendaMecanico = usuarioTiendaMecanico;
+            usuarioTiendaMecanico.Cotizaciones.Add(cotizacion);
+
+            _db.SaveChanges();
+
+            return cotizacion;
+        }
     }
 }

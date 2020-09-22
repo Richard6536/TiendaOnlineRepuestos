@@ -1,0 +1,313 @@
+﻿@model TiendaOnline.Models.UsuarioTienda
+@{
+    ViewBag.Title = "CrearMecanico";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/jquery-clockpicker.min.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/jquery-clockpicker.min.js"></script>
+
+
+<h2>CrearMecanico</h2>
+@{ 
+    //LUNES
+    string horaLun1 = "";
+    string horaLun2 = "";
+    string horaLun3 = "";
+    string horaLun4 = "";
+
+    //MARTES
+    string horaMar1 = "";
+    string horaMar2 = "";
+    string horaMar3 = "";
+    string horaMar4 = "";
+
+    //MIERCOLES
+    string horaMie1 = "";
+    string horaMie2 = "";
+    string horaMie3 = "";
+    string horaMie4 = "";
+
+    //JUEVES
+    string horaJue1 = "";
+    string horaJue2 = "";
+    string horaJue3 = "";
+    string horaJue4 = "";
+
+    //VIERNES
+    string horaVie1 = "";
+    string horaVie2 = "";
+    string horaVie3 = "";
+    string horaVie4 = "";
+
+    //SABADO
+    string horaSab1 = "";
+    string horaSab2 = "";
+    string horaSab3 = "";
+    string horaSab4 = "";
+
+    //DOMINGO
+    string horaDom1 = "";
+    string horaDom2 = "";
+    string horaDom3 = "";
+    string horaDom4 = "";
+
+}
+
+<div class="form-horizontal">
+    <h4>UsuarioTiendaMecanico</h4>
+    <hr />
+    @if (Model.UsuariosTiendaMecanicos != null)
+    {
+        if (Model.UsuariosTiendaMecanicos.Count > 0)
+        {
+            if (Model.UsuariosTiendaMecanicos.First().Horario.Count > 0)
+            {
+                foreach (var horario in Model.UsuariosTiendaMecanicos.First().Horario)
+                {
+                    if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Lunes)
+                    {
+                        horaLun1 = horario.HoraEntrada.ToString();
+                        horaLun2 = horario.HoraDescansoInicio.ToString();
+                        horaLun3 = horario.HoraDescansoTermino.ToString();
+                        horaLun4 = horario.HoraSalida.ToString();
+                    }
+
+                    if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Martes)
+                    {
+                        horaMar1 = horario.HoraEntrada.ToString();
+                        horaMar2 = horario.HoraDescansoInicio.ToString();
+                        horaMar3 = horario.HoraDescansoTermino.ToString();
+                        horaMar4 = horario.HoraSalida.ToString();
+                    }
+
+                    if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Miercoles)
+                    {
+                        horaMie1 = horario.HoraEntrada.ToString();
+                        horaMie2 = horario.HoraDescansoInicio.ToString();
+                        horaMie3 = horario.HoraDescansoTermino.ToString();
+                        horaMie4 = horario.HoraSalida.ToString();
+                    }
+
+                    if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Jueves)
+                    {
+                        horaJue1 = horario.HoraEntrada.ToString();
+                        horaJue2 = horario.HoraDescansoInicio.ToString();
+                        horaJue3 = horario.HoraDescansoTermino.ToString();
+                        horaJue4 = horario.HoraSalida.ToString();
+                    }
+
+                    if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Viernes)
+                    {
+                        horaVie1 = horario.HoraEntrada.ToString();
+                        horaVie2 = horario.HoraDescansoInicio.ToString();
+                        horaVie3 = horario.HoraDescansoTermino.ToString();
+                        horaVie4 = horario.HoraSalida.ToString();
+                    }
+
+                    if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Sabado)
+                    {
+                        horaSab1 = horario.HoraEntrada.ToString();
+                        horaSab2 = horario.HoraDescansoInicio.ToString();
+                        horaSab3 = horario.HoraDescansoTermino.ToString();
+                        horaSab4 = horario.HoraSalida.ToString();
+                    }
+
+                    if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Domingo)
+                    {
+                        horaDom1 = horario.HoraEntrada.ToString();
+                        horaDom2 = horario.HoraDescansoInicio.ToString();
+                        horaDom3 = horario.HoraDescansoTermino.ToString();
+                        horaDom4 = horario.HoraSalida.ToString();
+                    }
+                }
+            }
+        }
+    }
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Día</th>
+                <th scope="col">Hora Entrada</th>
+                <th scope="col">Hora Descanso Inicio</th>
+                <th scope="col">Hora Descanso Termino</th>
+                <th scope="col">Hora Salida</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <th scope="row">Lunes</th>
+                <td><input class="form-control" name="lunes" id="lun1" value="@horaLun1" data-default="22:22"></td>
+                <td><input class="form-control" name="lunes" id="lun2" value="@horaLun2" data-default="22:22"></td>
+                <td><input class="form-control" name="lunes" id="lun3" value="@horaLun3" data-default="22:22"></td>
+                <td><input class="form-control" name="lunes" id="lun4" value="@horaLun4" data-default="22:22"></td>
+            </tr>
+            <tr>
+                <th scope="row">Martes</th>
+                <td><input class="form-control" name="martes" id="mar1" value="@horaMar1" data-default="22:22"></td>
+                <td><input class="form-control" name="martes" id="mar2" value="@horaMar2" data-default="22:22"></td>
+                <td><input class="form-control" name="martes" id="mar3" value="@horaMar3" data-default="22:22"></td>
+                <td><input class="form-control" name="martes" id="mar4" value="@horaMar4" data-default="22:22"></td>
+            </tr>
+            <tr>
+                <th scope="row">Miercoles</th>
+                <td><input class="form-control" name="miercoles" id="mier1" value="@horaMie1" data-default="22:22"></td>
+                <td><input class="form-control" name="miercoles" id="mier2" value="@horaMie2" data-default="22:22"></td>
+                <td><input class="form-control" name="miercoles" id="mier3" value="@horaMie3" data-default="22:22"></td>
+                <td><input class="form-control" name="miercoles" id="mier4" value="@horaMie4" data-default="22:22"></td>
+            </tr>
+            <tr>
+                <th scope="row">Jueves</th>
+                <td><input class="form-control" name="jueves" id="jue1" value="@horaJue1" data-default="22:22"></td>
+                <td><input class="form-control" name="jueves" id="jue2" value="@horaJue2" data-default="22:22"></td>
+                <td><input class="form-control" name="jueves" id="jue3" value="@horaJue3" data-default="22:22"></td>
+                <td><input class="form-control" name="jueves" id="jue4" value="@horaJue4" data-default="22:22"></td>
+            </tr>
+            <tr>
+                <th scope="row">Viernes</th>
+                <td><input class="form-control" name="viernes" id="vier1" value="@horaVie1" data-default="22:22"></td>
+                <td><input class="form-control" name="viernes" id="vier2" value="@horaVie2" data-default="22:22"></td>
+                <td><input class="form-control" name="viernes" id="vier3" value="@horaVie3" data-default="22:22"></td>
+                <td><input class="form-control" name="viernes" id="vier4" value="@horaVie4" data-default="22:22"></td>
+            </tr>
+            <tr>
+                <th scope="row">Sábado</th>
+                <td><input class="form-control" name="sabado" id="sab1" value="@horaSab1" data-default="22:22"></td>
+                <td><input class="form-control" name="sabado" id="sab2" value="@horaSab2" data-default="22:22"></td>
+                <td><input class="form-control" name="sabado" id="sab3" value="@horaSab3" data-default="22:22"></td>
+                <td><input class="form-control" name="sabado" id="sab4" value="@horaSab4" data-default="22:22"></td>
+            </tr>
+            <tr>
+                <th scope="row">Domingo</th>
+                <td><input class="form-control" name="domingo" id="dom1" value="@horaDom1" data-default="22:22"></td>
+                <td><input class="form-control" name="domingo" id="dom2" value="@horaDom2" data-default="22:22"></td>
+                <td><input class="form-control" name="domingo" id="dom3" value="@horaDom3" data-default="22:22"></td>
+                <td><input class="form-control" name="domingo" id="dom4" value="@horaDom4" data-default="22:22"></td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="button" onclick="SendData()" class="btn btn-default">Crear</button>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            inputs = document.getElementsByTagName('input');
+            for (index = 0; index < inputs.length; ++index) {
+                // deal with inputs[index] element.
+
+                $(inputs[index]).clockpicker({
+                    autoclose: true,
+                    twelvehour: true
+                }).change(function () {
+                    // TODO: time changed
+                    //console.log(this.value + " - " + this.id);
+                });
+            }
+        });
+    </script>
+
+    <script>
+        function SendData() {
+
+            var lunesArray = [];
+            var martesArray = [];
+            var miercolesArray = [];
+            var juevesArray = [];
+            var viernesArray = [];
+            var sabadoArray = [];
+            var domingoArray = [];
+
+            inputs = document.getElementsByTagName('input');
+            for (index = 0; index < inputs.length; ++index) {
+                // deal with inputs[index] element.
+                if (inputs[index].name == "lunes") {
+                    lunesArray.push({ Periodo: inputs[index].id, Hora: inputs[index].value });
+                }
+
+                if (inputs[index].name == "martes") {
+                    martesArray.push({ periodo: inputs[index].id, hora: inputs[index].value });
+                }
+
+                if (inputs[index].name == "miercoles") {
+                    miercolesArray.push({ periodo: inputs[index].id, hora: inputs[index].value });
+                }
+
+                if (inputs[index].name == "jueves") {
+                    juevesArray.push({ periodo: inputs[index].id, hora: inputs[index].value });
+                }
+
+                if (inputs[index].name == "viernes") {
+                    viernesArray.push({ periodo: inputs[index].id, hora: inputs[index].value });
+                }
+
+                if (inputs[index].name == "sabado") {
+                    sabadoArray.push({ periodo: inputs[index].id, hora: inputs[index].value });
+                }
+
+                if (inputs[index].name == "domingo") {
+                    domingoArray.push({ periodo: inputs[index].id, hora: inputs[index].value });
+                }
+            }
+
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Usuarios/CrearMecanicoJS",
+                data: {
+                    __RequestVerificationToken: token,
+                    model: {
+                        UsuarioTiendaId: @Html.Raw(Json.Encode(Model.Id)),
+                        LunesList: lunesArray,
+                        MartesList: martesArray,
+                        MiercolesList: miercolesArray,
+                        JuevesList: juevesArray,
+                        ViernesList: viernesArray,
+                        SabadoList: sabadoArray,
+                        DomingoList: domingoArray
+                    }
+                },
+                success: function (result) {
+                    //location.reload(true);
+                    if (result.exito == true) {
+                       location.reload(true);
+                    }
+                    else if (result.exito == false) {
+                        $btnSubmit.disabled = false;
+                        alert(result.mensaje);
+                    }
+                }
+            });
+
+
+        }
+
+    </script>
+
+}
+

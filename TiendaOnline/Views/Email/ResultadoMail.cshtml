@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "ResultadoMail";
+}
+
+<div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-content" style="background-color:transparent">
+                        <div class="error_ex">
+                            <h3 style="color:#28b779">@Html.Raw(TempData["msgEmail"])</h3>
+                            <br />
+                            <a class="btn btn-warning btn-big" href="~/Cotizacion/ListaCotizaciones">Volver a cotizaciones</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,407 @@
+﻿@model TiendaOnline.Clases.Email
+
+@{
+    ViewBag.Title = "EnviarEmail";
+    int idCliente = Model.ClienteId;
+}
+
+
+@using (Html.BeginForm("EnviarEmail", "Email", FormMethod.Post, new { enctype = "multipart/form-data", id = "idform" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.IdUsuario)
+    @Html.HiddenFor(model => model.IdTienda)
+    @Html.HiddenFor(model => model.ClienteId)
+    @Html.HiddenFor(model => model.IdDocumento)
+    @Html.HiddenFor(model => model.NombreDocumento)
+
+    @Html.HiddenFor(model => model.NombreDestinatario)
+
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-pills card-header-pills">
+                <li class="nav-item">
+                    <a class="nav-link active" type="button" href="#" onclick="Revoke();"><i class="fas fa-envelope"></i> Cambiar Email Remitente</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            @Html.TextBoxFor(m => m.Token, new { @class = "form-control", style = "display: none;", @id = "token" })
+
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label>Desde</label>
+                    @Html.TextBoxFor(m => m.EmailDesde, new { @class = "form-control span6", @readonly = "readonly", @id = "email" })
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Para: </label>
+                    <div class="input-group">
+                        @Html.TextBoxFor(m => m.EmailPara, new { @class = "form-control", id = "paraInputId" })@Html.ValidationMessageFor(m => m.EmailPara)
+                        <div class="input-group-prepend">
+                            <button class="btn btn-default" style="margin-bottom:10px; background-color:#38424b; color:#eaeaea" type="button" onclick="showCC();">CC</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row" style="display:none" id="taginputcc" name="taginputcc">
+                <div class="col-md-4 mb-3">
+                    <label>CC</label>
+                    <input id="form-tags-1" name="taginputcc" class="form-control" style="width:310px" placeholder="Agrega otro correo" type="text" aria-describedby="btnGroupAddon">
+                </div>
+            </div>
+        </div>
+
+        <div class="card-header">
+            Adjuntar Archivos
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <input type="file" name="files" id="files" class="input-file" multiple>
+                <label for="files" class="btn btn-tertiary js-labelFile">
+                    <span class="js-fileName">Seleccionar Archivos</span>
+                </label>
+
+                @*<input id="id" name="id" value="" type="hidden" />*@
+
+            </div>
+        </div>
+
+
+        @*VISUALIZAR DOCUMENTO*@
+        <div class="card-header">
+            Archivos Adjuntados
+        </div>
+        <div class="card-body">
+            <div class="widget-content nopadding container">
+                <div class="divTable">
+                    <div class="divTableBody">
+                        <div class="divTableRow">
+                            <div class="divTableCell" style="text-align:center; padding-left:3%; padding-top:2%"><label style="font-weight:bold">Cotización código: @Model.CodigoDocumento</label></div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: table; padding-left:10px; width:100%; overflow: hidden;">
+                    <div class="asdf">
+                        <div class="control-group" style="width: 95%; margin: 0 auto; padding-top:3%">
+                            <div class="controls">
+                                <div style="clear:both">
+                                    <object id="frameDocumento" data="@Url.Content("~/img/"+ViewBag.NombreCarpeta+"/"+ViewBag.IdTienda+"/" + System.IO.Path.GetFileName(Model.PathDocumentoPDF))" type="application/pdf" width="1020" height="500">
+                                        Este navegador no soporta una visualización para el documento en formato PDF. Le recomendamos exportar el archivo para visualizar.
+                                    </object>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+        @*TEMA/MENSAJE*@
+        <div class="card-body">
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label>Tema</label>
+                    @Html.TextBoxFor(m => m.Tema, new { @class = "form-control", @id = "txtTema" })
+                    <span id="validationTema"></span>
+                </div>
+            </div>
+            <hr />
+            <div class="form-row">
+                @Html.TextAreaFor(m => m.Mensaje, new { @class = "form-control", @rows = "9", @id = "txtMensaje" })
+            </div>
+
+        </div>
+        <div class="card-footer text-center text-muted">
+            <button id="submitbtn" style="width: 200px" type="button" onclick="SubmitButton()" class="btn btn-success"><i class="fas fa-paper-plane"></i> Enviar</button>
+        </div>
+    </div>
+    <br />
+}
+
+
+<style>
+    .asdf {
+        float: left;
+    }
+
+    .area {
+        width: 92%;
+    }
+
+    .container {
+        width: 100%;
+        overflow: auto;
+    }
+</style>
+<style>
+    .tabC {
+        table-layout: fixed;
+    }
+
+    .tabD {
+        word-wrap: break-word;
+    }
+
+
+    .divTable {
+        display: table;
+        width: 100%;
+    }
+
+    .divTableRow {
+        display: table-row;
+    }
+
+    .divTableHeading {
+        background-color: #EEE;
+        display: table-header-group;
+    }
+
+    .divTableCell, .divTableHead {
+        border: 0em solid #d8d8d8;
+        display: table-cell;
+        padding: 1px 4px;
+    }
+
+    .divTableHeading {
+        background-color: #EEE;
+        display: table-header-group;
+        font-weight: bold;
+    }
+
+    .divTableFoot {
+        background-color: #EEE;
+        display: table-footer-group;
+        font-weight: bold;
+    }
+
+    .divTableBody {
+        display: table-row-group;
+    }
+</style>
+<style type="text/css">
+    #loading {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.8);
+        z-index: 1000;
+    }
+
+    #loadingcontent {
+        display: table;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    #loadingspinner {
+        display: table-cell;
+        vertical-align: middle;
+        width: 100%;
+        text-align: center;
+        font-size: larger;
+        padding-top: 80px;
+    }
+</style>
+
+<style>
+    .container2 {
+        display: flex;
+    }
+
+    .asdf {
+        float: left;
+        padding-left: 15px;
+    }
+
+    .column {
+        float: left;
+        width: 45%;
+    }
+
+    .container {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .formPosition {
+        float: left;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+</style>
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+
+@section scripts{
+
+    <script>
+        $('#txtMensaje').summernote({
+            placeholder: 'Escribe un Mensaje',
+            tabsize: 2,
+            height: 220,
+            width: 1200,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
+
+    </script>
+
+    <script type="text/javascript">
+
+        var inputTema = document.getElementById("txtTema");
+        var txtValidationTema = document.getElementById("validationTema");
+
+        function SubmitButton() {
+
+            var tema = inputTema.value;
+            if (tema == null || tema == "") {
+
+                txtValidationTema.innerHTML = "Debe ingresar un tema.";
+                return;
+            }
+
+            document.getElementById("idform").submit();
+        }
+    </script>
+
+    <script type="text/javascript" src="~/Scripts/spin.js"></script>
+
+
+    <script type="text/javascript">
+        window.onload = function () {
+            var accesstoken = document.getElementById("token").value;
+            var url = 'https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=' + accesstoken;
+            $.ajax({
+                type: 'GET',
+                url: url,
+                async: false,
+                success: function (userInfo) {
+                    document.getElementById("email").value = userInfo["email"];
+                },
+                error: function (e) { alert("Error. Inestabilidad en la conexión de internet."); }
+            });
+        };
+    </script>
+    <script type="text/javascript">
+                function Revoke() {
+                var accesstoken = document.getElementById("token").value;
+                var url = 'https://accounts.google.com/o/oauth2/revoke?token=' + accesstoken;
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    async: false
+                    });
+
+                    $(location).attr('href', '@Html.Raw(Url.Action("RedirectCentral", "Email",
+                                             new { id = Model.IdDocumento ,
+                                                 idEmpresa = ViewBag.IdTienda,
+                                                 nombreDocumento = Model.NombreDocumento,
+                                                 idUser = Model.IdUsuario}))');
+                };
+    </script>
+
+    <script>
+        function showCC() {
+            document.getElementById("taginputcc").style.display = "";
+        }
+    </script>
+
+    @* Referencias Chosen *@
+    <link href="~/Content/Chosen/chosen.min.css" rel="stylesheet" />
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+
+    <script>
+        var $chosenclientes = $("#cmbEmails").chosen({
+            search_contains: true
+        });
+    </script>
+    @*Usar plantillas email*@
+    <script>
+
+        var $txtTema = document.getElementById("txtTema");
+        var $txtMensaje = document.getElementById("txtMensaje");
+
+        var $temaDefault = $txtTema.value;
+        var $mensajeDefault = $txtMensaje.value;
+
+        function CambiarEmail(value) {
+
+            if (value == 0) {
+
+                $txtTema.value = "";//$temaDefault;
+                $txtMensaje.value = "";//$mensajeDefault;
+                $('#txtMensaje').summernote('code', "");//$mensajeDefault);
+                return;
+            }
+        }
+    </script>
+
+    <script>
+        (function () {
+
+            'use strict';
+
+            $('.input-file').each(function () {
+                var $input = $(this),
+                    $label = $input.next('.js-labelFile'),
+                    labelVal = $label.html();
+
+                $input.on('change', function (element) {
+                    var filesInputLength = element.target.files;
+                    var fileName = '';
+                    if (element.target.value) fileName = element.target.value.split('\\').pop();
+                    fileName ? $label.addClass('has-file').find('.js-fileName').html(filesInputLength.length + ' archivos seleccionados') : $label.removeClass('has-file').html(labelVal);
+                });
+            });
+
+        })();
+    </script>
+
+}
+
+<script>
+    // Lo dejé fuera del section script porque no funcionaba dentro.
+    $('#form-tags-1').tagsInput({
+        // min/max number of characters
+        minChars: 0,
+        maxChars: null,
+        placeholder: 'Agrega un correo',
+        // max number of tags
+        limit: null,
+
+        // RegExp
+        validationPattern: null,
+
+        // duplicate validation
+        unique: true,
+
+
+    });
+</script>
+

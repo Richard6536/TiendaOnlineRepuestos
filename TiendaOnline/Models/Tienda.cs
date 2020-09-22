@@ -29,18 +29,22 @@ namespace TiendaOnline.Models
         public virtual Imagen ImageProfile { get; set; }
         public virtual Imagen ImageHeader { get; set; }
 
+        public virtual List<HorarioTienda> Horario { get; set; }
         public virtual List<Producto> Productos { get; set; }
         public virtual List<Servicio> Servicios { get; set; }
         public virtual List<UsuarioTienda> UsuariosTienda { get; set; }
+        public virtual List<UsuarioTiendaMecanico> UsuarioTiendaMecanicos { get; set; }
         public virtual List<ClienteTienda> ClientesTienda { get; set; }
         public virtual List<SolicitudCotizacion> SolicitudCotizaciones { get; set; }
         public virtual List<Cotizacion> Cotizaciones { get; set; }
         public virtual List<LogoRemitente> LogosRemitente { get; set; }
+        public virtual List<Calendario> Calendarios { get; set; } //DEBE SER UNA!!!!!!!!!!!!!
 
         public static Tienda CrearNuevaTienda(TiendaOnlineContext _db, Tienda _model)
         {
             Tienda tienda = new Tienda();
             tienda = _model;
+            tienda.Horario = new List<HorarioTienda>();
 
             _db.Tienda.Add(tienda);
             _db.SaveChanges();
@@ -96,5 +100,6 @@ namespace TiendaOnline.Models
 
             _db.SaveChanges();
         }
+
     }
 }

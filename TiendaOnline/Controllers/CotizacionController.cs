@@ -90,9 +90,52 @@ namespace TiendaOnline.Controllers
             int idUsuarioTienda = (int)Session["Id"];
             int idTienda = (int)Session["TiendaId"];
 
-            Cotizacion.CrearCotizacion(db, model, idUsuarioTienda, idTienda);
+            Cotizacion cotizacionCreada = Cotizacion.CrearCotizacion(db, model, idUsuarioTienda, idTienda);
 
-            return Json(new { exito = true, id = model.Id });
+            return Json(new { exito = true, id = cotizacionCreada.Id });
+        }
+
+        public ActionResult AsociarMecanico(int? id)
+        {
+            if (id == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            if (Session["TiendaId"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            int idTienda = (int)Session["TiendaId"];
+            Tienda tienda = db.Tienda.Where(ut => ut.Id == idTienda).FirstOrDefault();
+
+            Cotizacion cotizacion = tienda.Cotizaciones.Where(c => c.Id == id).FirstOrDefault();
+            List<UsuarioTienda> usuariosTienda = tienda.UsuariosTienda.Where(ust => ust.UsuariosTiendaMecanicos.Count > 0).ToList();
+
+            List<Usuario> usuariosMecanicos = new List<Usuario>();
+            List<UsuarioTiendaMecanico> usuarioTiendaMecanicos = new List<UsuarioTiendaMecanico>();
+
+            foreach (UsuarioTienda ust in usuariosTienda)
+            {
+                usuariosMecanicos.Add(ust.Usuario);
+                usuarioTiendaMecanicos.Add(ust.UsuariosTiendaMecanicos.First());
+            }
+
+            ViewBag.Cotizacion = cotizacion;
+            ViewBag.MecanicoId = new SelectList(usuariosMecanicos, "Id", "NombreCompleto");
+
+            return View(usuarioTiendaMecanicos.AsEnumerable());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AsociarMecanicoCotizacion(int idCotizacion, int idUsuarioMecanico)
+        {
+            
+            if (Session["TiendaId"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            int idTienda = (int)Session["TiendaId"];
+            Cotizacion cotizacion = Cotizacion.AsociarMecanicoACotizacion(db, idTienda, idCotizacion, idUsuarioMecanico);
+
+            return Json(new { exito = true, id = cotizacion.Id });
         }
 
         public ActionResult EditarCotizacion()

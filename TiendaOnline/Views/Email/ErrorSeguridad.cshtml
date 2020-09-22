@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "ErrorSeguridad";
+}
+
+<div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-content" style="background-color:transparent">
+                        <div class="error_ex">
+                            <h2 style="color:#28b779">ERROR DE VALIDACIÓN</h2>
+                            <h4>
+                                Para hacer uso de su cuenta <p style="color:crimson">@ViewBag.Email</p> previamente verifique  que haya iniciado sesión en el navegador con este mismo correo.
+                                <br /><br />De esta manera, comprobaremos que es el propietario legítimo de esta cuenta y así mantener sus datos seguros.
+                            </h4>
+                            <a class="btn btn-warning btn-big" target="_blank" href="https://accounts.google.com/AddSession">Inciar Sesión en el navegador</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

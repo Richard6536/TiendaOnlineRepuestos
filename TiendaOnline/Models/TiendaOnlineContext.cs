@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TiendaOnline.Models
 {
@@ -16,6 +18,7 @@ namespace TiendaOnline.Models
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<UsuarioTienda> UsuariosTienda { get; set; }
+        public DbSet<UsuarioTiendaMecanico> UsuarioTiendaMecanicos { get; set; }
         public DbSet<Carrocompra> CarrosCompra { get; set; }
         public DbSet<Comentario> Comentarios { get; set; }
         public DbSet<ComentarioRespuesta> ComentarioRespuesta { get; set; }
@@ -34,6 +37,7 @@ namespace TiendaOnline.Models
         public DbSet<Calendario> Calendario { get; set; }
         public DbSet<Agenda> Agenda { get; set; }
         public DbSet<Cita> Cita { get; set; }
+        public DbSet<HorarioTienda> HorarioTiendas { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -46,8 +50,27 @@ namespace TiendaOnline.Models
             //    .HasForeignKey(r => r.LineaId)
             //    .WillCascadeOnDelete(false);
 
+            //modelBuilder.Entity<UsuarioTienda>()
+            //  .HasOptional(t => t.UsuarioTiendaMecanico)
+            //  .WithRequired(ht => ht.UsuarioTienda);
 
+            //modelBuilder.Entity<Cotizacion>()
+            //  .HasOptional(t => t.Cita)
+            //  .WithRequired(ht => ht.Cotizacion);
+
+            //modelBuilder.Configurations.Add(new Class1Map());
         }
+
+        //class Class1Map : EntityTypeConfiguration<Cotizacion>
+        //{
+        //    public Class1Map()
+        //    {
+        //        this.HasKey(c => c.Id);
+        //        this.Property(c => c.Id)
+        //            .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+        //        this.HasRequired(c1 => c1.Cita).WithRequiredPrincipal(c2 => c2.Cotizacion);
+        //    }
+        //}
 
     }
 }

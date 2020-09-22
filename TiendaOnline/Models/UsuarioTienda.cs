@@ -28,6 +28,9 @@ namespace TiendaOnline.Models
         public int? UsuarioId { get; set; }
         [ForeignKey("UsuarioId")]
         public virtual Usuario Usuario { get; set; }
+
+        public virtual List<UsuarioTiendaMecanico> UsuariosTiendaMecanicos { get; set; } //DEBE SER UNA
+
         public static UsuarioTienda CrearUsuarioTienda(TiendaOnlineContext _db, int idUsuario, Tienda tienda)
         {
             //Asignar Rol Administrador a Usuario

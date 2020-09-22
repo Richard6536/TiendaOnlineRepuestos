@@ -1,0 +1,230 @@
+﻿@model TiendaOnline.Models.Calendario
+
+@{
+    ViewBag.Title = "CalendarioTienda";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+}
+
+<h2>CalendarioTienda</h2>
+
+<script src='https://momentjs.com/downloads/moment.min.js'></script>
+<link href='~/Content/Calendar/main.css' rel='stylesheet' />
+<script src='~/Content/Calendar/main.js'></script>
+
+<div id='calendar' style="padding:20px"></div>
+
+<!-- Ver Detalles Cita Modal-->
+<div class="modal fade" style="display:none;" id="VerDetallesCitaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="labelServicioNombre"> TITULO </h5>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 5px" id="labelMecanicoNombre"></div>
+                <div style="margin-bottom: 5px" id="labelFechaInicio"></div>
+                <div style="margin-bottom: 5px" id="labelFechaTermino"></div>
+                <div style="margin-bottom: 5px" id="labelClienteNombre"></div>
+                <a class="btn btn-primary" target="_blank" href="" id="docAsociadoButton">Ver Documento Asociado</a>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var calendar = null;
+    var businessHours = [];
+    var eventsDataContent = [];
+
+    //Horario de Tienda
+    @foreach (var horario in Model.Tienda.Horario)
+    {
+
+        <text>
+            var horaEntrada = '@horario.HoraApertura.TimeOfDay.ToString()';
+            @*var horaDescansoIn = '@horario.HoraDescansoInicio.TimeOfDay.ToString()';
+            var horaDescansoFin = '@horario.HoraDescansoTermino.TimeOfDay.ToString()';*@
+            var horaSalida = '@horario.HoraCierre.TimeOfDay.ToString()';
+
+            @if (horario.Dia == TiendaOnline.Models.HorarioTienda.DiaHorarioTienda.Lunes)
+            {
+                <text>
+
+                    businessHours.push({
+                        daysOfWeek: [1],
+                        startTime: horaEntrada,
+                        endTime: horaSalida
+                    });
+                </text>
+            }
+            @if (horario.Dia == TiendaOnline.Models.HorarioTienda.DiaHorarioTienda.Martes)
+            {
+                <text>
+                    businessHours.push({
+                        daysOfWeek: [2],
+                        startTime: horaEntrada,
+                        endTime: horaSalida
+                    });
+                </text>
+            }
+            @if (horario.Dia == TiendaOnline.Models.HorarioTienda.DiaHorarioTienda.Miercoles)
+            {
+                <text>
+                    businessHours.push({
+                        daysOfWeek: [3],
+                        startTime: horaEntrada,
+                        endTime: horaSalida
+                    });
+                </text>
+            }
+            @if (horario.Dia == TiendaOnline.Models.HorarioTienda.DiaHorarioTienda.Jueves)
+            {
+                <text>
+                    businessHours.push({
+                        daysOfWeek: [4],
+                        startTime: horaEntrada,
+                        endTime: horaSalida
+                    });
+                </text>
+            }
+            @if (horario.Dia == TiendaOnline.Models.HorarioTienda.DiaHorarioTienda.Viernes)
+            {
+                <text>
+                    businessHours.push({
+                        daysOfWeek: [5],
+                        startTime: horaEntrada,
+                        endTime: horaSalida
+                    });
+                </text>
+            }
+            @if (horario.Dia == TiendaOnline.Models.HorarioTienda.DiaHorarioTienda.Sabado)
+            {
+                <text>
+                    businessHours.push({
+                        daysOfWeek: [6],
+                        startTime: horaEntrada,
+                        endTime: horaSalida
+                    });
+                </text>
+            }
+            @if (horario.Dia == TiendaOnline.Models.HorarioTienda.DiaHorarioTienda.Domingo)
+            {
+                <text>
+                    businessHours.push({
+                        daysOfWeek: [0],
+                        startTime: horaEntrada,
+                        endTime: horaSalida
+                    });
+                </text>
+            }
+    </text>
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var Calendar = FullCalendar.Calendar;
+        var calendarEl = document.getElementById('calendar');
+
+        // initialize the calendar
+        // -----------------------------------------------------------------
+
+        calendar = new Calendar(calendarEl, {
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+            buttonText: {
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                list: 'Lista'
+            },
+            initialView: 'timeGridWeek',
+            editable: true,
+            businessHours,
+            eventClick: function (info) {
+                var eventData = eventsDataContent.find(x => x.Id === info.event.id);
+
+                document.getElementById("labelServicioNombre").innerHTML = "Servicio: " + eventData.Nombre;
+                document.getElementById("labelMecanicoNombre").innerHTML = "<strong>Mecánico:</strong> " + eventData.Mecanico;
+                document.getElementById("labelFechaInicio").innerHTML = "<strong>Fecha Inicio:</strong> " + eventData.FechaInicio;
+                document.getElementById("labelFechaTermino").innerHTML = "<strong>Fecha Termino:</strong> " + eventData.FechaTermino;
+                document.getElementById("labelClienteNombre").innerHTML = "<strong>Cliente:</strong> " + eventData.Cliente;
+                document.getElementById("docAsociadoButton").setAttribute('href', '../Cotizacion/VerCotizacion/' + eventData.IdCotizacion);
+                
+                $("#VerDetallesCitaModal").modal();
+            },
+            eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {
+                        eventDropOrResizeHandler(event, delta, revertFunc, jsEvent, ui, view);
+            },
+            eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
+                        eventDropOrResizeHandler(event, delta, revertFunc, jsEvent, ui, view);
+            }
+        });
+
+        calendar.setOption('locale', 'Es');
+        calendar.render();
+
+        function eventDropOrResizeHandler(event, delta, revertFunc, jsEvent, ui, view) {
+            // check that event.start and event.end are within limits, and if not, call revertFunc();
+
+        }
+
+        @foreach (var agenda in Model.Agendas)
+        {
+            foreach (var cita in agenda.Citas)
+            {
+
+                <text>
+                    var yearInicio = '@cita.FechaInicio.Year.ToString()';
+                    var monthInicio = '@cita.FechaInicio.Month.ToString("00")';
+                    var dayInicio = '@cita.FechaInicio.Day.ToString("00")';
+                    var hourInicio = '@cita.FechaInicio.Hour.ToString("00")';
+                    var minuteInicio = '@cita.FechaInicio.Minute.ToString("00")';
+                    var secondInicio = '@cita.FechaInicio.Second.ToString("00")';
+
+                    var yearTermino = '@cita.FechaTermino.Year.ToString()';
+                    var monthTermino = '@cita.FechaTermino.Month.ToString("00")';
+                    var dayTermino = '@cita.FechaTermino.Day.ToString("00")';
+                    var hourTermino = '@cita.FechaTermino.Hour.ToString("00")';
+                    var minuteTermino = '@cita.FechaTermino.Minute.ToString("00")';
+                    var secondTermino = '@cita.FechaTermino.Second.ToString("00")';
+
+                    var tituloServicio = @Html.Raw(Json.Encode(cita.Cotizacion.ServiciosCotizados.First().Nombre));
+
+                    var fechaInicio = yearInicio + "-" + monthInicio + "-" + dayInicio + "T" + hourInicio + ":" + minuteInicio + ":" + secondInicio;
+                    var fechaTermino = yearTermino + "-" + monthTermino + "-" + dayTermino + "T" + hourTermino + ":" + minuteTermino + ":" + secondTermino;
+
+                    calendar.addEvent({
+                        id: @Html.Raw(Json.Encode(cita.Id)),
+                        title: truncate(tituloServicio),
+                        start: fechaInicio,
+                        end: fechaTermino,
+                        allDay: false
+                    });
+
+                    eventsDataContent.push({
+                        'Id': '@Html.Raw(Json.Encode(cita.Id))',
+                        'IdCotizacion': '@Html.Raw(Json.Encode(cita.Cotizacion.Id))',
+                        'Nombre': tituloServicio,
+                        'Mecanico': '@Html.Raw(Json.Encode(cita.UsuarioTiendaMecanico.UsuarioTienda.Usuario.NombreCompleto))',
+                        'Cliente': '@Html.Raw(Json.Encode(cita.Usuario.NombreCompleto))',
+                        'FechaInicio': '@Html.Raw(Json.Encode(cita.FechaInicio.ToString()))',
+                        'FechaTermino': '@Html.Raw(Json.Encode(cita.FechaTermino.ToString()))'
+                     });
+                </text>
+            }
+        }
+    });
+
+    function truncate(input) {
+       if (input.length > 10) {
+          return input.substring(0, 10) + '...';
+       }
+       return input;
+    };
+</script>

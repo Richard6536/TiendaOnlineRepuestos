@@ -16,6 +16,8 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
 using TiendaOnline.Clases;
 using System.IO;
+using MimeKit;
+using MailKit.Security;
 
 namespace TiendaOnline.Controllers
 {
@@ -90,7 +92,6 @@ namespace TiendaOnline.Controllers
         public async Task<ActionResult> EnviarEmail(string code, string state)
         {
 
-            int pista = 0;
             string mensajeExtra = "";
 
             try
@@ -133,9 +134,6 @@ namespace TiendaOnline.Controllers
 
                     if (credentialClienteNormal == null)
                         mensajeExtra += "null2";
-
-
-                    pista = 10;
 
                     token = await credentialClienteNormal.ExchangeCodeForTokenAsync("", code, redirectUri, CancellationToken.None);
                 }
@@ -212,6 +210,256 @@ namespace TiendaOnline.Controllers
             }
         }
 
+        [HttpPost, ValidateInput(false)]
+        [ValidateAntiForgeryToken]
+        public ActionResult EnviarEmail(Email model, string[] taginputcc, HttpPostedFileBase[] files)
+        {
+            /*
+            string pathServer = Server.MapPath("~/App_Data/CotizacionesProject-77144679de36.p12");
+            X509Certificate2 cert = new X509Certificate2(pathServer, "notasecret", X509KeyStorageFlags.Exportable);
+            var credential = new ServiceAccountCredential(new ServiceAccountCredential
+                .Initializer("richard02@cotizacionesproject-202705.iam.gserviceaccount.com")
+            {
+                // Note: other scopes can be found here: https://developers.google.com/gmail/api/auth/scopes
+                Scopes = new[] { "https://mail.google.com/", "https://www.googleapis.com/auth/userinfo.profile" },
+                User = model.EmailDesde
+            }.FromCertificate(cert));*/
+
+            //Recibo la lista de emails CC
+            List<string> emailscc = taginputcc[0].Split(',').ToList<string>();
+
+            if (taginputcc.Length > 1)
+            {
+                //es mayor a 1 cuando se envia email masivo
+                emailscc = taginputcc.ToList();
+            }
+
+            string nombreCaperta = "";
+            Cotizacion cotizacion = null;
+
+            Tienda tienda = db.Tienda.Where(e => e.Id == model.IdTienda).FirstOrDefault();
+
+            nombreCaperta = "PDFEmpresas";
+            cotizacion = tienda.Cotizaciones.Where(c => c.Id == model.IdDocumento).FirstOrDefault();
+
+            string fullPathDocumento = null;
+
+            if (model.NombreDocumento != null && model.NombreDocumento != "")
+                fullPathDocumento = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/img/" + nombreCaperta + "/" + tienda.Id), model.NombreDocumento);
+
+
+
+            bool emailEnviadoCorrectamente = false;
+            FileStream stmcheck2Documento = null;
+
+            try
+            {
+
+                using (var client = new MailKit.Net.Smtp.SmtpClient())
+                {
+                    var message = new MimeMessage();
+
+                    message.From.Add(new MailboxAddress(model.EmailDesde, model.EmailDesde));
+
+                    bool destinatariosValidos = false;
+
+
+                    if (model.EmailPara != "" && model.EmailPara != null)
+                    {
+                        message.To.Add(new MailboxAddress(model.NombreDestinatario, model.EmailPara));
+                        destinatariosValidos = true;
+                    }
+
+                    string ccsString = "";
+                    //**** Agregar emails a CC ****
+                    if (!emailscc[0].Equals(""))
+                    {
+                        ccsString += " CCs: ";
+                        foreach (var cc in emailscc)
+                        {
+                            ccsString += cc + ";";
+                            message.Cc.Add(new MailboxAddress(cc, cc));
+                            destinatariosValidos = true;
+                        }
+                    }
+
+                    if (destinatariosValidos == false)
+                    {
+                        TempData["msgEmail"] = "Error: No se ingresaron destinatarios válidos.";
+                        return RedirectToAction("ResultadoMail", new { msgTest = "a" });
+                    }
+
+                    message.Subject = model.Tema;
+                    String mensaje = HttpUtility.HtmlDecode(model.Mensaje);
+                    //mensaje = ContenidoEmail.PrepararMensajeAGuardarOEnviar(mensaje);
+
+                    var body = new TextPart("html")
+                    {
+                        Text = mensaje
+                    };
+
+                    //----------
+                    var multipart = new Multipart("mixed");
+
+                    multipart.Add(body);
+
+                    //********DOCUMENTO*************
+
+                    if (fullPathDocumento != null)
+                    {
+                        try
+                        {
+                            stmcheck2Documento = System.IO.File.OpenRead(fullPathDocumento);
+                        }
+                        catch (Exception ex)
+                        {
+                            string m = ex.Message;
+                        }
+
+                        var attachmentCotizacion = new MimePart("file", "pdf");
+                        try
+                        {
+
+                            attachmentCotizacion.Content = new MimeContent(stmcheck2Documento, ContentEncoding.Default);
+                            attachmentCotizacion.ContentDisposition = new ContentDisposition(ContentDisposition.Attachment);
+                            attachmentCotizacion.ContentTransferEncoding = ContentEncoding.Base64;
+                            attachmentCotizacion.FileName = Path.GetFileName(fullPathDocumento);
+
+                            multipart.Add(attachmentCotizacion);
+
+                        }
+                        catch
+                        {
+                            //logging as needed
+                        }
+
+
+                    }
+
+
+                    if (files != null)
+                    {
+                        foreach (HttpPostedFileBase file in files)
+                        {
+                            if (file == null)
+                                continue;
+
+                            MimePart attachment = new MimePart(file.ContentType);
+                            attachment.Content = new MimeContent(file.InputStream, ContentEncoding.Default);
+                            attachment.ContentDisposition = new ContentDisposition(ContentDisposition.Attachment);
+                            attachment.ContentTransferEncoding = ContentEncoding.Base64;
+                            attachment.FileName = file.FileName;
+                            multipart.Add(attachment);
+                        }
+
+                    }
+
+                    message.Body = multipart;
+
+                    try
+                    {
+                        client.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                        client.Timeout = 12000;
+                    }
+                    catch (Exception e)
+                    {
+                        TempData["msgEmail"] = "Se encontraron problemas de conexión. Por favor, revisar su conexión a internet.";
+                        return RedirectToAction("ResultadoMail", new { msgTest = "4" });
+                        //ViewBag.Message = "El no se ha podido enviar. Por favor, revisar su conexión a internet";
+                    }
+
+                    try
+                    {
+                        var oauth2 = new SaslMechanismOAuth2(model.EmailDesde, model.Token);
+                        client.Authenticate(oauth2);
+                    }
+                    catch (Exception e)
+                    {
+                        return RedirectToAction("ErrorSeguridad", "Email");
+                    }
+
+                    try
+                    {
+
+                        client.Send(message);
+                        client.Disconnect(true);
+                        client.Dispose();
+                    }
+                    catch (Exception e)
+                    {
+                        TempData["msgEmail"] = "Aviso: No se pudo comprobar si se envió el email correctamente. " +
+                            "<br />Causa probable es tamaño de los archivos y el tiempo que tomó enviarlos. " +
+                            "<br />Por favor comprobar envío en su correo electrónico." +
+                            "<br />No se generará un registro de envío en el sistema. Puede crear uno manual de ser necesario.";
+                        return RedirectToAction("ResultadoMail", new { msgTest = "3" });
+                    }
+
+
+                    //Thread.Sleep(5000);
+
+                    //----------REGISTRO MAIL--------
+
+                    //RegistroEnvio regEnvio = new RegistroEnvio(plantillaemail, true, "EMAIL",
+                    //    model.EmailDesde, model.EmailPara + ccsString, catalogo, "");
+
+                    //regEnvio.TerminarAsociacionRegistro(db, cotizacion);
+
+                    emailEnviadoCorrectamente = true;
+
+
+                }
+            }
+            catch (Exception e)
+            {
+                TempData["msgEmail"] = "Error manejando la solicitud: Un problema de conexión a Internet ha impedido enviar el Email, por favor, intente nuevamente.";
+                return RedirectToAction("ResultadoMail", new { msgTest = "3" });
+            }
+
+            if (stmcheck2Documento != null)
+                stmcheck2Documento.Close();
+
+            //se eliminan los archivos enviados
+            var basePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/img/" + nombreCaperta + "/"), tienda.Id.ToString());
+            if (Directory.Exists(basePath))
+            {
+
+                string[] fileNames = Directory.GetFiles(basePath);
+                foreach (string fileName in fileNames)
+                {
+                    if (fileName == fullPathDocumento)
+                    {
+                        System.IO.File.Delete(fileName);
+                    }
+                }
+            }
+
+            //Asegurar mantener login abierto
+            Usuario usuario = db.Usuarios.Where(u => u.Id == model.IdUsuario).FirstOrDefault();
+            if (usuario != null && Session["Id"] == null)
+            {
+                Session["Id"] = usuario.Id;
+                Session["Nombre"] = usuario.NombreUsuario;
+                Session["Rol"] = usuario.RolUsuario;
+                Session["EmpresaId"] = tienda.Id;
+                //FuncionesGlobalesControllers.RefreshSession(this, empresa, user);
+            }
+
+
+            if (emailEnviadoCorrectamente)
+            {
+                //ReporteErrores.CrearReporteError(db,
+                //    "Email enviado correctamente. user: " +user.NombreUsuario + " empresa: " + empresa.Nombre );
+
+                TempData["msgEmail"] = "Email enviado correctamente";
+                return RedirectToAction("ResultadoMail", new { msgTest = "2" });
+            }
+            else
+            {
+                TempData["msgEmail"] = "Error manejando la solicitud: Un problema de conexión a Internet ha impedido enviar el Email, por favor, intente nuevamente.";
+                return RedirectToAction("ResultadoMail", new { msgTest = "1" });
+            }
+        }
+
         public enum TipoTokenLogin { EnviaEmailNormal, LoginAvisosEmpresa, LoginAvisosSuperAdmin }
         void LoginConToken(TokenResponse token, Tienda tienda, TipoTokenLogin tipoLogin)
         {
@@ -255,6 +503,27 @@ namespace TiendaOnline.Controllers
             }
 
         }
+
+        #region ------------------SEGURIDAD & RESULTADOS EMAIL----------------------------------------
+        public ActionResult ErrorSeguridad()
+        {
+            ViewBag.Email = Session["Email"];
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ErrorSeguridad(String p)
+        {
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public ActionResult ResultadoMail(string msgTest)
+        {
+            return View();
+        }
+        #endregion
 
         // GET: Email
         public ActionResult Index()

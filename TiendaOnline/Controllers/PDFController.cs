@@ -114,7 +114,14 @@ namespace TiendaOnline.Controllers
             {
                 //pdf del documento queda almacenado temporalmente
                 //se genera el catalogo para luego enviar ambos por email
-                return RedirectToAction("GenerarCatalogo", new { id = id, nombreDocumento = nombreDocumentoPDF, exportacionDirecta = false });
+                return RedirectToAction("RedirectCentral", "Email",
+                new
+                {
+                    id = id,
+                    tiendaId = tiendaId,
+                    nombreDocumento = nombreDocumentoPDF,
+                    usuarioId = (int)Session["Id"]
+                });
             }
         }
 

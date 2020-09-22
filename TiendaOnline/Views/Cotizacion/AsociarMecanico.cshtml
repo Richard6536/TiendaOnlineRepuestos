@@ -1,0 +1,321 @@
+﻿@model IEnumerable<TiendaOnline.Models.UsuarioTiendaMecanico>
+
+@{
+    ViewBag.Title = "AsociarMecanico";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+
+}
+
+<link href='~/Content/Calendar/main.css' rel='stylesheet' />
+<script src='~/Content/Calendar/main.js'></script>
+
+<h2>AsociarMecanico</h2>
+
+@Html.DropDownList("MecanicoId", null, "Seleccione un Mecánico...", htmlAttributes: new { @class = "form-control", @onchange = "CambiarMecanico()", @id = "cmbMecanico", @data_native_menu = "false", @style = "width:500px" })
+<button class="btn btn-primary" id="btnSeleccionarMecanico" onclick="SeleccionarMecanico()">Seleccionar</button>
+<hr />
+
+
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+        font-size: 14px;
+    }
+
+    #external-events {
+        z-index: 2;
+        top: 20px;
+        left: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        background: #eee;
+    }
+
+        #external-events .fc-event {
+            cursor: move;
+            margin: 3px 0;
+        }
+</style>
+
+<div id='calendar' style="padding:15px"></div>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+<script>
+    var calendar = null;
+    var $cmbMecanico = document.getElementById("cmbMecanico");
+    var businessHours = [];
+
+    //document.addEventListener('DOMContentLoaded', function () {
+    //    var Calendar = FullCalendar.Calendar;
+    //    var calendarEl = document.getElementById('calendar');
+
+    //    calendar = new Calendar(calendarEl, {
+    //        headerToolbar: {
+    //            left: 'prev,next today',
+    //            center: 'title',
+    //            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+    //        },
+    //        buttonText: {
+    //            today: 'Hoy',
+    //            month: 'Mes',
+    //            week: 'Semana',
+    //            day: 'Día',
+    //            list: 'Lista'
+    //        },
+    //        initialView: 'timeGridWeek',
+    //        businessHours
+    //    });
+
+    //    calendar.setOption('locale', 'Es');
+    //    calendar.render();
+    //});
+    LoadCalendar();
+    function LoadCalendar() {
+                var Calendar = FullCalendar.Calendar;
+        var calendarEl = document.getElementById('calendar');
+
+        calendar = new Calendar(calendarEl, {
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+            buttonText: {
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                list: 'Lista'
+            },
+            initialView: 'timeGridWeek',
+            businessHours
+        });
+
+        calendar.setOption('locale', 'Es');
+        calendar.render();
+    }
+    CambiarMecanico();
+    function CambiarMecanico() {
+        var idUsuarioMecanico = $cmbMecanico.value;
+
+        if (idUsuarioMecanico == "" || idUsuarioMecanico == 0)
+            return;
+
+        //calendar.removeAllEvents();
+
+        @foreach(var mecanico in Model)
+                    {
+
+                        <text>
+                            if (idUsuarioMecanico == @mecanico.UsuarioTienda.Usuario.Id) {
+                                @foreach (var horario in mecanico.Horario)
+                                {
+
+                                    <text>
+                                        var horaEntrada = '@horario.HoraEntrada.TimeOfDay.ToString()';
+                                        var horaDescansoIn = '@horario.HoraDescansoInicio.TimeOfDay.ToString()';
+                                        var horaDescansoFin = '@horario.HoraDescansoTermino.TimeOfDay.ToString()';
+                                        var horaSalida = '@horario.HoraSalida.TimeOfDay.ToString()';
+
+                                        @if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Lunes)
+                                        {
+                                            <text>
+
+                                                businessHours.push({
+                                                    daysOfWeek: [1],
+                                                    startTime: horaEntrada,
+                                                    endTime: horaDescansoIn
+                                                    },
+                                                    {
+                                                    daysOfWeek: [1],
+                                                    startTime: horaDescansoFin,
+                                                    endTime: horaSalida
+                                                });
+                                            </text>
+                                        }
+                                        @if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Martes)
+                                        {
+                                             <text>
+
+                                                businessHours.push({
+                                                    daysOfWeek: [2],
+                                                    startTime: horaEntrada,
+                                                    endTime: horaDescansoIn
+                                                    },
+                                                    {
+                                                    daysOfWeek: [2],
+                                                    startTime: horaDescansoFin,
+                                                    endTime: horaSalida
+                                                });
+                                            </text>
+                                        }
+                                        @if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Miercoles)
+                                        {
+                                            <text>
+
+                                                businessHours.push({
+                                                    daysOfWeek: [3],
+                                                    startTime: horaEntrada,
+                                                    endTime: horaDescansoIn
+                                                    },
+                                                    {
+                                                    daysOfWeek: [3],
+                                                    startTime: horaDescansoFin,
+                                                    endTime: horaSalida
+                                                });
+                                            </text>
+                                        }
+                                        @if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Jueves)
+                                        {
+                                            <text>
+
+                                                businessHours.push({
+                                                    daysOfWeek: [4],
+                                                    startTime: horaEntrada,
+                                                    endTime: horaDescansoIn
+                                                    },
+                                                    {
+                                                    daysOfWeek: [4],
+                                                    startTime: horaDescansoFin,
+                                                    endTime: horaSalida
+                                                });
+                                            </text>
+                                        }
+                                        @if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Viernes)
+                                        {
+                                            <text>
+
+                                                businessHours.push({
+                                                    daysOfWeek: [5],
+                                                    startTime: horaEntrada,
+                                                    endTime: horaDescansoIn
+                                                    },
+                                                    {
+                                                    daysOfWeek: [5],
+                                                    startTime: horaDescansoFin,
+                                                    endTime: horaSalida
+                                                });
+                                            </text>
+                                        }
+                                        @if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Sabado)
+                                        {
+                                            <text>
+
+                                                businessHours.push({
+                                                    daysOfWeek: [6],
+                                                    startTime: horaEntrada,
+                                                    endTime: horaDescansoIn
+                                                    },
+                                                    {
+                                                    daysOfWeek: [6],
+                                                    startTime: horaDescansoFin,
+                                                    endTime: horaSalida
+                                                });
+                                            </text>
+                                        }
+                                        @if (horario.Dia == TiendaOnline.Models.HorarioTrabajador.DiaHorarioTrabajador.Domingo)
+                                        {
+                                            <text>
+
+                                                businessHours.push({
+                                                    daysOfWeek: [0],
+                                                    startTime: horaEntrada,
+                                                    endTime: horaDescansoIn
+                                                    },
+                                                    {
+                                                    daysOfWeek: [0],
+                                                    startTime: horaDescansoFin,
+                                                    endTime: horaSalida
+                                                });
+                                            </text>
+                                        }
+                                </text>
+                                }
+                            LoadCalendar();
+                            @if (mecanico.Agendas.Count > 0)
+                                {
+                                    foreach (var cita in mecanico.Agendas.First().Citas)
+                                    {
+                                       <text>
+
+                                            var yearInicio = '@cita.FechaInicio.Year.ToString()';
+                                            var monthInicio = '@cita.FechaInicio.Month.ToString("00")';
+                                            var dayInicio = '@cita.FechaInicio.Day.ToString("00")';
+                                            var hourInicio = '@cita.FechaInicio.Hour.ToString("00")';
+                                            var minuteInicio = '@cita.FechaInicio.Minute.ToString("00")';
+                                            var secondInicio = '@cita.FechaInicio.Second.ToString("00")';
+
+                                            var yearTermino = '@cita.FechaTermino.Year.ToString()';
+                                            var monthTermino = '@cita.FechaTermino.Month.ToString("00")';
+                                            var dayTermino = '@cita.FechaTermino.Day.ToString("00")';
+                                            var hourTermino = '@cita.FechaTermino.Hour.ToString("00")';
+                                            var minuteTermino = '@cita.FechaTermino.Minute.ToString("00")';
+                                            var secondTermino = '@cita.FechaTermino.Second.ToString("00")';
+                                            
+                                            var fechaInicio = yearInicio + "-" + monthInicio + "-" + dayInicio + "T" + hourInicio + ":" + minuteInicio + ":" + secondInicio;
+                                            var fechaTermino = yearTermino + "-" + monthTermino + "-" + dayTermino + "T" + hourTermino + ":" + minuteTermino + ":" + secondTermino;
+
+                                            calendar.addEvent({
+                                                start: fechaInicio,
+                                                end: fechaTermino,
+                                                display: 'background',
+                                                color: 'red',
+                                                allDay: false
+                                            });
+                                        </text>
+                                    }
+                                }
+
+
+                            }
+                        </text>
+
+                    }
+
+    }
+
+    function SeleccionarMecanico() {
+        var idUsuarioMecanico = $cmbMecanico.value;
+
+        if (idUsuarioMecanico == "" || idUsuarioMecanico == 0)
+            return;
+
+            var $btnSubmit = document.getElementById("btnSeleccionarMecanico");
+            $btnSubmit.disabled = true;
+
+
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+            $.ajax({
+                type: "POST",
+                url: "/Cotizacion/AsociarMecanicoCotizacion",
+                data: {
+                    __RequestVerificationToken: token,
+                    idCotizacion: @ViewBag.Cotizacion.Id,
+                    idUsuarioMecanico: idUsuarioMecanico
+                },
+                success: function (result) {
+
+                    //location.reload(true);
+                    if (result.exito == true) {
+                        window.location.href = "/Cotizacion/VerCotizacion/" + result.id;
+                    }
+                    else if (result.exito == false) {
+                        $btnSubmit.disabled = false;
+                        alert(result.mensaje);
+                    }
+
+                },
+                error: function (result) {
+                    //debugger;
+                    $btnSubmit.disabled = false;
+                }
+            });
+    }
+</script>

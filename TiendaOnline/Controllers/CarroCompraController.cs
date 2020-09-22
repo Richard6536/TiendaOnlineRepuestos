@@ -28,7 +28,8 @@ namespace TiendaOnline.Controllers
             ProductoCarro productoCarro = ProductoCarro.CrearProductoCarro(idServicio, idUser, 1, db, true);
             Carrocompra.AgregarProductoAlCarroCompra(idUser, productoCarro, db);
 
-            return RedirectToAction("VerServicio", "Servicio", new { id = idServicio });
+            return RedirectToAction("RealizarCompra", "CarroCompra");
+            //return RedirectToAction("VerServicio", "Servicio", new { id = idServicio });
         }
 
         public ActionResult CarroCompra()

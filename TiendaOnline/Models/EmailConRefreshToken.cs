@@ -24,30 +24,30 @@ namespace TiendaOnline.Models
         {
             EmailConRefreshToken existe = _db.EmailsConRefreshTokens.Where(e => e.Email == email.ToUpper()).FirstOrDefault();
 
-            //if (existe != null)
-            //{
-            //    existe.AccessToken = accessToken;
-            //    existe.RefreshToken = refreshToken;
-            //}
-            //else
-            //{
+            if (existe != null)
+            {
+                existe.AccessToken = accessToken;
+                existe.RefreshToken = refreshToken;
+            }
+            else
+            {
 
-            //    EmailConRefreshToken nuevo = new EmailConRefreshToken();
-            //    nuevo.Email = email.ToUpper();
-            //    nuevo.AccessToken = accessToken;
-            //    nuevo.RefreshToken = refreshToken;
-            //    //_db.EmailsConRefreshTokens.Add(nuevo);
-            //}
+                EmailConRefreshToken nuevo = new EmailConRefreshToken();
+                nuevo.Email = email.ToUpper();
+                nuevo.AccessToken = accessToken;
+                nuevo.RefreshToken = refreshToken;
+                //_db.EmailsConRefreshTokens.Add(nuevo);
+            }
             _db.SaveChanges();
 
         }
 
         public static string GetRefreshToken(TiendaOnlineContext _db, string email)
         {
-            //EmailConRefreshToken emailConToken = _db.EmailsConRefreshTokens.Where(e => e.Email == email.ToUpper()).FirstOrDefault();
+            EmailConRefreshToken emailConToken = _db.EmailsConRefreshTokens.Where(e => e.Email == email.ToUpper()).FirstOrDefault();
 
-            //if (emailConToken != null)
-            //    return emailConToken.RefreshToken;
+            if (emailConToken != null)
+                return emailConToken.RefreshToken;
 
             return "";
         }
