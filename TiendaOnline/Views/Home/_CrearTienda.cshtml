@@ -13,7 +13,7 @@
         <div class="input-group mb-3">
             @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", @Placeholder = "Ingresa el Nombre de tu Tienda" } })
             <div class="input-group-append">
-                <button class="btn btn-outline-dark" style="background-color:#ffd800" type="button">CREAR</button>
+                <button class="btn btn-outline-dark" style="background-color:#ffd800" type="submit">CREAR</button>
             </div>
         </div>
         @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })

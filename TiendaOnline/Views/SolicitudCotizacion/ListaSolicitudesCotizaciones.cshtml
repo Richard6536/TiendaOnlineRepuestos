@@ -3,56 +3,55 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+    Session["TITULO"] = "SOLICITUDES COTIZACIONES";
 }
-<div style="padding-top:10px">
-    <table class="table">
-        <tr>
-            <th></th>
-            <th>
-                @Html.DisplayNameFor(model => model.Codigo)
-            </th>
-            <th>
-                Fecha de Solicitud
-            </th>
-            <th>
-                Servicio Solicitado
-            </th>
-            <th>
-                Cliente
-            </th>
-            <th></th>
-        </tr>
 
+
+<table class="table table-striped">
+    <thead class="bg-card-color">
+        <tr>
+            <th class="text-center" scope="col">#</th>
+            <th class="text-center" scope="col">Doc.</th>
+            <th class="text-center" scope="col">Código</th>
+            <th class="text-center" scope="col">Fecha de Solicitud</th>
+            <th class="text-center" scope="col">Servicio Solicitado</th>
+            <th class="text-center" scope="col">Cliente</th>
+            <th class="text-center" scope="col">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int contFilas = 0;}
         @foreach (var item in Model)
         {
+            contFilas++;
             <tr>
-                <td>
-                    <a class="btn btn-success" style="color:white" href="@Url.Action("DetallesSolicitudCotizacion", "SolicitudCotizacion", new { id = item.Id })">Ver</a>
+                <th class="text-center" scope="row">@contFilas</th>
+                <td class="text-center">
+                    <a class="btn bg-card-color" style="color:white" href="@Url.Action("DetallesSolicitudCotizacion", "SolicitudCotizacion", new { id = item.Id })">Ver</a>
                 </td>
-                <td>
+                <td class="text-center">
                     @Html.DisplayFor(modelItem => item.Codigo)
                 </td>
-                <td>
+                <td class="text-center">
                     @Html.DisplayFor(modelItem => item.Fecha)
                 </td>
-                <td>
-                    @if (item.Servicios.Count > 0)
+                <td class="text-center">
+                    @if (item.ServiciosSolicitadosCotizacion.Count > 0)
                     {
-                        <div>@item.Servicios.First().Nombre</div>
+                        <div>@item.ServiciosSolicitadosCotizacion.First().Servicio.Nombre</div>
                     }
 
                 </td>
-                <td>
+                <td class="text-center">
                     @Html.DisplayFor(modelItem => item.Usuario.NombreUsuario)
                 </td>
-                <td>
+                <td class="text-center">
                     <a href="#" class="material-icons" style="color:red" title="Eliminar" data-toggle="modal" data-target="#borrarModal" data-id="@item.Id" data-name="@item.Codigo">delete_outline</a>
                 </td>
             </tr>
         }
-
-    </table>
-</div>
+    </tbody>
+</table>
 
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
 {
@@ -75,48 +74,48 @@
 </div>
 
 @section scripts{
-<script>
+    <script>
 
-    //e  es el elemnto que hace aparecer el modal
-    //la informacion se le agrega en data-id y hay oportunidad de agregar mas como data-name, etc
-    //esa informacion se le asigna al btn ok del modal
-    $('#borrarModal').on('show.bs.modal', function (e) {
+        //e  es el elemnto que hace aparecer el modal
+        //la informacion se le agrega en data-id y hay oportunidad de agregar mas como data-name, etc
+        //esa informacion se le asigna al btn ok del modal
+        $('#borrarModal').on('show.bs.modal', function (e) {
 
-        var data = $(e.relatedTarget).data();
-        $('.modal-title', this).text("¿Está seguro de eliminar la Solicitud '" + data.name + "'?");
-        $('.btn-ok', this).data('recordId', data.id);
-    });
-
-
-    //El boton modal cuando es clickeado lee la informacion que se le fue asignada anteriormente
-    //luego forma la url correcta y envia en modo post
-    $('#borrarModal').on('click', '.btn-ok', function (e) {
-        var $id = $(this).data('recordId');
-        var form = $('#__AjaxAntiForgeryForm');
-        var token = $('input[name="__RequestVerificationToken"]', form).val();
-
-        $.ajax({
-            type: "POST",
-            url: "/SolicitudCotizacion/EliminarSolicitudCotizacion",
-            data: {
-                __RequestVerificationToken: token,
-                id: $id
-            },
-            success: function (result) {
-                if (result.exito == false) {
-                    alert(result.mensaje);
-                }
-                else {
-                    location.reload(true);
-                }
-            },
-            error: function (response) {
-                //debugger;
-                //alert('eror');
-            }
+            var data = $(e.relatedTarget).data();
+            $('.modal-title', this).text("¿Está seguro de eliminar la Solicitud '" + data.name + "'?");
+            $('.btn-ok', this).data('recordId', data.id);
         });
-    });
 
 
-</script>
+        //El boton modal cuando es clickeado lee la informacion que se le fue asignada anteriormente
+        //luego forma la url correcta y envia en modo post
+        $('#borrarModal').on('click', '.btn-ok', function (e) {
+            var $id = $(this).data('recordId');
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/SolicitudCotizacion/EliminarSolicitudCotizacion",
+                data: {
+                    __RequestVerificationToken: token,
+                    id: $id
+                },
+                success: function (result) {
+                    if (result.exito == false) {
+                        alert(result.mensaje);
+                    }
+                    else {
+                        location.reload(true);
+                    }
+                },
+                error: function (response) {
+                    //debugger;
+                    //alert('eror');
+                }
+            });
+        });
+
+
+    </script>
 }

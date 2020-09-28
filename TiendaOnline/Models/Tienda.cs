@@ -15,6 +15,9 @@ namespace TiendaOnline.Models
     [Table("Tienda")]
     public class Tienda
     {
+
+        public enum Estado { Oculta, Publicada, Suspendida }
+
         [Key]
         public int Id { get; set; }
         [Required(ErrorMessage = "El campo Nombre es obligatorio")]
@@ -26,6 +29,8 @@ namespace TiendaOnline.Models
         public string Direccion { get; set; }
         public double Latitud { get; set; }
         public double Longitud { get; set; }
+        public Estado EstadoTienda { get; set; }
+
         public virtual Imagen ImageProfile { get; set; }
         public virtual Imagen ImageHeader { get; set; }
 
@@ -99,6 +104,24 @@ namespace TiendaOnline.Models
             _db.Tienda.Remove(tienda);
 
             _db.SaveChanges();
+        }
+
+        public static Tienda CambiarEstadoTienda(TiendaOnlineContext _db, bool _publicarTiendaValue, Tienda _tienda)
+        {
+            if (_publicarTiendaValue == true)
+            {
+                if (_tienda.EstadoTienda == Tienda.Estado.Oculta)
+                    _tienda.EstadoTienda = Tienda.Estado.Publicada;
+            }
+            else
+            {
+                if (_tienda.EstadoTienda == Tienda.Estado.Publicada)
+                    _tienda.EstadoTienda = Tienda.Estado.Oculta;
+            }
+
+            _db.SaveChanges();
+
+            return _tienda;
         }
 
     }

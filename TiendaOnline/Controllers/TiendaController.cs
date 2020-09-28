@@ -46,7 +46,6 @@ namespace TiendaOnline.Controllers
             ViewBag.PageCount = Math.Ceiling(products.Count() / (double)productsPerPage);
             IEnumerable<Producto> prods = tienda.Productos.OrderBy(p => p.Id).Skip(start).Take(productsPerPage);
             ViewBag.PaginatedProducts = prods;
-            //----
 
             return View(tienda);
         }

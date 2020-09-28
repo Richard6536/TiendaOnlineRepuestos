@@ -25,6 +25,8 @@ namespace TiendaOnline.Models
         public DbSet<Imagen> Imagenes { get; set; }
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Servicio> Servicios { get; set; }
+        public DbSet<ServicioCotizado> ServiciosCotizados { get; set; }
+        public DbSet<ServicioSolicitadoCotizacion> ServiciosSolicitadosCotizacion { get; set; }
         public DbSet<ProductoCarro> ProductosCarro { get; set; }
         public DbSet<PuntuacionProducto> PuntuacionesProducto { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
@@ -38,6 +40,7 @@ namespace TiendaOnline.Models
         public DbSet<Agenda> Agenda { get; set; }
         public DbSet<Cita> Cita { get; set; }
         public DbSet<HorarioTienda> HorarioTiendas { get; set; }
+        public DbSet<Vehiculo> Vehiculos { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

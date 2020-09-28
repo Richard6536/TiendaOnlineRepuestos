@@ -3,37 +3,39 @@
 @{
     ViewBag.Title = "ListaServicios";
     Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+    Session["TITULO"] = "SERVICIOS";
 }
 
-<!-- ------------- -->
-<br />
 <a class="btn btn-primary" href="~/Servicio/CrearServicio" style="color:white">Crear Servicio</a>
 
-<table id="tablalista" class="layout display responsive-table">
-    <thead>
+<table class="table table-striped">
+    <thead class="bg-card-color">
         <tr>
-            <th>@Html.DisplayNameFor(model => model.Nombre)</th>
-            <th>Categoria</th>
-
-            <th>@Html.DisplayNameFor(model => model.Precio)</th>
-            <th></th>
+            <th class="text-center" scope="col">#</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.Nombre)</th>
+            <th class="text-center">Categoria</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.Precio)</th>
+            <th class="text-center">Acciones</th>
         </tr>
     </thead>
     <tbody>
+        @{ int contFilas = 0;}
         @foreach (var item in Model)
         {
-            <tr>
-                <td class="organisationname">@Html.DisplayFor(modelItem => item.Nombre)</td>
-                <td class="organisationnumber">@Html.DisplayFor(modelItem => item.Categoria.NombreCategoria)</td>
+            contFilas++;
+        <tr>
+            <th class="text-center" scope="row">@contFilas</th>
+            <td class="text-center">@Html.DisplayFor(modelItem => item.Nombre)</td>
+            <td class="text-center">@Html.DisplayFor(modelItem => item.Categoria.NombreCategoria)</td>
 
-                <td class="organisationname">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</td>
+            <td class="text-center">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</td>
 
-                <td class="actions">
-                    <a href="@Url.Action("VerImagenesServicio", "Servicio", new { id=item.Id })" style="color:#3047a0" class="material-icons" title="Edit">collections</a>
-                    <a href="@Url.Action("EditarServicio", "Servicio", new { id=item.Id })" class="material-icons" title="Edit">edit</a>
-                    <a href="#" class="material-icons" style="color:red" title="Eliminar" data-toggle="modal" data-target="#borrarModal" data-id="@item.Id" data-name="@item.Nombre">delete_outline</a>
-                </td>
-            </tr>
+            <td class="actions text-center">
+                <a href="@Url.Action("VerImagenesServicio", "Servicio", new { id=item.Id })" style="color:#3047a0" class="material-icons" title="Edit">collections</a>
+                <a href="@Url.Action("EditarServicio", "Servicio", new { id=item.Id })" class="material-icons" title="Edit">edit</a>
+                <a href="#" class="material-icons" style="color:red" title="Eliminar" data-toggle="modal" data-target="#borrarModal" data-id="@item.Id" data-name="@item.Nombre">delete_outline</a>
+            </td>
+        </tr>
         }
 
     </tbody>

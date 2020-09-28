@@ -51,6 +51,75 @@ namespace TiendaOnline.Controllers
 
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult VerServicio(int idServicio, string marca, string modelo, int year, string comentario)
+        {
+            if (Session["Rol"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            int idUser = (int)Session["Id"];
+
+            //Carrocompra.CrearCarroCompra(idUser, db);
+            ProductoCarro productoCarro = ProductoCarro.CrearProductoCarro(idServicio, idUser, 1, db, true);
+            Carrocompra.AgregarProductoAlCarroCompra(idUser, productoCarro, db);
+
+            RealizarCompra(idUser, marca, modelo, year, comentario);
+            //return RedirectToAction("RealizarCompra", "CarroCompra");
+            //return RedirectToAction("VerServicio", "Servicio", new { id = idServicio });
+
+            System.Web.Script.Serialization.JavaScriptSerializer oSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            string sJSON = oSerializer.Serialize(
+                new
+                {
+                    NombreServicio = productoCarro.Servicio.Nombre
+                }
+            );
+
+            return Json(new { exito = true, respuesta = sJSON });
+        }
+
+        public void RealizarCompra(int idUsuario, string marca, string modelo, int year, string comentario)
+        {
+
+            Usuario usuario = db.Usuarios.Where(u => u.Id == idUsuario).FirstOrDefault();
+            Carrocompra carroCompra = usuario.CarroCompra.First();
+
+            foreach (ProductoCarro productoCarroTienda in carroCompra.ProductosCarro)
+            {
+                List<Servicio> serviciosTienda = new List<Servicio>();
+                int idTienda = productoCarroTienda.Servicio.Tienda.Id;
+
+                foreach (ProductoCarro productoCarro in carroCompra.ProductosCarro)
+                {
+                    if (idTienda == productoCarro.Servicio.Tienda.Id)
+                    {
+                        serviciosTienda.Add(productoCarro.Servicio);
+                    }
+
+                }
+
+                SolicitarCotizacion(serviciosTienda, idTienda, marca, modelo, year, comentario);
+            }
+        }
+
+        public bool SolicitarCotizacion(List<Servicio> servicios, int idTienda, string marca, string modelo, int year, string comentario)
+        {
+            if (Session["Rol"] == null)
+                RedirectToAction("IniciarSesion", "Login");
+            if (Session["Id"] == null)
+                RedirectToAction("IniciarSesion", "Login");
+
+            int usuarioId = (int)Session["Id"];
+            Usuario usuario = db.Usuarios.Where(u => u.Id == usuarioId).FirstOrDefault();
+            //Servicio servicio = db.Servicios.Where(u => u.Id == servicioId).FirstOrDefault();
+
+            Vehiculo vehiculo = Vehiculo.CrearVehiculo(db, marca, modelo, year);
+            SolicitudCotizacion.CrearSolicitud(db, servicios, usuario, idTienda, vehiculo, comentario);
+
+            return true;
+        }
+
         public ActionResult ListaServicios()
         {
             if (Session["Rol"] == null)

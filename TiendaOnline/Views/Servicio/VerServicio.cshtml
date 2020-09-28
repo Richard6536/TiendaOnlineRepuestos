@@ -86,10 +86,10 @@
                     <span class="review-no">Tienda: <a href="@Url.Action("Tienda","Home", new { id = Model.Tienda.Id})">@Model.Tienda.Nombre</a></span>
                 </div>
                 <p class="card-text">@Model.Descripcion.</p>
-                <h5 class="card-text">Precio: <span>$@Decimal.Parse(Model.Precio.ToString(), System.Globalization.NumberStyles.Float)</span></h5>
+
                 <div class="action">
 
-                    <a class="add-to-cart btn btn-default" href="@Url.Action("AgregarAlCarro", "CarroCompra", new { idServicio = Model.Id })">Cotizar</a>
+                    <button class="add-to-cart btn btn-default"  data-toggle="modal" data-target="#cotizarModal">Cotizar</button>
 
                 </div>
             </div>
@@ -170,6 +170,46 @@
     </div>
 </div>
 
+<!-- Cotizar Modal-->
+<div class="modal fade" style="display:none;" id="cotizarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> Completa los campos </h5>
+            </div>
+            <div class="modal-body">
+                <div style="padding:10px">
+                    <input class="form-control" id="inputMarca" placeholder="Marca" style="margin-bottom:10px" />
+                    <input class="form-control" id="inputModelo" placeholder="Modelo" style="margin-bottom:10px" />
+                    <input class="form-control" id="inputYear" placeholder="Año" style="margin-bottom:10px" />
+                    <textarea class="form-control" rows="4" id="txtAreaMensaje" aria-label="With textarea"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                <a style="color:white" class="btn btn-danger btn-ok-cotizacion">Aceptar</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Servicio Cotizado Respuesta Modal-->
+<div class="modal fade" style="display:none;" id="ServicioRespuestaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> Solicitud de Cotización realizada </h5>
+            </div>
+            <div class="modal-body">
+                <label>Pronto recibirás un correo de la tienda con tu Cotización</label>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
     .breadcrumb-style {
@@ -204,7 +244,7 @@
 }
 
 @section scripts{
-    <script>
+<script>
         $(document).on("click", "#btnEdit", function () {
          var dataId = $(this).data('commentary');
          $(".modal-body #textAreaCommentEdit").val(dataId);
@@ -252,13 +292,13 @@
             });
         });
     </script>
-    <script>
+<script>
 
         //Esconder Carousel en esta vista
 
-        document.getElementById("myCarousel").style.display = "none";
+        //document.getElementById("myCarousel").style.display = "none";
     </script>
-    <script>
+<script>
         function enviarComentario(id) {
 
             var $textAreaComment = document.getElementById("textAreaComment");
@@ -307,6 +347,45 @@
         }
 
     </script>
+
+<script>
+    $('#cotizarModal').on('click', '.btn-ok-cotizacion', function (e) {
+        var $inputMarca = document.getElementById("inputMarca");
+        var $inputModelo = document.getElementById("inputModelo");
+        var $inputYear = document.getElementById("inputYear");
+        var $txtAreaMensaje = document.getElementById("txtAreaMensaje");
+
+         $('#cotizarModal').modal('hide');
+
+        var form = $('#__AjaxAntiForgeryForm');
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+        $.ajax({
+            type: "POST",
+            url: "/Servicio/VerServicio",
+            data: {
+                __RequestVerificationToken: token,
+                idServicio: @Model.Id,
+                marca: $inputMarca.value,
+                modelo: $inputModelo.value,
+                year: $inputYear.value,
+                comentario: $txtAreaMensaje.value
+            },
+            success: function (result) {
+                if (result.exito == false) {
+                    alert("La operación no ha podido completarse");
+                }
+                else {
+                    $('#ServicioRespuestaModal').modal('toggle');
+                }
+            },
+            error: function (response) {
+                //debugger;
+                //alert('eror');
+            }
+        });
+    });
+</script>
 
 }
 

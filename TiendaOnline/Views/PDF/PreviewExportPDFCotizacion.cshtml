@@ -6,3 +6,9 @@
 
 @{Html.RenderAction("Cotizacion", "Documentos", new { id = Model.Id, tiendaId = Model.Tienda.Id, pdf = true }); }
 
+<div style="width:100%; text-align:center; font-size:18px; color:black">
+    Si quiere confirmar esta cotización, puede hacer uso del siguiente link para informar a la empresa.<br />
+    <br />
+    <a style="color:#ffffff; font-size:16px; font:bold; width:240px" target="_blank" href="@Url.Action("SeleccionarHora", "Schedule", new { id = Model.Id })" class="btn btn-success">Confirmar aquí</a>
+</div>
+

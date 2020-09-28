@@ -109,9 +109,109 @@ namespace TiendaOnline.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult LogosRemitentes()
+        {
+            if (Session["Rol"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            if (Session["TiendaId"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            Tienda tienda = ObtenerTienda();
+            List<LogoRemitente> logoRemitentes = tienda.LogosRemitente.ToList();
+
+            return View(logoRemitentes);
+        }
+
         public ActionResult LogoRemitente()
         {
+            if (Session["Rol"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            if (Session["TiendaId"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogoRemitente(LogoRemitente model, HttpPostedFileBase file)
+        {
+            if (Session["Rol"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            if (Session["TiendaId"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            if (file == null)
+            {
+                TempData["msgError"] = "Hubo un error al subir imagenes. Se le recomienda subir de una en una";
+            }
+
+            if (file.ContentLength > Imagen.MAX_SIZE)
+            {
+                TempData["msgError"] = "Una de las imagenes subidas supera el peso máximo de " + Imagen.MAX_SIZE_IN_MB + " MB";
+                //return RedirectToAction("VerImagenesProducto", new { id = id });
+            }
+
+            int tiendaId = (int)Session["TiendaId"];
+            Tienda tienda = db.Tienda.Find(tiendaId);
+
+            Models.LogoRemitente.CrearNuevoLogo(db, model, tiendaId, file);
+
+            return RedirectToAction("LogosRemitentes", "Ajustes");
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EliminarLogoRemitente(int id)
+        {
+            if (Session["Rol"] == null)
+            {
+                return Json(new
+                {
+                    exito = false,
+                    mensaje = "La sesión ha terminado."
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            if (Session["Rol"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            if (Session["TiendaId"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            Tienda tienda = ObtenerTienda();
+
+            try
+            {
+                LogoRemitente logoRemitente = tienda.LogosRemitente.Where(i => i.Id == id).FirstOrDefault();
+
+                if (logoRemitente == null)
+                    throw new Exception();
+
+                Models.LogoRemitente.EliminarLogoRemitente(db, logoRemitente);
+                //Imagen.EliminarImagen(db, id);
+            }
+            catch
+            {
+                if (Session["Rol"] == null)
+                {
+                    return Json(new
+                    {
+                        exito = false,
+                        mensaje = "Hubo un problema encontrando el registro a eliminar."
+                    }, JsonRequestBehavior.AllowGet);
+                }
+            }
+
+            return Json(new
+            {
+                exito = true,
+                mensaje = "Eliminación exitosa."
+            }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult HorarioTienda(int? idTienda)
@@ -174,6 +274,43 @@ namespace TiendaOnline.Controllers
                 model.DomingoList[0].Hora, model.DomingoList[1].Hora, model.DomingoList[2].Hora, model.DomingoList[3].Hora, true);
 
             return Json(new { exito = true, id = model.TiendaId });
+        }
+
+        public ActionResult AjustesGenerales()
+        {
+            if (Session["Rol"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            if (Session["TiendaId"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            Tienda tienda = ObtenerTienda();
+
+            return View(tienda);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AjustesGenerales(bool publicarTiendaValue = false)
+        {
+            if (Session["Rol"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            if (Session["TiendaId"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            Tienda tienda = ObtenerTienda();
+            Tienda tiendaActualizada = Tienda.CambiarEstadoTienda(db, publicarTiendaValue, tienda);
+
+            return View(tiendaActualizada);
+        }
+
+        public Tienda ObtenerTienda() {
+
+            int idTienda = (int)Session["TiendaId"];
+            Tienda tienda = db.Tienda.Find(idTienda);
+
+            return tienda;
         }
     }
 }

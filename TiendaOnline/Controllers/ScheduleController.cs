@@ -51,11 +51,9 @@ namespace TiendaOnline.Controllers
         public ActionResult SeleccionarHora(int? id)
         {
             if (Session["Id"] == null) //SI NO ESTÁ LOGEADO, DEBERÁ INICIAR SESIÓN Y REDIRECCIONAR HACÍA ACÁ
-                return RedirectToAction("IniciarSesion", "Login");
-
-            if (Session["Rol"] == null) //SI NO ESTÁ LOGEADO, DEBERÁ INICIAR SESIÓN Y REDIRECCIONAR HACÍA ACÁ
-                return RedirectToAction("IniciarSesion", "Login");
-
+                return RedirectToAction("IniciarSesion", "Login", new { desdeSeleccionarHora = true, idCot = id});
+            
+            //DEBERÍA ENVIAR EL ID A LA VISTA Y USAR ESA EN VEZ DEL IDUSUARIO DE LA COTIZACION
             Cotizacion cotizacion = db.Cotizacions.Where(c => c.Id == id).FirstOrDefault();
 
             return View(cotizacion);
@@ -63,7 +61,7 @@ namespace TiendaOnline.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RegistrarCita(Cita model)
+        public ActionResult SeleccionarHora(Cita model)
         {
             if (Session["Rol"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
@@ -72,6 +70,17 @@ namespace TiendaOnline.Controllers
             model.FechaTermino = newDateTermino;
 
             Cita cita = Cita.CrearCita(db, model);
+
+           return Json(new { 
+               exito = true,
+               Codigo = cita.Codigo,
+               Fecha = cita.FechaInicio.ToString()});
+        }
+
+        public ActionResult ResultadoCita(string codigo, string fecha)
+        {
+            ViewBag.Codigo = codigo;
+            ViewBag.Fecha = fecha;
 
             return View();
         }

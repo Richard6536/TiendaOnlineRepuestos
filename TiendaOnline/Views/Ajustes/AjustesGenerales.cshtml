@@ -1,0 +1,118 @@
+﻿@model TiendaOnline.Models.Tienda
+
+@{
+    ViewBag.Title = "AjustesGenerales";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+    Session["TITULO"] = "AJUSTES GENERALES";
+
+    bool estadoTiendaValue = false;
+    string checkedInput = "";
+
+    if (Model.EstadoTienda == TiendaOnline.Models.Tienda.Estado.Publicada)
+    {
+        estadoTiendaValue = true;
+        checkedInput = "checked";
+    }
+}
+
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        margin-bottom: 0rem !important;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #205c89;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #205c89;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+</style>
+
+@using (Html.BeginForm("AjustesGenerales", "Ajustes"))
+{
+    @Html.AntiForgeryToken()
+    <div class="card">
+        <div class="card-header bg-card-color">
+            Featured
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col" style="padding-top:5px">
+                        Publicar Tienda
+                    </div>
+                    <div class="col">
+                        <label class="switch">
+                            <input type="checkbox" id="checkboxPublTienda" value="@estadoTiendaValue" @checkedInput name="publicarTiendaValue">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="card-footer text-muted text-center">
+            <button class="btn btn-lg bg-card-color" type="submit">Guardar cambios</button>
+        </div>
+    </div>
+}
+
+@section scripts{
+<script>
+    $(document).on("click", "#checkboxPublTienda", function(e) {
+        if (this.checked) {
+            $(this).attr("value", "true");
+        } else {
+            $(this).attr("value","false");}
+    });
+</script>
+}

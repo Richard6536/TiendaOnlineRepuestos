@@ -13,7 +13,7 @@ namespace TiendaOnline.Controllers
         TiendaOnlineContext db = new TiendaOnlineContext();
         //Si el Usuario crea una Tienda sin registrarse, la tienda esperará hasta que
         //el Usuario se registre.
-        public static Tienda creacionDeTiendaEnEspera = new Tienda();
+        public static Tienda creacionDeTiendaEnEspera = null;
 
         //quizas no aqui pero
         //el usuario luego de registrarse por su cuenta
@@ -27,7 +27,15 @@ namespace TiendaOnline.Controllers
             return View();
         }
 
-        public ActionResult IniciarSesion()
+        public class CotizacionValues
+        {
+            public int? Id { get; set; }
+            public bool SeleccionarHora { get; set; }
+        }
+
+        public static CotizacionValues CotizacionValuesData = new CotizacionValues();
+
+        public ActionResult IniciarSesion(bool desdeSeleccionarHora = false, int? idCot = 0)
         {
             if (Session["Rol"] != null)
             {
@@ -38,6 +46,15 @@ namespace TiendaOnline.Controllers
                 else
                     return RedirectToAction("Index", "Home");
             }
+
+            //Si viene desde la Vista SeleccionarHora, guardo las variables de Cotizacion
+            //Para posteriormente retornar a la vista
+            CotizacionValues cotizacionValues = new CotizacionValues();
+            cotizacionValues.Id = idCot;
+            cotizacionValues.SeleccionarHora = desdeSeleccionarHora;
+            CotizacionValuesData = cotizacionValues;
+            
+
             return View();
         }
 
@@ -83,6 +100,9 @@ namespace TiendaOnline.Controllers
 
             Carrocompra carroCompra = Carrocompra.CrearCarroCompra(user.Id, db);
             Carrocompra.EliminarTodosLosProductosEnCarro(user, db);
+
+            if (CotizacionValuesData.SeleccionarHora)
+                return RedirectToAction("SeleccionarHora", "Schedule", new { id = CotizacionValuesData.Id });
 
             if (user.RolUsuario == Usuario.TipoUsuario.SuperAdmin)
                 return RedirectToAction("Index", "SuperAdmin");

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TiendaOnline.Clases;
 using TiendaOnline.Models;
 
 namespace TiendaOnline.Controllers
@@ -25,9 +26,10 @@ namespace TiendaOnline.Controllers
             if (Session["TiendaId"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
 
-            int tiendaId = (int)Session["TiendaId"];
-            Tienda tienda = db.Tienda.Where(c => c.Id == tiendaId).FirstOrDefault();
-            List<Cotizacion> cotizaciones = tienda.Cotizaciones.ToList(); 
+            Tienda tienda = ObtenerTienda();
+
+            List<Cotizacion> cotizaciones = tienda.Cotizaciones.ToList();
+            cotizaciones.Reverse();
 
             return View(cotizaciones);
         }
@@ -47,11 +49,19 @@ namespace TiendaOnline.Controllers
             if (Session["TiendaId"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
 
+            Tienda tienda = ObtenerTienda();
+
             Cotizacion cotizacion = new Cotizacion();
             cotizacion.Manual = manual;
 
             if (!manual)
                 cotizacion = CompletarCotizacionConSolicitud(solicitudId, cotizacion);
+
+            List<Categoria> categorias = db.Categorias.Where(c => c.TipoCategoria == Categoria.CategoriaTipo.Servicio).ToList();
+            ViewBag.CategoriaId = new SelectList(categorias, "Id", "NombreCategoria");
+
+            List<LogoRemitente> logosRemitentes = tienda.LogosRemitente.ToList();
+            ViewBag.LogoRemitenteId = new SelectList(logosRemitentes, "Id", "Nombre");
 
             return View(cotizacion);
         }
@@ -59,14 +69,29 @@ namespace TiendaOnline.Controllers
         public Cotizacion CompletarCotizacionConSolicitud(int solicitudId, Cotizacion cotizacion)
         {
             SolicitudCotizacion solicitudCotizacion = db.SolicitudCotizacion.Where(s => s.Id == solicitudId).FirstOrDefault();
-            cotizacion.ServiciosCotizados = new List<Servicio>();
-            cotizacion.ServiciosCotizados = solicitudCotizacion.Servicios;
+            cotizacion.ServiciosCotizados = new List<ServicioCotizado>();
+
+            foreach (ServicioSolicitadoCotizacion servicioSolicitado in solicitudCotizacion.ServiciosSolicitadosCotizacion)
+            {
+                ServicioCotizado servicioCotizado = new ServicioCotizado();
+                servicioCotizado.Servicio = servicioSolicitado.Servicio;
+                servicioCotizado.Valor = servicioSolicitado.Servicio.Precio;
+                servicioCotizado.ValorTotal = servicioSolicitado.Servicio.Precio;
+
+                cotizacion.ServiciosCotizados.Add(servicioCotizado);
+            }
+
+            //cotizacion.ServiciosCotizados = solicitudCotizacion.Servicios;
             cotizacion.Usuario = solicitudCotizacion.Usuario;
             cotizacion.Codigo = "COT_EJEMPLO_1";
 
-            foreach (Servicio servicio in solicitudCotizacion.Servicios)
+            //Asociar Vehículo a Cotización
+            cotizacion.Vehiculos = new List<Vehiculo>();
+            cotizacion.Vehiculos.Add(solicitudCotizacion.Vehiculos.First());
+
+            foreach (ServicioSolicitadoCotizacion servicioSolicitado in solicitudCotizacion.ServiciosSolicitadosCotizacion)
             {
-                cotizacion.TotalNeto += servicio.Precio;
+                cotizacion.TotalNeto += servicioSolicitado.Servicio.Precio;
             }
 
             cotizacion.IVA = cotizacion.TotalNeto * 19 / 100;
@@ -79,8 +104,9 @@ namespace TiendaOnline.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CrearCotizacionJS(Cotizacion model)
+        public ActionResult CrearCotizacionJS(Cotizacion model, List<ServicioTemporal> servicios)
         {
+
             if (Session["Rol"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
 
@@ -90,7 +116,7 @@ namespace TiendaOnline.Controllers
             int idUsuarioTienda = (int)Session["Id"];
             int idTienda = (int)Session["TiendaId"];
 
-            Cotizacion cotizacionCreada = Cotizacion.CrearCotizacion(db, model, idUsuarioTienda, idTienda);
+            Cotizacion cotizacionCreada = Cotizacion.CrearCotizacion(db, model, idUsuarioTienda, idTienda, servicios);
 
             return Json(new { exito = true, id = cotizacionCreada.Id });
         }
@@ -103,8 +129,7 @@ namespace TiendaOnline.Controllers
             if (Session["TiendaId"] == null)
                 return RedirectToAction("IniciarSesion", "Login");
 
-            int idTienda = (int)Session["TiendaId"];
-            Tienda tienda = db.Tienda.Where(ut => ut.Id == idTienda).FirstOrDefault();
+            Tienda tienda = ObtenerTienda();
 
             Cotizacion cotizacion = tienda.Cotizaciones.Where(c => c.Id == id).FirstOrDefault();
             List<UsuarioTienda> usuariosTienda = tienda.UsuariosTienda.Where(ust => ust.UsuariosTiendaMecanicos.Count > 0).ToList();
@@ -141,6 +166,23 @@ namespace TiendaOnline.Controllers
         public ActionResult EditarCotizacion()
         {
             return View();
+        }
+
+        public ActionResult EliminarCotizacion(int id)
+        {
+            if (Session["TiendaId"] == null)
+                return RedirectToAction("IniciarSesion", "Login");
+
+            Cotizacion.EliminarCotizacion(db, id);
+            return RedirectToAction("ListarCotizaciones", "Cotizacion");
+        }
+
+        public Tienda ObtenerTienda()
+        {
+            int idTienda = (int)Session["TiendaId"];
+            Tienda tienda = db.Tienda.Where(ut => ut.Id == idTienda).FirstOrDefault();
+
+            return tienda;
         }
     }
 }

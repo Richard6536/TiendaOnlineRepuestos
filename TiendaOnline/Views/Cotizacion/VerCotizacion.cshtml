@@ -6,9 +6,9 @@
 }
 
 <div class="btn-group" role="group" aria-label="Basic example">
-    <button type="button" onclick="window.location='@Url.Action("ExportPDF", "PDF", new { id = Model.Id, exportacionDirecta = true , tipo = 0 })'" class="btn btn-secondary"><i class="fas fa-file-pdf"></i> Exportar a PDF</button>
-    <button type="button" onclick="window.location='@Url.Action("ExportPDF", "PDF", new { id = Model.Id, exportacionDirecta = false , tipo = 0})'" class="btn btn-primary"><i class="fas fa-envelope"></i> Enviar por Email</button>
-    <button type="button" class="btn btn-danger"><i class="fas fa-trash"></i> Eliminar</button>
+    <button type="button" onclick="window.location='@Url.Action("ExportPDF", "PDF", new { id = Model.Id, exportacionDirecta = true , tipo = 0 })'" class="btn btn-secondary btn-lg"><i class="fas fa-file-pdf"></i> Exportar a PDF</button>
+    <button type="button" onclick="window.location='@Url.Action("ExportPDF", "PDF", new { id = Model.Id, exportacionDirecta = false , tipo = 0})'" class="btn bg-card-color btn-lg"><i class="fas fa-envelope"></i> Enviar por Email</button>
+    <button type="button" class="btn btn-danger btn-lg"><i class="fas fa-trash"></i> Eliminar</button>
 </div>
 
 @{Html.RenderAction("Cotizacion", "Documentos", new { id = Model.Id }); }

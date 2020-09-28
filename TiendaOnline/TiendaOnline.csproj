@@ -91,6 +91,9 @@
     <Reference Include="Google.Apis.PlatformServices, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.49.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
+    <Reference Include="Json.Net, Version=1.0.23.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Json.Net.1.0.23\lib\netstandard2.0\Json.Net.dll</HintPath>
+    </Reference>
     <Reference Include="MailKit, Version=2.9.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
       <HintPath>..\packages\MailKit.2.9.0\lib\net46\MailKit.dll</HintPath>
     </Reference>
@@ -238,6 +241,7 @@
     <Compile Include="Clases\Email.cs" />
     <Compile Include="Clases\HorarioTemporalTrabajador.cs" />
     <Compile Include="Clases\PasswordHash.cs" />
+    <Compile Include="Clases\ServicioTemporal.cs" />
     <Compile Include="Clases\TiendaHome.cs" />
     <Compile Include="Controllers\AjustesController.cs" />
     <Compile Include="Controllers\CarroCompraController.cs" />
@@ -364,6 +368,42 @@
     <Compile Include="Migrations\202009212353098_Calendario_Update.Designer.cs">
       <DependentUpon>202009212353098_Calendario_Update.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009231924239_Rehcer.cs" />
+    <Compile Include="Migrations\202009231924239_Rehcer.Designer.cs">
+      <DependentUpon>202009231924239_Rehcer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009231953435_SErvicioCotizado.cs" />
+    <Compile Include="Migrations\202009231953435_SErvicioCotizado.Designer.cs">
+      <DependentUpon>202009231953435_SErvicioCotizado.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009232031005_ServicioSolicitadoCotizacion.cs" />
+    <Compile Include="Migrations\202009232031005_ServicioSolicitadoCotizacion.Designer.cs">
+      <DependentUpon>202009232031005_ServicioSolicitadoCotizacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009232306116_Vhiculo.cs" />
+    <Compile Include="Migrations\202009232306116_Vhiculo.Designer.cs">
+      <DependentUpon>202009232306116_Vhiculo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009252312360_ServicioCotizado Update.cs" />
+    <Compile Include="Migrations\202009252312360_ServicioCotizado Update.Designer.cs">
+      <DependentUpon>202009252312360_ServicioCotizado Update.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009252322485_ServicioCotizado campo Nombre.cs" />
+    <Compile Include="Migrations\202009252322485_ServicioCotizado campo Nombre.Designer.cs">
+      <DependentUpon>202009252322485_ServicioCotizado campo Nombre.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009260034114_ServicioCotizado upd.cs" />
+    <Compile Include="Migrations\202009260034114_ServicioCotizado upd.Designer.cs">
+      <DependentUpon>202009260034114_ServicioCotizado upd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009262101054_ServicioTemporal.cs" />
+    <Compile Include="Migrations\202009262101054_ServicioTemporal.Designer.cs">
+      <DependentUpon>202009262101054_ServicioTemporal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009280615483_Tienda.Estado.cs" />
+    <Compile Include="Migrations\202009280615483_Tienda.Estado.Designer.cs">
+      <DependentUpon>202009280615483_Tienda.Estado.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Agenda.cs" />
     <Compile Include="Models\Calendario.cs" />
@@ -385,12 +425,15 @@
     <Compile Include="Models\RegistroEnvio.cs" />
     <Compile Include="Models\ReporteErrores.cs" />
     <Compile Include="Models\Servicio.cs" />
+    <Compile Include="Models\ServicioCotizado.cs" />
+    <Compile Include="Models\ServicioSolicitadoCotizacion.cs" />
     <Compile Include="Models\SolicitudCotizacion.cs" />
     <Compile Include="Models\Tienda.cs" />
     <Compile Include="Models\TiendaOnlineContext.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Models\UsuarioTienda.cs" />
     <Compile Include="Models\UsuarioTiendaMecanico.cs" />
+    <Compile Include="Models\Vehiculo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -553,6 +596,9 @@
     <Content Include="Views\Schedule\SeleccionarHora.cshtml" />
     <Content Include="Views\Schedule\CalendarioTienda.cshtml" />
     <Content Include="Views\Ajustes\HorarioTienda.cshtml" />
+    <Content Include="Views\Schedule\ResultadoCita.cshtml" />
+    <Content Include="Views\Ajustes\LogosRemitentes.cshtml" />
+    <Content Include="Views\Ajustes\AjustesGenerales.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -650,6 +696,33 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009212353098_Calendario_Update.resx">
       <DependentUpon>202009212353098_Calendario_Update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009231924239_Rehcer.resx">
+      <DependentUpon>202009231924239_Rehcer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009231953435_SErvicioCotizado.resx">
+      <DependentUpon>202009231953435_SErvicioCotizado.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009232031005_ServicioSolicitadoCotizacion.resx">
+      <DependentUpon>202009232031005_ServicioSolicitadoCotizacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009232306116_Vhiculo.resx">
+      <DependentUpon>202009232306116_Vhiculo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009252312360_ServicioCotizado Update.resx">
+      <DependentUpon>202009252312360_ServicioCotizado Update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009252322485_ServicioCotizado campo Nombre.resx">
+      <DependentUpon>202009252322485_ServicioCotizado campo Nombre.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009260034114_ServicioCotizado upd.resx">
+      <DependentUpon>202009260034114_ServicioCotizado upd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009262101054_ServicioTemporal.resx">
+      <DependentUpon>202009262101054_ServicioTemporal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009280615483_Tienda.Estado.resx">
+      <DependentUpon>202009280615483_Tienda.Estado.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

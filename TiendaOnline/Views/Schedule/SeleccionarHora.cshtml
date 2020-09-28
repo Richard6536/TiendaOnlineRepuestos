@@ -8,11 +8,6 @@
 <link href='~/Content/Calendar/main.css' rel='stylesheet' />
 <script src='~/Content/Calendar/main.js'></script>
 
-
-<h2>Seleccionar Hora</h2>
-
-<hr />
-
 <style>
     html, body {
         margin: 0;
@@ -35,35 +30,27 @@
             margin: 3px 0;
         }
 </style>
+
+<div class="text-center" style="margin-top:10px"><h2>Seleccionar Hora</h2></div>
+<hr />
+
+
 <div style="padding:20px">
     <div class="row">
-        <div style="background-color:coral; width:20%; padding:10px">
+        <div style="background-color:#ffe867; width:20%; padding:10px">
             <button class="btn btn-dark" id="btnRegistrarCita" onclick="RegistrarCita();" style="width:100%; margin-bottom:10px">Confirmar Hora</button>
             <div id='external-events'>
                 <p class="text-center" style="width:100%">
-                    <strong>Cotización</strong>
+                    <strong>Cotización</strong><br />
+                    @Model.Codigo
                 </p>
-
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                    <div class='fc-event-main'>My Event 1</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                    <div class='fc-event-main'>My Event 2</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                    <div class='fc-event-main'>My Event 3</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                    <div class='fc-event-main'>My Event 4</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                    <div class='fc-event-main'>My Event 5</div>
+                <hr />
+                <div class="text-left">
+                    <div><strong>Fecha:</strong> @Model.Fecha</div>
+                    <div><strong>Servicio:</strong> @Model.ServiciosCotizados.First().Servicio.Nombre</div>
+                    <div><strong>Cliente:</strong> @Model.Usuario.NombreCompleto</div>
                 </div>
 
-                <p>
-                    <input type='checkbox' id='drop-remove' />
-                    <label for='drop-remove'>remove after drop</label>
-                </p>
             </div>
         </div>
         <div id='calendar' style="width:80%; padding:10px"></div>
@@ -76,13 +63,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="labelDateId"> TITULO </h5>
+                <h5 class="modal-title" id="labelMensaje"> Su hora ha sido registrada </h5>
             </div>
             <div class="modal-body">
-
+                <div style="margin-bottom: 5px">
+                    <p>Pronto te llegará un correo con un comprobante que deberás presentar en tu Cita.</p>
+                </div>
+                <div style="margin-bottom: 5px" id="labelCodigo"></div>
+                <div style="margin-bottom: 5px" id="labelFecha"></div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
                 <a style="color:white" class="btn btn-danger btn-ok">Aceptar</a>
             </div>
         </div>
@@ -280,7 +270,7 @@
         calendar.on('dateClick', function (info) {
         var dateFormat = moment(info.dateStr).format('DD/MM/YYYY hh:mm');
         //document.getElementById("labelDateId").innerHTML = dateFormat;
-        //$("#SelectHoraModal").modal();
+
         if (eventoCita != null) {
             eventoCita.remove();
         }
@@ -296,35 +286,39 @@
             //eventoCita = calendar.getEventById('idEvent');
         });
 
-        @foreach (var cita in Model.UsuarioTiendaMecanico.Agendas.First().Citas)
+        @if (Model.UsuarioTiendaMecanico.Agendas.Count > 0)
         {
-            <text>
-                var yearInicio = '@cita.FechaInicio.Year.ToString()';
-                var monthInicio = '@cita.FechaInicio.Month.ToString("00")'; 
-                var dayInicio = '@cita.FechaInicio.Day.ToString("00")'; 
-                var hourInicio = '@cita.FechaInicio.Hour.ToString("00")';  
-                var minuteInicio = '@cita.FechaInicio.Minute.ToString("00")';
-                var secondInicio = '@cita.FechaInicio.Second.ToString("00")';
+            foreach (var cita in Model.UsuarioTiendaMecanico.Agendas.First().Citas)
+            {
+                <text>
+                    var yearInicio = '@cita.FechaInicio.Year.ToString()';
+                    var monthInicio = '@cita.FechaInicio.Month.ToString("00")';
+                    var dayInicio = '@cita.FechaInicio.Day.ToString("00")';
+                    var hourInicio = '@cita.FechaInicio.Hour.ToString("00")';
+                    var minuteInicio = '@cita.FechaInicio.Minute.ToString("00")';
+                    var secondInicio = '@cita.FechaInicio.Second.ToString("00")';
 
-                var yearTermino = '@cita.FechaTermino.Year.ToString()';
-                var monthTermino = '@cita.FechaTermino.Month.ToString("00")'; 
-                var dayTermino = '@cita.FechaTermino.Day.ToString("00")'; 
-                var hourTermino = '@cita.FechaTermino.Hour.ToString("00")';  
-                var minuteTermino = '@cita.FechaTermino.Minute.ToString("00")';
-                var secondTermino = '@cita.FechaTermino.Second.ToString("00")';
+                    var yearTermino = '@cita.FechaTermino.Year.ToString()';
+                    var monthTermino = '@cita.FechaTermino.Month.ToString("00")';
+                    var dayTermino = '@cita.FechaTermino.Day.ToString("00")';
+                    var hourTermino = '@cita.FechaTermino.Hour.ToString("00")';
+                    var minuteTermino = '@cita.FechaTermino.Minute.ToString("00")';
+                    var secondTermino = '@cita.FechaTermino.Second.ToString("00")';
 
-                var fechaInicio = yearInicio + "-" + monthInicio + "-" + dayInicio + "T" + hourInicio + ":" + minuteInicio + ":" + secondInicio;
-                var fechaTermino = yearTermino + "-" + monthTermino + "-" + dayTermino + "T" + hourTermino + ":" + minuteTermino + ":" + secondTermino;
+                    var fechaInicio = yearInicio + "-" + monthInicio + "-" + dayInicio + "T" + hourInicio + ":" + minuteInicio + ":" + secondInicio;
+                    var fechaTermino = yearTermino + "-" + monthTermino + "-" + dayTermino + "T" + hourTermino + ":" + minuteTermino + ":" + secondTermino;
 
-                calendar.addEvent({
-                    start: fechaInicio,
-                    end: fechaTermino,
-                    display: 'background',
-                    color: 'red',
-                    allDay: false
-                });
-            </text>
+                    calendar.addEvent({
+                        start: fechaInicio,
+                        end: fechaTermino,
+                        display: 'background',
+                        color: 'red',
+                        allDay: false
+                    });
+                </text>
+            }
         }
+
     });
 
     function RegistrarCita() {
@@ -342,7 +336,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/Schedule/RegistrarCita",
+                url: "/Schedule/SeleccionarHora",
                 data: {
                     __RequestVerificationToken: token,
                     model: {
@@ -357,7 +351,10 @@
 
                     //location.reload(true);
                     if (result.exito == true) {
-                        window.location.href = "/Cotizacion/VerCotizacion/" + result.id;
+                        document.getElementById("labelCodigo").innerHTML = "<strong>Código: </strong>" + result.Codigo;
+                        document.getElementById("labelFecha").innerHTML = "<strong>Fecha: </strong>" + result.Fecha;
+
+                        $("#SelectHoraModal").modal();
                     }
                     else if (result.exito == false) {
                         $btnSubmit.disabled = false;
@@ -371,4 +368,9 @@
                 }
             });
     }
+
+
+    $('#SelectHoraModal').on('click', '.btn-ok', function (e) {
+            window.location.href = '/Home/Index/';
+    });
 </script>

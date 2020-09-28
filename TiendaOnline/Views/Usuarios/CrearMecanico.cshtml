@@ -2,14 +2,13 @@
 @{
     ViewBag.Title = "CrearMecanico";
     Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+    Session["TITULO"] = "HORARIO MECÁNICO";
 }
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/jquery-clockpicker.min.css" rel="stylesheet" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/jquery-clockpicker.min.js"></script>
 
-
-<h2>CrearMecanico</h2>
 @{ 
     //LUNES
     string horaLun1 = "";
@@ -56,8 +55,6 @@
 }
 
 <div class="form-horizontal">
-    <h4>UsuarioTiendaMecanico</h4>
-    <hr />
     @if (Model.UsuariosTiendaMecanicos != null)
     {
         if (Model.UsuariosTiendaMecanicos.Count > 0)
@@ -126,14 +123,14 @@
         }
     }
 
-    <table class="table">
-        <thead>
+    <table class="table table-striped">
+        <thead class="bg-card-color">
             <tr>
-                <th scope="col">Día</th>
-                <th scope="col">Hora Entrada</th>
-                <th scope="col">Hora Descanso Inicio</th>
-                <th scope="col">Hora Descanso Termino</th>
-                <th scope="col">Hora Salida</th>
+                <th class="text-center" scope="col">Día</th>
+                <th class="text-center" scope="col">Hora Entrada</th>
+                <th class="text-center" scope="col">Hora Descanso Inicio</th>
+                <th class="text-center" scope="col">Hora Descanso Termino</th>
+                <th class="text-center" scope="col">Hora Salida</th>
             </tr>
         </thead>
         <tbody>
@@ -193,17 +190,11 @@
 
 
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <button type="button" onclick="SendData()" class="btn btn-default">Crear</button>
-        </div>
+    <div class="text-center" style="width:100%">
+        <button type="button" onclick="SendData()" class="btn btn-lg bg-card-color">Modificar</button>
     </div>
 </div>
 
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))

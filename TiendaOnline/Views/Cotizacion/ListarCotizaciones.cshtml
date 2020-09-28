@@ -3,42 +3,44 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+    Session["TITULO"] = "COTIZACIONES";
 }
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+
 
 @if (Model != null)
 {
-    <table class="table">
+    <table class="table table-striped">
+    <thead class="bg-card-color">
         <tr>
-            <th></th>
-            <th>
-                @Html.DisplayNameFor(model => model.Codigo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fecha)
-            </th>
-            <th></th>
+            <th class="text-center" scope="col">#</th>
+            <th class="text-center" scope="col">DOC.</th>
+            <th class="text-center" scope="col">Código</th>
+            <th class="text-center" scope="col">Fecha</th>
+            <th class="text-center" scope="col">Acción</th>
         </tr>
-
+    </thead>
+    <tbody>
+        @{ int contFilas = 0;}
         @foreach (var item in Model)
         {
-            <tr>
-                <td class="text-center"><a class="btn btn-primary" href='@Url.Action("VerCotizacion", "Cotizacion", new { id = item.Id })' style="color:white">Ver Documento</a></td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Codigo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Fecha)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                </td>
-            </tr>
+            contFilas++;
+        <tr>
+            <th class="text-center" scope="row">@contFilas</th>
+            <td class="text-center"><a class="btn bg-card-color" href='@Url.Action("VerCotizacion", "Cotizacion", new { id = item.Id })' style="color:white">Ver Documento</a></td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.Codigo)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.Fecha)
+            </td>
+            <td class="text-center">
+                @Html.ActionLink("EliminarCotizacion", "EliminarCotizacion", new { id = item.Id })
+            </td>
+        </tr>
         }
+    </tbody>
 
-    </table>
+
+</table>
 }
 

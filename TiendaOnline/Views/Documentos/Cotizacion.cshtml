@@ -9,7 +9,12 @@
         <div class="row">
             <div style="width:50%; padding-left:32px">
                 <div class="row">
-                    <div><img style="width: 110px" src="https://i.imgur.com/1zcj4Gc.png" /></div>
+                    <div>
+                        @if (Model.LogoRemitente != null)
+                        {
+                            <img style="width: 110px" src="@Url.Content("~/ImagenesUsers/" + Model.Tienda.Id + "/LogosRemitente/" + System.IO.Path.GetFileName(Model.LogoRemitente.DireccionLogo))" />
+                        }
+                    </div>
                     <div style="margin-left:10px; font-size:18px">
                         <strong>Nombre:</strong> @Model.Tienda.Nombre<br />
                         <strong>Dirección:</strong> @Model.Tienda.Direccion<br />
@@ -77,6 +82,26 @@
             </tbody>
         </table>
 
+        <hr />
+
+        <table class="table table-sm">
+
+            <tbody>
+                <tr>
+                    <td>Marca</td>
+                    <td>@Model.Vehiculos.First().Marca</td>
+                    <td>Modelo</td>
+                    <td>@Model.Vehiculos.First().Modelo</td>
+                </tr>
+                <tr>
+                    <td>Año</td>
+                    <td>@Model.Vehiculos.First().Year</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
     <hr style="margin-top:-10px" />
     <div class="card-body">
@@ -102,30 +127,30 @@
                         <td>900000</td>
                         <td>@item.Nombre</td>
                         <td>@item.Categoria.NombreCategoria</td>
-                        <td class="text-right">@item.Precio</td>
-                        <td class="text-center">1</td>
-                        <td class="text-right">@item.Precio</td>
+                        <td class="text-right">$@item.Valor</td>
+                        <td class="text-center">@item.Cantidad</td>
+                        <td class="text-right">$@item.ValorTotal</td>
                     </tr>
                 }
                 <tr>
                     <th class="text-right" scope="row" colspan="6">Sub Total Neto</th>
-                    <th scope="row" class="text-right">@Model.SubTotalNeto</th>
+                    <th scope="row" class="text-right">$@Model.SubTotalNeto</th>
                 </tr>
                 <tr>
                     <th class="text-right" scope="row" colspan="6">Descuento</th>
-                    <th scope="row" class="text-right">@Model.Descuento</th>
+                    <th scope="row" class="text-right">$@Model.Descuento</th>
                 </tr>
                 <tr>
                     <th class="text-right" scope="row" colspan="6">Total Neto</th>
-                    <th scope="row" class="text-right">@Model.TotalNeto</th>
+                    <th scope="row" class="text-right">$@Model.TotalNeto</th>
                 </tr>
                 <tr>
                     <th class="text-right" scope="row" colspan="6">IVA (19%)</th>
-                    <th scope="row" class="text-right">@Model.IVA</th>
+                    <th scope="row" class="text-right">$@Model.IVA</th>
                 </tr>
                 <tr>
                     <th class="text-right" scope="row" colspan="6">Total A Pagar (inc. IVA):</th>
-                    <th scope="row" class="text-right">@Model.TotalAPagar</th>
+                    <th scope="row" class="text-right">$@Model.TotalAPagar</th>
                 </tr>
             </tbody>
         </table>

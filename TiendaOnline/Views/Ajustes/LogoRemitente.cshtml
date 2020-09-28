@@ -2,58 +2,57 @@
 
 @{
     ViewBag.Title = "LogoRemitente";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+
 }
 
-<h2>LogoRemitente</h2>
-
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>LogoRemitente</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.DireccionLogo, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DireccionLogo, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DireccionLogo, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.NombreImagen, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.NombreImagen, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.NombreImagen, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.TiendaId, "TiendaId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TiendaId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TiendaId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
+<div class="card text-left bg-card-border-color">
+    <div class="card-header bg-card-color">
+        Logo Remitente
     </div>
-}
+    @using (Html.BeginForm("LogoRemitente", "Ajustes", FormMethod.Post, new { @class = "input-group", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="card-body">
+            <div class="form-row">
+                <div class="col">
+                    @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", Placeholder = "Nombre Logo" } })
+                    @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                </div>
+                <div class="col">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="file" id="imgInp" aria-describedby="inputGroupFileAddon01">
+                        <label class="custom-file-label" for="inputGroupFile01">Escoge una Imagen</label>
+                    </div>
+                </div>
+            </div>
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
+            <div class="text-center" style="width:100%; margin-top:30px; margin-bottom:30px"><img id="result" style="width:auto; height:300px; display:none" alt="your image" /></div>
+            <div class="text-center" style="width:100%"><button class="btn btn-primary" id="inputGroupFileAddon01">Subir</button></div>
+
+        </div>
+    }
+
 </div>
+
+@section scripts{
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById("result").style.display = "";
+                $('#result').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]); // convert to base64 string
+        }
+    }
+
+    $("#imgInp").change(function () {
+        readURL(this);
+    });
+</script>
+}

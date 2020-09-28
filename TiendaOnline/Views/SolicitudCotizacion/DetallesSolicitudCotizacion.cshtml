@@ -3,69 +3,108 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutTienda.cshtml";
 }
-    <div class="card" style="margin:15px">
-        <div class="card-header">
-            Solicitud
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <th scope="row">@Html.DisplayNameFor(model => model.Codigo)</th>
-                            <td>@Html.DisplayFor(model => model.Codigo)</td>
-                            <th scope="row">@Html.DisplayNameFor(model => model.Fecha)</th>
-                            <td>@Html.DisplayFor(model => model.Fecha)</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <hr />
-        <div class="card-body">
+
+<div class="btn-group" role="group" style="margin-left:15px" aria-label="Basic example">
+    @if (Model.Cotizacion.Count > 0)
+    {
+        <a class="btn btn-primary btn-lg" href="@Url.Action("VerCotizacion", "Cotizacion", new { id = Model.Cotizacion.First().Id })" style="color:white"><i class="fas fa-envelope"></i> Cotización Asociada</a>
+    }
+    else
+    {
+        <a class="btn btn-primary btn-lg" href="@Url.Action("CrearCotizacion", "Cotizacion", new { manual = false, solicitudId = Model.Id })" style="color: white"><i class="fas fa-envelope"></i> Crear Cotización</a>
+    }
+</div>
+
+<div class="card" style="margin:15px">
+    <div class="card-header text-white bg-card-color">
+        Solicitud
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
             <table class="table">
                 <tbody>
                     <tr>
-                        <th scope="row">Nombre</th>
-                        <td>@Html.DisplayFor(model => model.Usuario.Nombre)</td>
-                        <th scope="row">Apellido</th>
-                        <td>@Html.DisplayFor(model => model.Usuario.Apellido)</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Correo</th>
-                        <td>@Html.DisplayFor(model => model.Usuario.Email)</td>
-                        <th scope="row">Nombre Usuario</th>
-                        <td>@Html.DisplayFor(model => model.Usuario.NombreUsuario)</td>
+                        <th scope="row">@Html.DisplayNameFor(model => model.Codigo)</th>
+                        <td>@Html.DisplayFor(model => model.Codigo)</td>
+                        <th scope="row">@Html.DisplayNameFor(model => model.Fecha)</th>
+                        <td>@Html.DisplayFor(model => model.Fecha)</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <hr />
-        <div class="card-body">
+    </div>
+    <div class="card-header text-white bg-card-color">
+        Cliente
+    </div>
+    <div class="card-body">
+        <table class="table text-left" style="margin-bottom:20px">
+            <tbody style="border-bottom: 2px solid #a7affb">
+                <tr>
+                    <th scope="row">Nombre</th>
+                    <td>@Html.DisplayFor(model => model.Usuario.Nombre)</td>
+                    <th scope="row">Apellido</th>
+                    <td>@Html.DisplayFor(model => model.Usuario.Apellido)</td>
+                </tr>
+                <tr>
+                    <th scope="row">Correo</th>
+                    <td>@Html.DisplayFor(model => model.Usuario.Email)</td>
+                    <th scope="row">Nombre Usuario</th>
+                    <td>@Html.DisplayFor(model => model.Usuario.NombreUsuario)</td>
+                </tr>
+            </tbody>
+            <tbody>
+                <tr>
+                    <th scope="row">Marca</th>
+                    <td>@Html.DisplayFor(model => model.Vehiculos.First().Marca)</td>
+                    <th scope="row">Modelo</th>
+                    <td>@Html.DisplayFor(model => model.Vehiculos.First().Modelo)</td>
+                </tr>
+                <tr>
+                    <th scope="row">Año</th>
+                    <td>@Html.DisplayFor(model => model.Vehiculos.First().Year)</td>
+                    <th scope="row"></th>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th scope="row">Comentario</th>
+                    <td>@Model.ComentarioCliente</td>
+                    <th scope="row"></th>
+                    <td></td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </div>
+    <div class="card-header text-white bg-card-color">
+        Servicios
+    </div>
+    <div class="card-body">
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Categoría</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Servicios)
-                    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Categoría</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ServiciosSolicitadosCotizacion)
+                {
                     <tr>
                         <th scope="row">1</th>
-                        <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Categoria.NombreCategoria)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Servicio.Nombre)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Servicio.Categoria.NombreCategoria)</td>
                     </tr>
-                    }
+                }
 
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
     </div>
-    <div class="text-center" style="width:100%">
-        @*<a class="btn btn-primary" href="@Url.Action("ProgramarCitas", "AppointmentSchedule", new {idCotizacion = Model.Id })" style="color:white">Crear Cotización</a>*@
-        <a class="btn btn-primary" href="@Url.Action("CrearCotizacion", "Cotizacion", new { manual = false, solicitudId = Model.Id })" style="color:white">Crear Cotización</a>
-    </div>
+</div>

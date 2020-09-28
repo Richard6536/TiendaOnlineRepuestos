@@ -3,35 +3,36 @@
 @{
     ViewBag.Title = "ListaProductos";
     Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+    Session["TITULO"] = "PRODUCTOS";
 }
 
-
-<!-- ------------- -->
-<br />
 <a class="btn btn-primary" href="~/Producto/CrearProducto" style="color:white">Crear Producto</a>
 
-<table id="tablalista" class="layout display responsive-table">
-    <thead>
+<table class="table table-striped">
+    <thead class="bg-card-color">
         <tr>
-            <th>@Html.DisplayNameFor(model => model.Nombre)</th>
-            <th>Categoria</th>
-
-            <th>@Html.DisplayNameFor(model => model.Precio)</th>
-            <th>Solo Cotizable</th>
-            <th></th>
+            <th class="text-center" scope="col">#</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.Nombre)</th>
+            <th class="text-center">Categoria</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.Precio)</th>
+            <th class="text-center">Solo Cotizable</th>
+            <th class="text-center">Acciones</th>
         </tr>
     </thead>
     <tbody>
+        @{ int contFilas = 0;}
         @foreach (var item in Model)
         {
+            contFilas++;
             <tr>
-                <td class="organisationname">@Html.DisplayFor(modelItem => item.Nombre)</td>
-                <td class="organisationnumber">@Html.DisplayFor(modelItem => item.Categoria.NombreCategoria)</td>
+                <th class="text-center" scope="row">@contFilas</th>
+                <td class="text-center">@Html.DisplayFor(modelItem => item.Nombre)</td>
+                <td class="text-center">@Html.DisplayFor(modelItem => item.Categoria.NombreCategoria)</td>
 
-                <td class="organisationname">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</td>
-                <td class="organisationname">@Html.DisplayFor(modelItem => item.SoloCotizable)</td>
+                <td class="text-center">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</td>
+                <td class="text-center">@Html.DisplayFor(modelItem => item.SoloCotizable)</td>
 
-                <td class="actions">
+                <td class="actions text-center">
                     <a href="@Url.Action("VerImagenesProducto", "Producto", new { id=item.Id })" style="color:#3047a0" class="material-icons" title="Edit">collections</a>
                     <a href="@Url.Action("EditarProducto", "Producto", new { id=item.Id })" class="material-icons" title="Edit">edit</a>
                     <a href="#" class="material-icons" style="color:red" title="Eliminar" data-toggle="modal" data-target="#borrarModal" data-id="@item.Id" data-name="@item.Nombre">delete_outline</a>
@@ -64,9 +65,6 @@
 </div>
 
 @section scripts{
-    <!-- Diseño de Tablas -->
-    <link href="~/Content/Tables/table-productos.css" rel="stylesheet">
-    <script type="text/javascript" src="~/Scripts/tables/table-productos.js"></script>
 
     <script>
 

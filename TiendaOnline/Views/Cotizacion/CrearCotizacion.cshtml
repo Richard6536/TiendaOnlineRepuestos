@@ -1,10 +1,13 @@
 ﻿@model TiendaOnline.Models.Cotizacion
+@using Newtonsoft.Json;
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutTienda.cshtml";
 }
-
+<script>
+    var $contador = 0;
+</script>
 <div class="card">
     <div class="card-header">
         Crear Cotización
@@ -14,6 +17,10 @@
             <div class="col-md-4 mb-3">
                 <label for="validationCustom01">Código</label>
                 @Html.EditorFor(model => model.Codigo, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @readonly = "readonly" } })
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="validationCustom01">Logo</label>
+                @Html.DropDownList("LogoRemitenteId", null, htmlAttributes: new { @class = "form-control", @id = "cmbLogoRemitente", @data_native_menu = "false"})
             </div>
         </div>
     </div>
@@ -35,6 +42,20 @@
                 @Html.EditorFor(model => model.Usuario.Email, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @readonly = "readonly" } })
             </div>
         </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label>Marca</label>
+                @Html.EditorFor(model => model.Vehiculos.First().Marca, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @readonly = "readonly" } })
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Modelo</label>
+                @Html.EditorFor(model => model.Vehiculos.First().Modelo, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @readonly = "readonly" } })
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Año</label>
+                @Html.EditorFor(model => model.Vehiculos.First().Year, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @readonly = "readonly" } })
+            </div>
+        </div>
     </div>
     <div class="card-header">
         Servicios
@@ -53,35 +74,50 @@
                     <th class="text-center">Acción</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="TBodyProductos">
                 @{ int prodCont = 0;}
                 @foreach (var item in Model.ServiciosCotizados)
                 {
                     prodCont = prodCont + 1;
-                    <tr>
-                        <th class="text-center" scope="row">@prodCont</th>
-                        <td>@item.Nombre</td>
-                        <td class="text-center">@item.Categoria.NombreCategoria</td>
-                        <td class="text-right">@item.Precio</td>
-                        <td class="text-center"><input type="number" readonly disabled style="width:60px; text-align:center" value="1" /></td>
-                        <td class="text-right">@item.Precio</td>
-                        <td class="text-center"><a class="btn btn-danger" style="color:white"><i class="fa fa-remove"></i></a></td>
-                    </tr>
+
+                    string idInpValUnit = "inpValorUnit" + prodCont;
+                    string idInpValCant = "inpValueCant" + prodCont;
+                    string tdValTotal = "tdValTotal" + prodCont;
+
+                <tr data-id="@item.Servicio.Id" name="RowProductCotizados">
+                    <th class="text-center" scope="row">@prodCont</th>
+                    <td class="text-center">@item.Servicio.Nombre.ToString()</td>
+                    <td class="text-center">@item.Servicio.Categoria.NombreCategoria.ToString()</td>
+                    <td class="text-center">@Html.EditorFor(model => item.Valor, new { htmlAttributes = new { @class = "form-control", @style = "text-align: right", @id = @idInpValUnit, oninput="CambioValorCantidad("+@prodCont+",this, true)" } })</td>
+                    <td class="text-center"><input type="number" style="width:60px; text-align:center" value="1" id="@idInpValCant" oninput="CambioValorCantidad(@prodCont,this, false)" /></td> @*readonly disabled*@
+                    <td class="text-right" id="@tdValTotal">$@item.Servicio.Precio</td>
+                    <td class="text-center"><a class="btn btn-danger" style="color:white"><i class="fa fa-remove"></i></a></td>
+                </tr>
                 }
 
                 <tr>
+                    <th class="text-center" scope="row"></th>
+                    <td></td>
+                    <td class="text-center"></td>
+                    <td class="text-right"></td>
+                    <td class="text-center"></td>
+                    <td class="text-right"></td>
+                    <td class="text-center"><a class="btn btn-success" style="color:white" onclick="AgregarFila();"><i class="fa fa-plus"></i></a></td>
+                </tr>
+
+                <tr>
                     <th scope="row" colspan="5">Total Neto</th>
-                    <th scope="row" class="text-right">@Model.TotalNeto</th>
+                    <th scope="row" class="text-right" id="totalNetoId">@Model.TotalNeto</th>
                     <td></td>
                 </tr>
                 <tr>
                     <th scope="row" colspan="5">IVA (19%)</th>
-                    <th scope="row" class="text-right">@Model.IVA</th>
+                    <th scope="row" class="text-right" id="IVAId">@Model.IVA</th>
                     <td></td>
                 </tr>
                 <tr>
                     <th scope="row" colspan="5">Total A Pagar (inc. IVA):</th>
-                    <th scope="row" class="text-right">@Model.TotalAPagar</th>
+                    <th scope="row" class="text-right" id="totalPagarId">@Model.TotalAPagar</th>
                     <td></td>
                 </tr>
 
@@ -92,7 +128,6 @@
         <button class="btn btn-success" onclick="submitCotizacion()" type="submit" style="width:300px" id="btnSubmit">Crear Cotización</button>
     </div>
 </div>
-
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
 {
     @Html.AntiForgeryToken()
@@ -101,12 +136,106 @@
 
 @section scripts{
     <script>
+        var $tBodyProductos = document.getElementById("TBodyProductos");
+        $contador = @prodCont;
+
+        var valorNetoVal = document.getElementById("totalNetoId");
+        var ivaVal = document.getElementById("IVAId");
+        var valorTotalPagarVal = document.getElementById("totalPagarId");
+
+        function AgregarFila() {
+            var row = $tBodyProductos.insertRow($contador);
+            $contador += 1;
+
+            row.setAttribute('id', 'rowId_' + $contador);
+            row.setAttribute('name', 'rowCreateProduct');
+
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            var cell5 = row.insertCell(4);
+            var cell6 = row.insertCell(5);
+            var cell7 = row.insertCell(6);
+
+            cell1.innerHTML = $contador;
+            cell2.innerHTML = "<input type='text' style='width:250px' text-align:center' />";
+            cell3.innerHTML = '@Ajax.JavaScriptStringEncode(Html.DropDownList("CategoriaId", null, htmlAttributes: new { @class = "form-control", @id = "cmbCategoria", @data_native_menu = "false"}).ToHtmlString())';
+            cell4.innerHTML = "<input type='number' style='text-align:right' value='0' id='inpValorUnit"+$contador+"' oninput='CambioValorCantidad("+$contador+",this, true)' />";
+            cell5.innerHTML = "<input type='number' style='width:60px; text-align:center' value='1' id='inpValueCant"+$contador+"' oninput='CambioValorCantidad("+$contador+",this, false)' />";
+            cell6.innerHTML = "$0";
+            cell6.setAttribute('id','tdValTotal'+$contador);
+            cell7.innerHTML = "<a class='btn btn-danger' style='color:white' onclick=EliminarFila(this)><i class='fa fa-remove'></i></a>";
+
+            cell1.setAttribute('class', 'text-center');
+            cell2.setAttribute('class', 'text-center');
+            cell3.setAttribute('class', 'text-center');
+            cell4.setAttribute('class', 'text-center');
+            cell5.setAttribute('class', 'text-center');
+            cell6.setAttribute('class', 'text-right');
+            cell7.setAttribute('class', 'text-center');
+
+        }
 
         function submitCotizacion() {
+
+            var $prodServicios = [];
 
             var $btnSubmit = document.getElementById("btnSubmit");
             $btnSubmit.disabled = true;
 
+            var rowsProdCotizados = document.getElementsByName("RowProductCotizados");
+            var rowsProdCreados = document.getElementsByName("rowCreateProduct");
+            var logoId = document.getElementById("cmbLogoRemitente").value;
+            
+            for (var x = 0; x < rowsProdCotizados.length; x++)
+            {
+                var childProductId = rowsProdCotizados[x];
+                var childInputNombreProdCotizados = rowsProdCotizados[x].children[1];
+                var childInputValorUnitCotizados = rowsProdCotizados[x].children[3];
+                var childInputCantidadCotizados = rowsProdCotizados[x].children[4];
+                var childInputValorTotalCotizados = rowsProdCotizados[x].children[5];
+
+                var proCotizadodId = childProductId.getAttribute('data-id');
+                var prodNameValCotizados = childInputNombreProdCotizados.innerHTML;
+                var prodValorUnitValCotizados = childInputValorUnitCotizados.children[0].value;
+                var prodCantidadValCotizados = childInputCantidadCotizados.children[0].value;
+                //var prodValorTotalCotizados = childInputValorTotalCotizados.childNodes[0].value;
+
+                $prodServicios.push({
+                    Id: proCotizadodId,
+                    Nombre: prodNameValCotizados,
+                    CategoriaId: -1,
+                    Valor: prodValorUnitValCotizados,
+                    Cantidad: prodCantidadValCotizados,
+                    EsManual: false
+                });
+            }
+
+            
+            for (var i = 0; i < rowsProdCreados.length; i++) {
+                var childInputNombreProd = rowsProdCreados[i].children[1];
+                var childCategoriaProdCotizados = rowsProdCreados[i].children[2];
+                var childInputValorUnit = rowsProdCreados[i].children[3];
+                var childInputCantidad = rowsProdCreados[i].children[4];
+                var childInputValorTotal = rowsProdCreados[i].children[5];
+
+                //var numPosVal = child.innerHTML;
+                var prodNameVal = childInputNombreProd.children[0].value;
+                var prodCatValCotizado = childCategoriaProdCotizados.children[0].value;
+                prodCatValCotizado = prodCatValCotizado.replace("\"","").replace("\"","");
+                var prodValorUnitVal = childInputValorUnit.children[0].value;
+                var prodCantidadVal = childInputCantidad.children[0].value;
+                //var prodValorTotal = childInputValorTotal.childNodes[0].value;
+                $prodServicios.push({
+                    Id: -1,
+                    Nombre: prodNameVal,
+                    CategoriaId: parseInt(prodCatValCotizado),
+                    Valor: prodValorUnitVal,
+                    Cantidad: prodCantidadVal,
+                    EsManual: true
+                });
+            }
 
             var form = $('#__AjaxAntiForgeryForm');
             var token = $('input[name="__RequestVerificationToken"]', form).val();
@@ -123,9 +252,11 @@
                             TotalNeto: @Model.TotalNeto,
                             IVA: @Model.IVA,
                             TotalAPagar: @Model.TotalAPagar,
+                            LogoId: logoId,
                             UsuarioId:  @Html.Raw(Json.Encode(Model.Usuario.Id)),
                             SolicitudCotizacionId: @Html.Raw(Json.Encode(Model.SolicitudCotizacion.Id))
-                        }
+                        },
+                    servicios: $prodServicios
                 },
                 success: function (result) {
 
@@ -146,6 +277,73 @@
             });
 
         }
-    </script>
+                
+        function EliminarFila(e) {
+            var row = e.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            $contador -= 1;
 
+            ActualizarTabla();
+            ActualizarNetoIVATotal();
+
+        }
+
+        function CambioValorCantidad(id, e, esValorUnit) {
+            var cantidadVal = 0;
+            var valorUnitVal = 0;
+
+            if (esValorUnit) {
+                cantidadVal = document.getElementById("inpValueCant" + id).value;
+                valorUnitVal = e.value;
+            }
+            else {
+                valorUnitVal = document.getElementById("inpValorUnit" + id).value;
+                cantidadVal = e.value;
+            }
+
+            var valorTotalVal = valorUnitVal * cantidadVal;
+            document.getElementById("tdValTotal" + id).innerHTML = "$" + valorTotalVal;
+
+            ActualizarNetoIVATotal()
+        }
+
+        function ActualizarNetoIVATotal() {
+
+            var valNetoAcumulado = 0;
+
+            for (var p = 1; p <= $contador; p++) {
+                var valTotalProd = document.getElementById("tdValTotal" + p).innerHTML.substring(1);
+                valNetoAcumulado += parseInt(valTotalProd);
+            }
+
+            var totalAPagar = valNetoAcumulado + (valNetoAcumulado * 19 / 100);
+            totalAPagar = Math.round(totalAPagar);
+            var iva = totalAPagar - valNetoAcumulado;
+            iva = Math.round(iva);
+
+            valorNetoVal.innerHTML = "$" + valNetoAcumulado;
+            ivaVal.innerHTML = "$" + iva;
+            valorTotalPagarVal.innerHTML = "$" + totalAPagar;
+        }
+
+        function ActualizarTabla() {
+            var rowsProdsCreated = document.getElementsByName("rowCreateProduct");
+            for (var r = 0; r < rowsProdsCreated.length; r++) {
+
+                rowsProdsCreated[r].setAttribute('id', 'rowId_' + (r + 2));
+
+                rowsProdsCreated[r].children[0].innerHTML = (r + 2)+"";
+
+                rowsProdsCreated[r].children[3].children[0].setAttribute('id', 'inpValorUnit' + (r + 2));
+                rowsProdsCreated[r].children[3].children[0].setAttribute('oninput', 'CambioValorCantidad("'+(r + 2)+'",this, true)');
+
+                rowsProdsCreated[r].children[4].children[0].setAttribute('id', 'inpValueCant' + (r + 2));
+                rowsProdsCreated[r].children[4].children[0].setAttribute('oninput', 'CambioValorCantidad("' + (r + 2) + '",this, false)');
+                
+                rowsProdsCreated[r].children[5].setAttribute('id', 'tdValTotal' + (r + 2));
+
+            }
+        }
+
+    </script>
 }

@@ -9,10 +9,14 @@
 <link href='~/Content/Calendar/main.css' rel='stylesheet' />
 <script src='~/Content/Calendar/main.js'></script>
 
-<h2>AsociarMecanico</h2>
+<h2>Asignar Mecanico</h2>
+<hr />
 
-@Html.DropDownList("MecanicoId", null, "Seleccione un Mecánico...", htmlAttributes: new { @class = "form-control", @onchange = "CambiarMecanico()", @id = "cmbMecanico", @data_native_menu = "false", @style = "width:500px" })
-<button class="btn btn-primary" id="btnSeleccionarMecanico" onclick="SeleccionarMecanico()">Seleccionar</button>
+<div class="row" style="padding:15px">
+    @Html.DropDownList("MecanicoId", null, "Seleccione un Mecánico...", htmlAttributes: new { @class = "form-control", @onchange = "CambiarMecanico()", @id = "cmbMecanico", @data_native_menu = "false", @style = "width:500px" })
+    <button class="btn btn-primary" id="btnSeleccionarMecanico" style="margin-left:10px" onclick="SeleccionarMecanico()">Asignar Mecánico</button>
+</div>
+
 <hr />
 
 

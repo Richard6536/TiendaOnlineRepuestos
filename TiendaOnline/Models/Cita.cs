@@ -50,11 +50,11 @@ namespace TiendaOnline.Models
                 usuarioTiendaMecanico.Agendas = new List<Agenda>();
 
             //CREAR UNA AGENDA
-            Agenda agenda = new Agenda();
-            agenda.UsuarioTiendaMecanico = usuarioTiendaMecanico;
-            agenda.Citas = new List<Cita>();
+            //Agenda agenda = new Agenda();
+            //agenda.UsuarioTiendaMecanico = usuarioTiendaMecanico;
+            //agenda.Citas = new List<Cita>();
 
-            usuarioTiendaMecanico.Agendas.Add(agenda);
+            //usuarioTiendaMecanico.Agendas.Add(agenda);
 
             if (usuarioTiendaMecanico.Agendas.First().Citas == null)
                 usuarioTiendaMecanico.Agendas.First().Citas = new List<Cita>();

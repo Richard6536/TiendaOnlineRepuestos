@@ -3,12 +3,59 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+    Session["TITULO"] = "AJUSTES";
 }
 
-<h2>Ajustes</h2>
+<style>
+    .btn-sq-lg {
+  width: 150px !important;
+  height: 150px !important;
+}
 
-<ul>
-    <li>@Html.ActionLink("Información de Contacto", "InformacionContacto", new { id = Model.Id })</li>
-    <li>@Html.ActionLink("Administrar Logos", "Logos", new { id = Model.Id })</li>
-    <li>@Html.ActionLink("Modificar Horario", "HorarioTienda", new { idTienda = Model.Id })</li>
-</ul>
+.btn-sq {
+  width: 100px !important;
+  height: 100px !important;
+  font-size: 10px;
+}
+
+.btn-sq-sm {
+  width: 50px !important;
+  height: 50px !important;
+  font-size: 10px;
+}
+
+.btn-sq-xs {
+  width: 25px !important;
+  height: 25px !important;
+  padding:2px;
+}
+
+</style>
+    <div class="container" style="margin-top:10px">
+        <div class="row text-center">
+            <div class="col-lg-12">
+                <p>
+                    <a href="@Url.Action("AjustesGenerales", "Ajustes", new { id = Model.Id })" class="btn btn-sq-lg btn-primary">
+                        <i class="fas fa-sliders-h fa-4x" style="margin-bottom:10px"></i><br />
+                        Ajustes Generales
+                    </a>
+                    <a href="@Url.Action("InformacionContacto", "Ajustes", new { id = Model.Id })" class="btn btn-sq-lg btn-warning">
+                        <i class="fas fa-id-card fa-4x" style="margin-bottom:10px"></i><br />
+                        Información de Contacto
+                    </a>
+                    <a href="@Url.Action("Logos", "Ajustes", new { id = Model.Id })" class="btn btn-sq-lg btn-success">
+                        <i class="fas fa-images fa-4x" style="margin-bottom:10px"></i><br />
+                        Administrar Logos
+                    </a>
+                    <a href="@Url.Action("LogosRemitentes", "Ajustes", new { id = Model.Id })" class="btn btn-sq-lg btn-danger">
+                        <i class="fas fa-file-image fa-4x" style="margin-bottom:10px"></i><br />
+                        Logos Remitentes
+                    </a>
+                    <a href="@Url.Action("HorarioTienda", "Modificar Horario", new { idTienda = Model.Id })" class="btn btn-sq-lg btn-info">
+                        <i class="fas fa-calendar-alt fa-4x" style="margin-bottom:10px"></i><br />
+                        Modificar Horario Tienda
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>

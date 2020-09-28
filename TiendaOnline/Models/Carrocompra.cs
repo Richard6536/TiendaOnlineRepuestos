@@ -46,6 +46,7 @@ namespace TiendaOnline.Models
         public static void AgregarProductoAlCarroCompra(int _idUsuario, ProductoCarro _productoCarro, TiendaOnlineContext _db)
         {
             Usuario usuario = _db.Usuarios.Where(u => u.Id == _idUsuario).FirstOrDefault();
+            usuario.CarroCompra.First().ProductosCarro = new List<ProductoCarro>(); //SOLO POR AHORA PORQUE SE DUPLICAN LOS ITEMS
             usuario.CarroCompra.First().ProductosCarro.Add(_productoCarro);
             usuario.CarroCompra.First().Total += _productoCarro.Total;
 
@@ -61,14 +62,14 @@ namespace TiendaOnline.Models
 
             Carrocompra miCarroCompra = _usuario.CarroCompra.First();
 
-            foreach (var prodCarro in productosCarro)
+            if (productosCarro.Count > 0)
             {
-                if (prodCarro.CarroCompra.Id == miCarroCompra.Id)
+                foreach (var prodCarro in productosCarro)
                 {
                     _db.ProductosCarro.Remove(prodCarro);
-
                 }
             }
+
 
             _db.SaveChanges();
         }

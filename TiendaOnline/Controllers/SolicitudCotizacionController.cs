@@ -29,6 +29,7 @@ namespace TiendaOnline.Controllers
             Tienda tienda = db.Tienda.Find(idTienda);
 
             List<SolicitudCotizacion> solicitudCotizacionesTienda = tienda.SolicitudCotizaciones.ToList();
+            solicitudCotizacionesTienda.Reverse();
 
             return View(solicitudCotizacionesTienda);
         }
@@ -42,6 +43,7 @@ namespace TiendaOnline.Controllers
                 return RedirectToAction("IniciarSesion", "Login");
 
             SolicitudCotizacion solicitudCotizacion = db.SolicitudCotizacion.Where(s => s.Id == id).FirstOrDefault();
+            
             return View(solicitudCotizacion);
         }
 

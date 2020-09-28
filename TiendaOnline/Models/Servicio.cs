@@ -40,6 +40,9 @@ namespace TiendaOnline.Models
         public virtual List<Comentario> Comentarios { get; set; }
         public virtual List<Imagen> Imagenes { get; set; }
 
+        public virtual List<ServicioCotizado> ServiciosCotizados { get; set; }
+        public virtual List<ServicioSolicitadoCotizacion> ServiciosSolicitadosCotizacion { get; set; }
+
         public virtual List<SolicitudCotizacion> SolicitudCotizaciones { get; set; }
         public virtual List<ProductoCarro> ProductosCarro { get; set; }
 

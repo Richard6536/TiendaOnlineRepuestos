@@ -24,10 +24,8 @@ namespace TiendaOnline.Controllers
 
         public ActionResult Index(int page = 1, int categoriaId = -1)
         {
-            UsuarioTienda usuarioTienda = db.UsuariosTienda.Where(ut => ut.Id == 1).FirstOrDefault();
-            UsuarioTienda usuarioTienda2 = db.UsuariosTienda.Where(ut => ut.Id == 2).FirstOrDefault();
 
-            List<Producto> productos = db.Productos.ToList();
+            List<Producto> productos = db.Productos.Where(t => t.Tienda.EstadoTienda == Models.Tienda.Estado.Publicada).ToList();
 
             int productsPerPage = 12;
             int start = (page - 1) * productsPerPage;
@@ -234,6 +232,21 @@ namespace TiendaOnline.Controllers
                 serviciosTienda = serviciosTienda.OrderBy(p => p.Id).Skip(start).Take(productsPerPage);
                 ViewBag.PaginatedProducts = serviciosTienda;
                 ViewBag.Seccion = seccion;
+            }
+
+            //SI LA TIENDA ESTÁ OCULTA, SOLO LA PUEDE VER EL ADMINISTRADOR.
+            if (tiendaHome.Tienda.EstadoTienda == Models.Tienda.Estado.Oculta)
+            {
+                if (Session["Id"] == null)
+                    return RedirectToAction("IniciarSesion", "Login");
+
+                int idUsuario = (int)Session["Id"];
+                UsuarioTienda existeUsuarioEnTienda = tiendaHome.Tienda.UsuariosTienda.Where(us => us.Usuario.Id == idUsuario).FirstOrDefault();
+
+                if (existeUsuarioEnTienda == null)
+                    return RedirectToAction("Index", "Home");
+                else
+                    return View(tiendaHome);
             }
 
             return View(tiendaHome);

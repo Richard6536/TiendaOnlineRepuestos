@@ -37,7 +37,7 @@ namespace TiendaOnline.Models
 
             _model.Nombre = _model.Nombre.Replace("\"", "");
 
-            string nombreImagen = "RemitenteLogo";
+            string nombreImagen = file.FileName;
             Tienda tienda = _db.Tienda.Where(t => t.Id == idtienda).FirstOrDefault();
 
             Imagen imagen = new Imagen();
@@ -64,5 +64,20 @@ namespace TiendaOnline.Models
 
         }
 
+        public static void EliminarLogoRemitente(TiendaOnlineContext _db, LogoRemitente logoRemitente)
+        {
+            logoRemitente.Tienda = null;
+            logoRemitente.Cotizaciones = new List<Cotizacion>();
+
+            try {
+                File.Delete(logoRemitente.DireccionLogo);
+            }
+            catch {
+                //carpeta no existe
+            }
+
+            _db.LogoRemitente.Remove(logoRemitente);
+            _db.SaveChanges();
+        }
     }
 }

@@ -13,6 +13,15 @@
 
 <!-- HOJAS DE DISEÑO -->
 <link rel="stylesheet" href="~/Content/Tienda/tienda-inicio.css" />
+@if (Model.Tienda.EstadoTienda == TiendaOnline.Models.Tienda.Estado.Oculta)
+{
+    <div class="alert alert-warning" style="margin-bottom: 0px!important" role="alert">
+        <h4 class="alert-heading">Tu Tienda está oculta</h4>
+        <p>No es visible al público general. Sólo tú y usuarios a quienes hayas creado desde Administración podrán ver la Tienda y sus productos. De esta manera podrás configurar y agregar productos sin presión!</p>
+        <hr>
+        <p class="mb-0">¿Tu Tienda está lista? Puedes publicarla desde <a href="#" class="alert-link">Ajustes de Tienda y Visiblidad</a>.</p>
+    </div>
+}
 
 <div class="card" style="height:150px; background-image:url(https://i.imgur.com/2e2nXD6.jpg)">
 
@@ -36,7 +45,8 @@
     <hr class="my-4">
     <div class="row">
         <div style="width:75%; margin-top:35px">
-            <div class="row" style="margin-bottom:30px">
+            <div class="row" style="        margin-bottom: 30px
+">
                 <p style="width:50%; font-size:20px"><i class="fa fa-map-marker" aria-hidden="true"></i> @Model.Tienda.Direccion</p>
                 <p style="width:50%; font-size:20px"><i class="fa fa-building" aria-hidden="true"></i> @Model.Tienda.Local</p>
             </div>
