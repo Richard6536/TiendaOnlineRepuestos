@@ -121,7 +121,7 @@ namespace TiendaOnline.Controllers
         }
 
         [HttpPost]
-        public ActionResult OrdenarProductos(Producto.OrderByType orderType)
+        public ActionResult OrdenarProductos(TiendaHome.OrderByType orderType)
         {
             Session["OrderByProduct"] = orderType;
             return Json(new
@@ -145,42 +145,42 @@ namespace TiendaOnline.Controllers
         public ActionResult Tienda(int? id, int page = 1, int categoriaId = -1, string seccion = "producto", string search = "")
         {
             Tienda tienda = db.Tienda.Find(id);
-            IEnumerable<Producto> productosTienda = null;
-            IEnumerable<Servicio> serviciosTienda = null;
+
+            if (tienda == null)
+                return RedirectToAction("Index", "Home");
+
+            IEnumerable<Producto> productosTienda = tienda.Productos;
+            IEnumerable<Servicio> serviciosTienda = tienda.Servicios;
 
             TiendaHome tiendaHome = new TiendaHome();
             tiendaHome.OrderByProductName = "";
             tiendaHome.ViewProductEnumType = TiendaHome.ViewProductType.Grid;
             tiendaHome.ViewTypeName = "Grid";
 
-            if (tienda == null)
-                return RedirectToAction("Index", "Home");
-
             int productsPerPage = 12;
             int start = (page - 1) * productsPerPage;
 
+            //Verificar si productos están en List o Grid
+            if (Session["ViewProductType"] != null)
+            {
+                tiendaHome.ViewProductEnumType = (TiendaHome.ViewProductType)Session["ViewProductType"];
+                if ((TiendaHome.ViewProductType)Session["ViewProductType"] == TiendaHome.ViewProductType.Grid)
+                    tiendaHome.ViewTypeName = "Grid";
+                else if ((TiendaHome.ViewProductType)Session["ViewProductType"] == TiendaHome.ViewProductType.List)
+                    tiendaHome.ViewTypeName = "List";
+            }
+
+            //ORDENAR PRODUCTOS Y SERVICIOS
+            if (Session["OrderByProduct"] != null)
+            {
+                Tuple<IEnumerable<Producto>, IEnumerable<Servicio>, string> tupleSort = TiendaHome.SortProduct(productosTienda, serviciosTienda, (TiendaHome.OrderByType)Session["OrderByProduct"]);
+                productosTienda = tupleSort.Item1;
+                serviciosTienda = tupleSort.Item2;
+                tiendaHome.OrderByProductName = tupleSort.Item3;
+            }
+
             if (seccion.Equals("producto"))
             {
-
-                productosTienda = tienda.Productos;
-
-                //Verificar si productos deben estar ordenados
-                if (Session["OrderByProduct"] != null)
-                {
-                    Tuple<IEnumerable<Producto>, string> tupleSort = Producto.SortProduct(productosTienda, (Producto.OrderByType)Session["OrderByProduct"]);
-                    productosTienda = tupleSort.Item1;
-                    tiendaHome.OrderByProductName = tupleSort.Item2;
-                }
-
-                //Verificar si productos están en List o Grid
-                if (Session["ViewProductType"] != null)
-                {
-                    tiendaHome.ViewProductEnumType = (TiendaHome.ViewProductType)Session["ViewProductType"];
-                    if ((TiendaHome.ViewProductType)Session["ViewProductType"] == TiendaHome.ViewProductType.Grid)
-                        tiendaHome.ViewTypeName = "Grid";
-                    else if((TiendaHome.ViewProductType)Session["ViewProductType"] == TiendaHome.ViewProductType.List)
-                        tiendaHome.ViewTypeName = "List";
-                }
 
                 //Realiza una busqueda
                 if (!search.Equals(""))
@@ -209,7 +209,6 @@ namespace TiendaOnline.Controllers
             }
             else if (seccion.Equals("servicio"))
             {
-                serviciosTienda = tienda.Servicios;
 
                 //Realiza una busqueda
                 if (!search.Equals(""))
@@ -219,7 +218,7 @@ namespace TiendaOnline.Controllers
                 }
 
                 //Categorias
-                ViewBag.Categorias = Busqueda.buscarCategoriasPorTienda(db, tienda.Productos, null, true);
+                ViewBag.Categorias = Busqueda.buscarCategoriasPorTienda(db, null, tienda.Servicios, false);
 
                 if (categoriaId != -1)
                 {
@@ -229,9 +228,12 @@ namespace TiendaOnline.Controllers
                 }
 
                 ViewBag.PageCount = Math.Ceiling(serviciosTienda.Count() / (double)productsPerPage);
-                serviciosTienda = serviciosTienda.OrderBy(p => p.Id).Skip(start).Take(productsPerPage);
+                serviciosTienda = serviciosTienda.Skip(start).Take(productsPerPage);
                 ViewBag.PaginatedProducts = serviciosTienda;
                 ViewBag.Seccion = seccion;
+
+                tiendaHome.Tienda = tienda;
+                tiendaHome.Servicios = serviciosTienda;
             }
 
             //SI LA TIENDA ESTÁ OCULTA, SOLO LA PUEDE VER EL ADMINISTRADOR.

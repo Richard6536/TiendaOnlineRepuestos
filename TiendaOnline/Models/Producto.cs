@@ -15,7 +15,6 @@ namespace TiendaOnline.Models
     public class Producto
     {
 
-        public enum OrderByType { PrecioAscendente, PrecioDescendente, Relevante }
 
         [Key]
         public int Id { get; set; }
@@ -221,24 +220,5 @@ namespace TiendaOnline.Models
             return value.Length <= maxChars ? value : value.Substring(0, maxChars) + "...";
         }
 
-        public static Tuple<IEnumerable<Producto>, string> SortProduct(IEnumerable<Producto> productos, OrderByType orderByType)
-        {
-            String orderByProductName = "";
-            IEnumerable<Producto> productosOrdenados = null;
-            switch (orderByType)
-            {
-                case OrderByType.PrecioAscendente:
-                    productosOrdenados = productos.OrderBy(p => p.Precio).ToList();
-                    orderByProductName = "Precio Menor";
-                    break;
-
-                case OrderByType.PrecioDescendente:
-                    productosOrdenados = productos.OrderByDescending(p => p.Precio).ToList();
-                    orderByProductName = "Precio Mayor";
-                    break;
-            }
-
-            return new Tuple<IEnumerable<Producto>, string>(productosOrdenados, orderByProductName);
-        }
     }
 }

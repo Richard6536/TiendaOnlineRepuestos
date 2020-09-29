@@ -174,98 +174,53 @@
         </div>
     </div>
 
-    @if (ViewBag.Seccion.Equals("producto"))
-    {
-        <div class="col-xs-12 col-sm-9 container-tienda-left">
-
-            <div class="card card-header-product">
-                <div class="card-body card-pagination">
-                    <div class="align-items-end d-flex justify-content-end">
-                        <div style="width:50%">
-                            <div class="btn-group">
-                                <button id="btnViewProduct" class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Ordenar por
-                                </button>
-                                <div class="dropdown-menu" id="dropmenuViewProducts">
-                                    <a class="dropdown-item" data-value="@TiendaOnline.Clases.TiendaHome.ViewProductType.Grid">Grid</a>
-                                    <a class="dropdown-item" data-value="@TiendaOnline.Clases.TiendaHome.ViewProductType.List">List</a>
-                                </div>
-                            </div>
-                            <div class="btn-group">
-                                <button id="btnOrderBy" class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Ordenar por
-                                </button>
-                                <div class="dropdown-menu" id="dropmenuOrderProducts">
-                                    <a class="dropdown-item" href="#">Relevancia</a>
-                                    <a class="dropdown-item" data-value="@TiendaOnline.Models.Producto.OrderByType.PrecioDescendente">Mayor Precio</a>
-                                    <a class="dropdown-item" data-value="@TiendaOnline.Models.Producto.OrderByType.PrecioAscendente">Menor Precio</a>
-                                </div>
+    <div class="col-xs-12 col-sm-9 container-tienda-left">
+        <div class="card card-header-product">
+            <div class="card-body card-pagination">
+                <div class="align-items-end d-flex justify-content-end">
+                    <div style="width:50%">
+                        <div class="btn-group">
+                            <button id="btnViewProduct" class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Ordenar por
+                            </button>
+                            <div class="dropdown-menu" id="dropmenuViewProducts">
+                                <a class="dropdown-item" data-value="@TiendaOnline.Clases.TiendaHome.ViewProductType.Grid">Grid</a>
+                                <a class="dropdown-item" data-value="@TiendaOnline.Clases.TiendaHome.ViewProductType.List">List</a>
                             </div>
                         </div>
-                        <div class="align-items-end d-flex justify-content-end" style="width:50%">
-                            <ul class="pagination" style="margin-bottom: 0px!important">
-                                @for (int i = 1; i <= ViewBag.PageCount; i++)
-                                {
-                                    <li class="page-item"><a class="page-link" href="@Url.Action("Tienda", "Home", new { page = i })">@i</a></li>
-                                }
-                            </ul>
+                        <div class="btn-group">
+                            <button id="btnOrderBy" class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Ordenar por
+                            </button>
+                            <div class="dropdown-menu" id="dropmenuOrderProducts">
+                                <a class="dropdown-item" href="#">Relevancia</a>
+                                <a class="dropdown-item" data-value="@TiendaOnline.Clases.TiendaHome.OrderByType.PrecioDescendente">Mayor Precio</a>
+                                <a class="dropdown-item" data-value="@TiendaOnline.Clases.TiendaHome.OrderByType.PrecioAscendente">Menor Precio</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            @Html.Action("_PartialProducts", "Tienda", new { viewProductType = Model.ViewProductEnumType, productos = Model.Productos });
-
-        </div>
-    }
-    else if (ViewBag.Seccion.Equals("servicio"))
-    {
-        <div class="col-xs-12 col-sm-9 container-tienda-left">
-
-            <div class="card card-header-product">
-                <div class="card-body card-pagination">
-                    <div class="align-items-end d-flex justify-content-end">
+                    <div class="align-items-end d-flex justify-content-end" style="width:50%">
                         <ul class="pagination" style="margin-bottom: 0px!important">
                             @for (int i = 1; i <= ViewBag.PageCount; i++)
                             {
-                                <li class="page-item"><a class="page-link" href="@Url.Action("Tienda","Home", new { page = i })">@i</a></li>
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Tienda", "Home", new { page = i })">@i</a></li>
                             }
                         </ul>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                @{
-
-                    foreach (var item in ViewBag.PaginatedProducts)
-                    {
-                        <div class="col-sm-3">
-                            <div class="card card-product" onclick="location.href='@Url.Action("VerServicio", "Servicio", new { id = item.Id })';">
-                                @{
-                                    if (item.Imagenes.Count > 0)
-                                    {
-                                        <img class="img-product" src="@Url.Content("~/ImagenesUsers/" + item.Tienda.Id + "/Servicios/" + System.IO.Path.GetFileName(item.Imagenes[0].DireccionImagen))" alt="...">
-                                    }
-                                }
-
-                                <div class="card-body">
-                                    <h6 class="card-title">
-                                        <span class="d-inline-block text-truncate text-product">
-                                            @item.Nombre
-                                        </span>
-                                    </h6>
-                                </div>
-                                <div class="card-footer card-footer-product">
-                                    <small class="text-muted small-product-size">$@Decimal.Parse(item.Precio.ToString(), System.Globalization.NumberStyles.Float)</small>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                }
-
-
-            </div>
         </div>
-    }
+        @if (ViewBag.Seccion.Equals("producto"))
+        {
+            @Html.Action("_PartialProducts", "Tienda", new { viewProductType = Model.ViewProductEnumType, productos = Model.Productos })
+        }
+        else if (ViewBag.Seccion.Equals("servicio"))
+        {
+            @Html.Action("_PartialServices", "Tienda", new { viewProductType = Model.ViewProductEnumType, servicios = Model.Servicios })
+        }
+
+
+    </div>
 </div>
 
 <script>

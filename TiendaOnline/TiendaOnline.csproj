@@ -404,6 +404,10 @@
     <Compile Include="Migrations\202009280615483_Tienda.Estado.Designer.cs">
       <DependentUpon>202009280615483_Tienda.Estado.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009290148365_Update completo.cs" />
+    <Compile Include="Migrations\202009290148365_Update completo.Designer.cs">
+      <DependentUpon>202009290148365_Update completo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Agenda.cs" />
     <Compile Include="Models\Calendario.cs" />
@@ -723,6 +727,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009280615483_Tienda.Estado.resx">
       <DependentUpon>202009280615483_Tienda.Estado.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009290148365_Update completo.resx">
+      <DependentUpon>202009290148365_Update completo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
